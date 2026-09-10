@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-violet-600: #7a22ce;
+  --color-violet-800: #5b1aa0;
+  --color-violet-50: #f3ebfd;
+  --color-violet-200: #e4d4fa;
+  --color-green-500: #16b364;
+  --color-green-600: #0e9f56;
+  --color-green-50: #e6f9ef;
+  --color-green-200: #c8efda;
+  --color-green-800: #0e7c46;
+  --color-amber-50: #fdf4e3;
+  --color-amber-200: #f2e1be;
+  --color-amber-700: #b7791f;
+  --color-red-50: #fcedeb;
+  --color-red-200: #f5d6d1;
+  --color-red-600: #c0392b;
+  --color-teal-400: #3fa9a0;
+  --color-ink-900: #1a1030;
+  --color-ink-600: #4a4360;
+  --color-muted: #6b6480;
+  --color-canvas: #faf9fc;
+  --color-hairline: #e7e3ef;
+  --color-track: #efecf6;
+  --color-chip: #f4f2f8;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-nunito-sans), sans-serif;
+  --font-display: var(--font-poppins), sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --shadow-card: 0 1px 2px rgba(26, 16, 48, 0.06), 0 10px 28px rgba(26, 16, 48, 0.05);
+
+  --background-image-brand: linear-gradient(105deg, #3fa9a0 0%, #7a22ce 62%, #8b2be0 100%);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-violet-600);
+}
+a:hover {
+  color: var(--color-violet-800);
+  text-decoration: underline;
+}
+
+@layer components {
+  /* Buttons — compose: class="btn btn-primary" */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-sans text-[15px] font-bold px-6.5 py-3.25 cursor-pointer border-0 transition-colors;
+  }
+  .btn-primary {
+    @apply bg-green-500 text-white hover:bg-green-600;
+  }
+  .btn-violet {
+    @apply bg-violet-600 text-white hover:bg-violet-800;
+  }
+  .btn-secondary {
+    @apply bg-white text-violet-800 border-[1.5px] border-violet-200 px-6 py-3 hover:bg-violet-50;
+  }
+  .btn-tertiary {
+    @apply bg-transparent text-muted font-semibold px-2 py-3 hover:text-ink-900;
+  }
+
+  /* Inputs — selects match but sit on white (add bg-white) */
+  .input {
+    @apply w-full rounded-full font-sans text-[15px] text-ink-900 bg-canvas border-[1.5px] border-hairline px-4.5 py-3.25 outline-none focus:border-violet-600 focus:bg-white;
+  }
+  /* Mono uppercase label above every field, 7px gap */
+  .field-label {
+    @apply block font-mono text-[11px] uppercase tracking-[.12em] text-muted mb-1.75;
+  }
+
+  /* Status chips — compose: class="chip chip-strong" */
+  .chip {
+    @apply inline-flex items-center rounded-full px-3.5 py-1.5 text-[13px] font-bold border;
+  }
+  .chip-strong {
+    @apply bg-green-50 border-green-200 text-green-800;
+  }
+  .chip-possible {
+    @apply bg-violet-50 border-violet-200 text-violet-800;
+  }
+  .chip-conditional {
+    @apply bg-amber-50 border-amber-200 text-amber-700;
+  }
+  .chip-closed {
+    @apply bg-red-50 border-red-200 text-red-600;
+  }
+  /* Neutral mono tag: `EU · Erasmus+` */
+  .chip-neutral {
+    @apply inline-flex items-center rounded-lg bg-chip border border-hairline text-muted font-mono text-[12px] px-2.5 py-1.5;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white rounded-[20px] p-5.5 shadow-card;
+  }
+  .card-panel {
+    @apply bg-white rounded-[20px] p-8 shadow-card;
+  }
+
+  /* Section eyebrow */
+  .eyebrow {
+    @apply font-display text-[13px] font-semibold uppercase tracking-[.16em] text-muted;
+  }
+
+  /* Score meter */
+  .meter {
+    @apply h-2.5 rounded-full bg-track overflow-hidden;
+  }
+  .meter-fill {
+    @apply h-full rounded-full bg-linear-[90deg,#3FA9A0,#16B364];
+  }
+  .meter-fill-violet {
+    @apply h-full rounded-full bg-linear-[90deg,#8B5CF6,#7A22CE];
+  }
+
+  /* Gradient CTA panel — white text, use with .btn on white bg + violet label inside */
+  .panel-gradient {
+    @apply rounded-[20px] p-6.5 text-white bg-brand;
+  }
 }
