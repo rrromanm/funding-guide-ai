@@ -1,16 +1,4 @@
-"""Discovery for the Horsens Kommune source.
-
-Fetches the sitemap and prints the funding-page URLs found under
-/fritid/soegstoette/.
-
-Run:
-    cd worker
-    python -m ingestion.sources.horsens_kommune.discovery
-"""
-
-import xml.etree.ElementTree as ET
-
-import requests
+import xml.etree.ElementTree as ETimport requests
 
 SITEMAP_URL = "https://horsens.dk/sitemap.xml"
 PATH_PREFIX = "/fritid/soegstoette/"
@@ -21,7 +9,6 @@ NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
 
 def discover():
-    """Return the list of funding-page URLs from the sitemap."""
     response = requests.get(SITEMAP_URL, headers={"User-Agent": USER_AGENT}, timeout=20)
     response.raise_for_status()
 
