@@ -14,6 +14,7 @@ SOURCE_DEFAULTS = {
     "application_language": "da",
 }
 
+# python -m scrapers.sources.horsens_kommune.run
 
 def run():
     records = []
@@ -23,11 +24,9 @@ def run():
         )
         if not response.ok:
             continue
-        record = parse(url, response.text)
-        if record:
+        for record in parse(url, response.text):
             record.update(
                 SOURCE_DEFAULTS,
-                source_url=url,
                 last_checked=datetime.now(timezone.utc).isoformat(),
             )
             records.append(record)

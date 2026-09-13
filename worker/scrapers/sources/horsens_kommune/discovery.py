@@ -8,6 +8,7 @@ from scrapers.config import REQUEST_TIMEOUT, USER_AGENT
 # Sitemaps are namespaced XML; without the prefix, iter() finds nothing.
 LOC = "{http://www.sitemaps.org/schemas/sitemap/0.9}loc"
 
+# python -m scrapers.sources.horsens_kommune.discovery
 
 def discover():
     response = requests.get(
