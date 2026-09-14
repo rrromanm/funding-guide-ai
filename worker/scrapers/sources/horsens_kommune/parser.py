@@ -9,7 +9,9 @@ DANISH_DATE = re.compile(
 
 
 def _text(el) -> str:
-    return re.sub(r"\s+([.,;:!?)])", r"\1", el.get_text(" ", strip=True))
+    s = el.get_text(" ", strip=True)
+    s = re.sub(r"\s+", " ", s)
+    return re.sub(r"\s+([.,;:!?)])", r"\1", s)
 
 
 def _extract_deadline_tables(scope) -> list[dict]:
