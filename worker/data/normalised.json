@@ -1,0 +1,1594 @@
+[
+  {
+    "title": "Kultur- og Oplevelsespuljen",
+    "summary": "Søg støtte til kulturelle projekter og aktiviteter.",
+    "description": "Hvis du har en god ide til et kultur- eller fritidsarrangement, kan du søge tilskud fra Kultur- og Oplevelsespuljen. Puljen støtter kulturelle arrangementer af forskellig karakter, som afholdes i Horsens Kommune. Du kan søge støtte fra Kultur- og Oplevelsespuljen, hvis: Arrangementet foregår i Horsens Kommune Der er offentlig adgang (betalt eller gratis) Du kan søge støtte til aktiviteter inden for følgende områder: Børne- og ungekultur Billedkunst Scenekunst Musik Litteratur og medier Dans og bevægelse Særlige idrætsevents, der ligger ud over de ordinære aktiviteter Tværkulturelle aktiviteter Kulturarv Andre kulturelle aktiviteter Du kan bl.a. søge om støtte til honorar til kunstnere og aktører, udgifter til scene, teknik og materialer, transport til kunstnere og aktører osv. Sådan søger I Du eller I søger puljen ved at udfylde vores elektroniske ansøgningsskema. Når projektet er afholdt, skal du udfylde vores elektroniske afrapporteringsskema. Her kan du få inspiration til, hvordan du udfylder ansøgningen til Kultur- og Oplevelsespuljen (pdf). Her kan du få inspiration til, hvordan du laver et budget (pdf). Læs retningslinjerne til, hvordan du søger støtte fra Kultur- og Oplevelsespuljen (pdf). Det er en god ide at læse denne, inden du udfylder ansøgningsskemaet. Ansøgningsfrister Ansøgninger på 5.000 kr. eller herunder behandles administrativt inden for fire uger, mens ansøgninger over 5.000 kr. bliver indstillet til udvalgsbehandling. Retningslinjer Inden du søger puljen, bør du læse retningslinjerne. Vær opmærksom på, at der er kommet nye retningslinjer fra maj 2024. Har du spørgsmål? Har du spørgsmål i forbindelse med ansøgningen, eller ønsker du yderligere oplysninger, er du velkommen til at kontakte os på tlf. 7629 2300 eller på kultur@horsens.dk",
+    "deadline_table": [
+      {
+        "submit": "23. januar 2026",
+        "decided": "9. marts 2026"
+      },
+      {
+        "submit": "1. marts 2026",
+        "decided": "13. april 2026"
+      },
+      {
+        "submit": "23. marts 2026",
+        "decided": "4. maj 2026"
+      },
+      {
+        "submit": "27. april 2026",
+        "decided": "8. juni 2026"
+      },
+      {
+        "submit": "18. maj 2026",
+        "decided": "17. august 2026"
+      },
+      {
+        "submit": "3. august 2026",
+        "decided": "7. september 2026"
+      },
+      {
+        "submit": "7. september 2026",
+        "decided": "19. oktober 2026"
+      },
+      {
+        "submit": "23. september 2026",
+        "decided": "9. november 2026"
+      },
+      {
+        "submit": "26. oktober 2026",
+        "decided": "7. december 2026"
+      }
+    ],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kultur-og-oplevelsespuljen-ad",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "23. september 2026",
+        "date": "2026-09-23"
+      },
+      {
+        "raw": "26. oktober 2026",
+        "date": "2026-10-26"
+      }
+    ],
+    "past_deadlines": [
+      {
+        "raw": "23. januar 2026",
+        "date": "2026-01-23"
+      },
+      {
+        "raw": "1. marts 2026",
+        "date": "2026-03-01"
+      },
+      {
+        "raw": "23. marts 2026",
+        "date": "2026-03-23"
+      },
+      {
+        "raw": "27. april 2026",
+        "date": "2026-04-27"
+      },
+      {
+        "raw": "18. maj 2026",
+        "date": "2026-05-18"
+      },
+      {
+        "raw": "3. august 2026",
+        "date": "2026-08-03"
+      },
+      {
+        "raw": "7. september 2026",
+        "date": "2026-09-07"
+      }
+    ],
+    "deadline_type": "multi_round",
+    "status": "open",
+    "amounts_kr": [
+      5000
+    ],
+    "content_hash": "e90592bd419bf46c53efcdacdbfbb9064d0c2cdec9c9ee4c66c5df222155790e",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kultur-og-oplevelsespuljen-ad",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Kommunale Kulturdage i Forum Horsens",
+    "summary": "Søg støtte til kulturelle projekter og aktiviteter.",
+    "description": "Foreninger eller kulturinstitutioner i Horsens Kommune har mulighed for at søge en Kommunal Kulturdag, som kan afholdes på Forum Horsens. Forum Horsens uddeler hvert år 10 Kommunale Kulturdage til eksterne arrangører, foreninger og kulturinstitutioner. I særlige tilfælde, til arrangementer med nationalt eller internationalt bevågenhed, kan der søges om yderligere kommunale dage i Forum i forbindelse med ansøgninger til PR puljen. Du kan som udgangspunkt kun søge én Kommunal Kulturdag pr. arrangement – dette kan dog fraviges i særlige tilfælde. Hvad dækker en Kommunal Kulturdag på Forum? En Kommunal Kulturdag dækker leje af et eller flere lokaler på Forum Horsens, for en enkelt dag, herunder almindelig bord/stoleopstilling og rengøring. Øvrige udgifter til ekstra teknisk assistance, leje af ekstra udstyr, ekstra rengøring, catering, vagter, stage hands mv. er ikke en del af Kommunal Kulturdag. Yderligere specifikationer og afgrænsninger vil aftales efter modtaget ansøgning. Hvem kan søge? Arrangører af aktiviteter og arrangementer inden for kultur og idræt, der giver markedsføring og national opmærksomhed, samt særlig værdi for Horsens Kommunes. Du kan eksempelvis søge om støtte til kulturarrangementer inden for følgende områder: Store idrætsevents, kultur og koncerter med brandingværdi der rækker ud over Horsens kommune på national/internationalt plan. Tv-shows og -produktioner inden for kultur og idræt. Tiltrække nationale og internationale mesterskaber inden for idrætsgrene, hvor Horsens kan stille faciliteter til rådighed. Events og arrangementer, som understøtter børn- og ungekultur. Som udgangspunkt støtter Kommunale Kulturdage ikke: Arrangementer, der primært har et politisk, religiøs eller kommerciel formål. Arrangementer, der har til formål at generere overskud til f.eks. velgørende formål. Arrangementer, der er afviklet, når vi modtager ansøgningen, eller afviklet inden administrationens behandling. Sådan ansøger du: Ansøgning med beskrivelse af arrangement/event/begivenhed sendes til Forum Horsens via mail Forum@Horsens.dk, eller til direktør for Forum Horsens, Martin Bjørn, via bjma@horsens.dk Ansøgningen skal indeholde kontaktoplysninger, en beskrivelse af selve arrangementet herunder CVR nummer og ansvarlige, samt formål, forventet deltagerantal og varighed m.v. Inden du sender, er det en god idé at kontakte Forum Horsens for at: Forhåndsreservere arrangementsdatoen. Få et økonomisk overslag på evt. ekstraordinære udgifter til lys, lyd, vagtmandskab mv., der er Forum Horsens uvedkommende i forbindelse med tildeling af en Kommunal Kulturdag. Ansøgningsfrister og behandlingstid: Ansøgninger behandles løbende af administrationen. Du skal være opmærksom på, at ansøgninger kan blive offentliggjort på www.horsens.dk i forbindelse med behandlingen - dog uden personlige oplysninger. Markedsføring: Du er forpligtet til at nævne Horsens Kommune i markedsføringen (annoncer, sociale medier, web, pressemeddelelser mv.), når du har modtaget en Kommunal Kulturdag. Horsens Kommunes-logo kan hentes på www.horsens.dk og medsendes også sammen med bevillingsbrevet. Vil du vide mere? Har du spørgsmål i forbindelse med ansøgningen eller ønsker du yderligere oplysninger, er du velkommen til at kontakte os på tlf. 7629 2323 eller på Forum@horsens.dk.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kommunale-kulturdage-i-forum-horsens-21",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "cc70b82e510b69442c570732911db785a66def1e99d5af21d0f1a9587d9735e3",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kommunale-kulturdage-i-forum-horsens-21",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Kommunale Kulturdage: Lån lokaler på Horsens Ny Teater",
+    "summary": "Søg støtte til kulturelle projekter og aktiviteter.",
+    "description": "Har du en god idé til et arrangement, som kan afholdes på Horsens Ny Teater? Så har du som borger, forening eller kulturinstitution mulighed for at søge en Kommunal Kulturdag. En Kommunal Kulturdag dækker leje af lokaler på Horsens Ny Teater for en enkelt dag, herunder bl.a. tekniker til afvikling af arrangementet, fast lys/lyd på scenen, mikrofoner, almindelig rengøring mv. Øvrige udgifter til ekstra teknisk assistance, leje af ekstra udstyr, ekstra rengøring, stoleopstilling, catering, vagter, stage hands mv. er ikke en del af Kommunal Kulturdag. For at kunne søge en Kommunal Kulturdag er det et krav, at arrangementet foregår på Horsens Ny Teater, og at der er offentlig adgang (betalt eller gratis - blot ikke for en lukket kreds). Du kan bl.a. søge om støtte til kulturarrangementer inden for følgende områder: Børne- og ungekultur Teater Musik Litteratur og foredrag Dans og bevægelse Tværkulturelle aktiviteter Andre kulturelle aktiviteter. Horsens Kommune uddeler hvert år 30 Kommunale Kulturdage. Hvem kan søge? Privatpersoner, foreninger og kulturinstitutioner i Horsens har mulighed for at søge en Kommunal Kulturdag. Sådan søger I Inden I sender en ansøgning afsted, er det en god idé at kontakte Horsens Ny Teater: Forhåndsreserver datoen på jeres arrangement Få oplysninger om ekstraordinære udgifter til lys, lyd, vagtmandskab mv. Derefter søger I puljen via det elektroniske ansøgningsskema. (Log ind med NemID eller MitID) Ansøgningsfrister Vi behandler løbende ansøgninger, og du kan forvente svar inden for fire uger. Der kan dog kun søges for et år ad gangen. Retningslinjer Du kan som udgangspunkt kun søge én Kommunal Kulturdag pr. arrangement - dette kan dog fraviges i særlige tilfælde. Du skal være opmærksom på, at du kun kan modtage støtte fra én kommunal pulje til samme arrangement. Som udgangspunkt støtter Kommunale Kulturdage ikke: Arrangementer, der er afviklet, når vi modtager ansøgningen. Arrangementer, der er afviklet inden administrationens behandling. Arrangementer, der har til formål at generere overskud til f.eks. velgørende formål eller foreningsformål. Arrangementer, der primært har et politisk, religiøs eller kommerciel formål. Arrangementer, der har modtaget støtte fra andre puljer i Horsens Kommune. Markedsføring Når du modtager en Kommunal Kulturdag, er du forpligtiget til at nævne Horsens Kommune i markedsføringen fx i annoncer, sociale medier, web, pressemeddelelser mv. Horsens Kommunes-logo kan hentes på www.horsens.dk under grafiske guidelines og medsendes også sammen med bevillingsbrevet. Har du spørgsmål? Har du spørgsmål i forbindelse med ansøgningen, eller ønsker du yderligere oplysninger, er du velkommen til at kontakte os på tlf. 7629 2300 eller på kultur@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kommunale-kulturdage-laan-lokaler-paa-horsens-ny-teater-aa",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "4edb896b83d1630899cf9d5a73d758c594de744d6bde5430e0207e989d3eed85",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kommunale-kulturdage-laan-lokaler-paa-horsens-ny-teater-aa",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Kultur- og skolesamarbejde (KUSK)",
+    "summary": "Søg støtte til kulturelle projekter og aktiviteter.",
+    "description": "Har du en god idé til et samarbejdsprojekt, der bidrager til at fremme børn og unges trivsel og læring gennem kunst og kultur? Så har I som skole eller SFO i Horsens Kommune (både kommunale- og privatskoler) mulighed for at søge midler til undervisningsforløb, projekter eller aktiviteter med i samarbejde med kulturskolerne på Kulturstationen og Museum Horsens (Horsens Museum, Fængselsmuseet og Horsens Kunstmuseum). Forløbene må gerne strække sig over en længere periode, f.eks. 4-6 uger for at både skoler, SFO’er, kulturskoler og museer får mest muligt ud af forløbene. I kan søge støtte til transport, hvis I har mere end 2,5 km til Kulturstationen eller museerne - eller hvis I skal deltage i undervisningsforløb et andet sted i kommunen, som kulturskolerne og museerne står bag (f.eks. forløb ved arkæologisk udgravning). Puljen udgør 650.000 kr. pr. år. Hvem kan søge? Kommunale og private skoler samt SFO’er i Horsens Kommune kan søge midler fra Kultur- og skolesamarbejde-puljen (KUSK). Før I søger...,...skal der være etableret en kontakt mellem skolen/SFO’en og en af byens kulturskoler eller et af byens museer. De kan også vejlede jer i at udfylde ansøgningen. Billedskolen - Helene Engelund - heng@horsens.dk Komediehuset - Kirstine Krogh Pelle - kkrp@horsens.dk Musikskolen - Peter Jessen - pejes@horsens.dk Balletskolen - Peter Jessen - pejes@horsens.dk Horsens Museum, Fængselsmuseet og Horsens Kunstmuseum - Anders Bloksgaard Rathe - ablr@horsens.dk Søg til projekter her. Søg støtte til transport her. Ansøgningsfrister Vi behandler ansøgninger til puljen løbende. Forvent en behandling tid på op til 4 uger. Retningslinjer Vi har samlet retningslinjerne til puljen. Læs gerne denne inden du udfylder ansøgningsskemaet og samarbejdsaftalen. Har du spørgsmål? Hvis du har brug for mere information eller har spørgsmål til puljen, er du velkommen til at kontakte projektleder for puljen Peter Jessen på mail: pejes@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kultur-og-skolesamarbejde-kusk--c8",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [
+      650000
+    ],
+    "content_hash": "bdd2e030aabf4f67be26bdb5c5ef6448230a9a0ca0e0a7da405702e0e4242e98",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#kultur-og-skolesamarbejde-kusk--c8",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "PR-puljen",
+    "summary": "Søg støtte til kulturelle projekter og aktiviteter.",
+    "description": "Horsens Kommunes PR-pulje understøtter arrangementer, der sikrer, at Horsens Kommune markerer sig som kultur- og oplevelsesby med fokus på store events inden for kultur og idræt. Det sker ved at give tilskud til kulturarrangementer og idrætsbegivenheder, som giver national og regional markedsføring og opmærksomhed - og dermed er med til at sikre fastholdelse af Horsens' image som oplevelses-, idræts- og kulturby/kommune. Dermed understøtter PR-puljen også arbejdet med at fastholde og udvikle Horsens Kommunes image som bosætningskommune, uddannelseskommune og erhvervskommune. Hvem kan søge? Arrangører af aktiviteter og arrangementer inden for kultur og idræt, som giver national og regional markedsføring og opmærksomhed, kan søge tilskud i PR-puljen. Der kan være tale om støtte til følgende typer af events og begivenheder: Store koncerter og kultur- og idrætsevents med stor brandingværdi for byen/kommunen. Tv-shows og -produktioner inden for kultur og idræt på landsdækkende kanaler. Støtte til kultur- og idrætsbegivenheder, som skaber aktivitet i byen – herunder overnatninger og omsætning på hoteller, restauranter og cafeer. Tiltrække nationale og internationale mesterskaber inden for idrætsgrene, hvor Horsens kan stille faciliteter til rådighed. Events og arrangementer, som understøtter visionen om Horsens som erhvervs- og uddannelses-by. Events og arrangementer, som understøtter børn- og ungekultur. Sådan søger I Ansøgning om støtte fra PR-puljen sendes til Horsens Kommunes PR-gruppe, som mødes den første onsdag i hver måned og behandler indkomne ansøgninger. Ansøgning med beskrivelse af og budget for arrangement/event/begivenhed sendes til sekretær i PR-gruppen, Mette Munk, via mail mm@horsens.dk eller til formand for PR-gruppen, Lars Bjørn Petersen, via mail lbpe@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#pr-puljen-df",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "fe2d82e885462c2fa75a12a3b0e0d9dbe7eeaf222b3127512ff9934ce1ff706a",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#pr-puljen-df",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Har du et kulturarrangement i Brædstrup?",
+    "summary": "Søg støtte til kulturelle projekter og aktiviteter.",
+    "description": "Brædstrup Kultursamvirke modtager hvert år et beløb fra Horsens Kommune til kulturelle formål afholdt i Brædstrup by. Læs mere på www.braedstrup-kultursamvirke.dk hvor du også kan søge om midler, medlemskab og se kommende arrangementer.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#har-du-et-kulturarrangement-i-braedstrup--9d",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "stub",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "637b02290d3895ad17547225024f8896d574668af0200a9cb6763898f4b26d0f",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilkulturogoplevelser#har-du-et-kulturarrangement-i-braedstrup--9d",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Udviklings- og aktivitetspuljen: Søg midler til udviklingsaktiviteter",
+    "summary": "Søg støtte til fritidsaktiviteter, læring, foreningsinitiativer og udeliv.",
+    "description": "Har du eller din forening en super god idé, men mangler lidt økonomisk støtte for at komme videre? Horsens Kommune har afsat en pulje på ca. 150.000 kr. pr. år til udviklingsaktiviteter på folkeoplysningsområdet. I kan søge puljen til udviklingsarbejde, der har et folkeoplysende formål, og som giver nye aktivitetsmuligheder for borgerne i Horsens Kommune. Det kan fx være til: Nye aktiviteter Aktiviteter som er åben for alle at deltage i. Særlige materialer og særligt udstyr Mere aktivitet ift. ansøgers kerneaktivitet. Udviklings- og aktivitetspuljen støtter øget aktivitet, ikke almindelig drift. Hvem kan søge? Folkeoplysende foreninger og selvorganiseret fællesskaber kan søge puljen. Sådan søger I Ansøgningen skal indeholde: • En kort beskrivelse af projektet • Tidspunkt for afvikling af projektet • Budget, herunder evt. egenfinansiering. I søger om puljen via det elektroniske ansøgningsskema. Brug din egen eller foreningens MitID til at logge på. Ansøgningsfrister Puljen kan søges to gange i året (4 gange fra 2027). I 2026 er ansøgningsfristerne: • 1. april 2026 • 1. september 2026 I kan forvente en svartid på ca. 1 måned. Retningslinjer Puljen kan i udgangspunktet ikke søges af større institutioner til aktiviteter. Institutionen har mulighed for at søge puljen i de tilfælde, hvor der er indgået samarbejde med en lokal forening. Som udgangspunkt kan I ikke få tilskud fra puljen til forplejning, almindelige materialer/rekvisitter og opstart af ny forening. Har I spørgsmål? Har I spørgsmål til puljen, er I velkommen til at kontakte os på fritid@horsens.dk.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#udviklings-og-aktivitetspuljen-soeg-midler-til-udviklingsaktiviteter-81",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [
+      150000
+    ],
+    "content_hash": "80a3fc0495cb3394f29d94fba3230e428c169ad28d4eee8d9c78c1f2b74de68e",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.4,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#udviklings-og-aktivitetspuljen-soeg-midler-til-udviklingsaktiviteter-81",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Facilitetspuljen: Søg midler til fritids- og idrætsfaciliteter",
+    "summary": "Søg støtte til fritidsaktiviteter, læring, foreningsinitiativer og udeliv.",
+    "description": "OBS - Vi har netop genåbnet for ansøgninger til Horsens Kommunes Facilitetspulje, da alle midler ikke blev fordelt i forbindelse med ansøgningsrunden i foråret. Der stadig er 600.000 kr. inkl. moms tilbage til fordeling, som kan søges af alle, godkendte folkeoplysende foreninger og aftenskoler. I denne ansøgningsrunde støtter puljen med op til 50 % af udgiften til projekter op til 300.000 kr., dvs. projekter med en samlet anlægssum på over 300.000 kr. vil ikke kunne komme i betragtning. Ansøgningsfristen er d. 1. oktober 2026 og da ansøgninger skal behandles af Kultur- og Fritidsudvalget kan I forvente svar på jeres ansøgning medio december 2026. Har din forening brug for bedre fysiske rammer til foreningens aktiviteter? Horsens Kommune ønsker at understøtte nyanlæg, istandsættelse og renovering af fritids- og idrætsfaciliteter. Til det formål er der oprettet en facilitetspulje med 800.000 kr. årligt i årene 2020-2026. Vi fordeler midlerne ud fra følgende principper: Til anlægsprojekter op til 300.000 kr. i samlet anlægssum ydes tilskud efter krone-til-krone princippet (50%). Projekterne skal være afsluttet senest året efter, der er ydet tilskud (løbende år + 1 år). Ved større projekter over 300.000 kr. nedtrappes tilskudsprocenten forholdsvist, så der ved projekter med en samlet anlægssum på over 1,5 mio. kr. maksimalt kan forventes 20 % tilskud. De større projekter skal være afsluttet senest to år efter året, hvor der er ydet tilskud (løbende år + 2 år). Hvem kan søge? Godkendte folkeoplysende foreninger kan søge puljen. Sådan søger I I søger puljen via elektronisk ansøgningsskema (OBS kræver personligt MitID eller MitID Erhverv til foreningen). I ansøgningsblanketten skal følgende medtages Foreningens navn og CVR-nummer Kontaktoplysninger på ansøger Antal medlemmer i foreningen Beskrivelse af projektet + evt. tegninger Om projektet kræver byggetilladelse eller evt. anden myndighedsgodkendelse (evt. forhåndsvurdering) Projektets økonomi, herunder Anlægsprojektets samlede pris (evt. fra tilbud eller overslag) og inkl. værdien af eget arbejde. Tilsagn om tilskud fra andre fonde eller puljer (samt evt. ansøgninger som der afventes svar på) Egenfinansiering, herunder Opsparede midler Værdien af eget arbejde (sat til 100 kr. pr. time) Lån Ansøgt beløb Evt. afledte øvrige driftsudgifter, som indgår i lokaletilskudsansøgning eller hvis der er tale om kommunale bygninger. Der skal til ansøgningen som minimum vedlægges et budget eller tilbud på projektets udførsel samt angivelse af hvordan projektets samlede pris er fremkommet. Ansøgningsfrister Ansøgningsfristen for begge projekttyper er d. 1. april med politisk behandling i juni. Her kan I forvente svar medio juni. Såfremt alle midler i puljen ikke bliver fordelt ved første ansøgningsrunde, er der mulighed for en ekstra ansøgningsrunde med deadline 1. oktober for projekter under 300.000 kr. og med politisk behandling i december. Her kan I forvente svar medio december. Projekter med en samlet anlægssum på højst 10.000 kr. kan søges løbende og behandles administrativt. Her kan I forvente svar i løbet af 14 dage. Retningslinjer for udbetaling af tilskud Vi kan tidligst udbetale midler til foreningen, når foreningen kan dokumentere finansieringen af det samlede projekt og eventuelle myndighedsgodkendelser er godkendt. Har du spørgsmål? Har I spørgsmål i forbindelse med ansøgningen, eller ønsker I yderligere oplysninger, er I velkommen til at kontakte os på fritid@horsens.dk.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#facilitetspuljen-soeg-midler-til-fritids-og-idraetsfaciliteter-24",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "1. oktober 2026",
+        "date": "2026-10-01"
+      }
+    ],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "open",
+    "amounts_kr": [
+      600000,
+      300000,
+      800000,
+      100,
+      10000
+    ],
+    "content_hash": "d62120d8fdd90af034ace0afa376bb4a9843b66b5e3ef7bf023c3557201da169",
+    "missing_fields": [
+      "cycle",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#facilitetspuljen-soeg-midler-til-fritids-og-idraetsfaciliteter-24",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Forenings- og skolesamarbejdepuljen (Åben Skole-pulje)",
+    "summary": "Søg støtte til fritidsaktiviteter, læring, foreningsinitiativer og udeliv.",
+    "description": "Horsens Kommune har afsat en pulje på 150.000 kr. årligt, som foreninger kan søge til projekter, hvor forening og folkeskole samarbejder om fælles aktiviteter eller undervisningsforløb. For at søge til et forløb skal der på forhånd være etableret kontakt mellem skole og forening. Vi sætter ikke på forhånd grænser for, hvad I kan søge penge til. Støtten kan fx bruges som tilskud til instruktørgodtgørelse (160 kr. pr. undervisningstime), til materialer, transport af elever eller andet, som er relevant for at udføre aktiviteten. Forløbet må gerne strække sig over en længere periode, fx 4-6 uger for at både skole og forening får mest muligt ud af forløbene. For at modtage støtte skal skolerne medfinansiere projekterne. Hvem kan søge? Foreninger kan søge Forenings- og skolesamarbejdepuljen (Åben Skole-pulje). Foreninger og skoler må gerne skrive ansøgningen sammen, men foreningen skal være afsender på ansøgningen. Sådan søger I Klik her for at tilgå elektronisk ansøgningsskema til Forenings- og skolesamarbejde puljen. I ansøgningen skal foreningen oplyse: Foreningsnavn og CVR-nummer Kontaktperson Deltagende skole/SFO Kontaktperson skole/SFO Samarbejdets indhold, omfang, mål, rollefordeling og afviklingstidspunkt Økonomi - hvad søger i til? Ansøgningsfrister Vi behandler løbende ansøgninger til puljen. I kan forvente, at sagsbehandlingstiden er ca. 14 dage. Retningslinjer Foreningen skal inden et samarbejde påbegyndes med en skole have gjort sig bekendt med og efterleve følgende retningslinjer for foreningen og de foreningspersoner, som står for aktiviteterne i skolen. Før aktiviteten starter, skal foreningen have ansøgt og bevilliget tilskud. Der kan ikke søges om tilskud til aktiviteter og projekter, som allerede er påbegyndt eller afholdt. Tilskuddet bliver udbetalt til foreningen, når projektet er gennemført og evaluering af forløb, regnskab og anmodning om udbetaling er sendt til Fritidsafdelingen via elektronisk Evalueringsskema. Dette skal indsendes senest en måned efter, projektet er afsluttet. Tilskuddet bliver udbetalt til foreningens Nemkonto. Her kan du læse yderligere retningslinjer. Har du spørgsmål? Har I spørgsmål i forbindelse med ansøgningen, eller ønsker I yderligere oplysninger, er I velkommen til at kontakte os på fritid@horsens.dk.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#forenings-og-skolesamarbejdepuljen-aaben-skole-pulje--3d",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [
+      150000,
+      160
+    ],
+    "content_hash": "ba7579b65aaa42806f397f6150899507b3b016b643851fe2ca921108f30cfb21",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#forenings-og-skolesamarbejdepuljen-aaben-skole-pulje--3d",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Talentudvikling",
+    "summary": "Søg støtte til fritidsaktiviteter, læring, foreningsinitiativer og udeliv.",
+    "description": "Har din lokale klub et unikt talent indenfor sport? Så har din klub mulighed for tilskud til talentudvikling. Horsens Kommune støtter en række lokale talentidrætsmiljøer i samarbejde med Team Danmark med formålet om at fremme vilkårene for eliteidræt og talentudvikling i kommunen. Tilskud til talentudvikling kan søges af talenter, der er bosiddende i Horsens Kommune, og af talentmiljøer, der er beliggende i Horsens Kommune. Du kan læse mere om dine muligheder for talentudvikling inden for sport. Har du spørgsmål? Vil du vide mere, eller har du spørgsmål til talentudvikling, er du velkommen til at kontakte Fritidsafdelingen på fritid@horsens.dk.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#talentudvikling-3d",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "b2d246e4c6c76b839d8fafaec201663c9b5bfab6cec291e7a6b8160b6b31912f",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#talentudvikling-3d",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Tilgængelighedspuljen",
+    "summary": "Søg støtte til fritidsaktiviteter, læring, foreningsinitiativer og udeliv.",
+    "description": "Horsens Kommune har en Tilgængelighedspulje på over 200.000 kr. årligt. Formålet med Tilgængelighedspuljen er at støtte initiativer, der sikrer gode tilgængeligheds- og anvendelsesforhold i Horsens Kommune. Puljen støtter projekter der skaber, eller øger, tilgængeligheden, og gør det muligt for mennesker med en funktionsnedsættelse at færdes og deltage i alle dele af samfundet på lige fod med andre. Projektet skal være placeret et sted med offentlig adgang i Horsens Kommune. Hvordan defineres tilgængelighed? Tilgængelighed kan være både fysisk, psykisk og mentalt. Det kan fx være ramper, skærmende omstændigheder eller andre tiltag, der gør arrangementer, eller steder, tilgængelige for en målgruppe, som ellers ville have svært ved at deltage på lige fod med andre. Du kan søge midler til: midlertidige arrangementer eller begivenheder, hvis der kan skabes tilgængelighed for en gruppe, som ellers ikke har mulighed for at deltage permanente ændringer af fysiske forhold - eksempelvis ramper, døråbnere, handicaptoiletter mm. Der kan ydes støtte til såvel et selvstændigt projekt, som en forbedring af tilgængeligheds-og anvendelsesforhold i et eksisterende projekt (etableret eller projekteret) Midler fra Tilgængelighedspuljen kan enten finansiere hele projektet eller indgå som medfinansiering i andre puljeansøgninger. Hvis projektet er et bygge- eller anlægsprojekt, skal de nødvendige byggetilladelser være indhentet på forhånd. Hvad skal en ansøgning indeholde? En beskrivelse af projektet En redegørelse for, hvordan projektet arbejder med at øge tilgængeligheden Et konkret budget, herunder indhentet pristilbud. Angivelse af CVR-nummer Hvad kan du ikke søge støtte til? Tiltag hos privat person eller privat husstand Tilskud til driftsudgifter Hvordan søger du? Ansøg her Har du spørgsmål til Tilgængelighedspuljen, og/eller hvordan du søger, er du meget velkommen til at kontakte Handicaprådets administration indsæt saras.. Ansøgningsfrist Indsendelse af ansøgninger kan ske løbende. I skemaet kan du se dato for, hvornår ansøgningen senest skal være modtaget for at kunne blive behandlet ved næstkommende møde: Hvordan behandler Handicaprådet min ansøgning? Når din ansøgning ankommer, screener Handicaprådet for, om den lever op til de fastsatte kriterier, og om budgettet er realistisk. Din ansøgning kommer på Handicaprådets offentlige dagsorden, når den skal behandles. Det er Handicaprådet der alene afgør om et projekt tildeles midler fra Tilgængelighedspuljen. Handicaprådet er ikke bundet af det ansøgte beløb. Handicaprådet kan derfor vælge at tildele et projekt et mindre beløb end det, som er ansøgt om. Du får direkte besked lige efter, at din ansøgning er behandlet på rådets møde. Dokumentation for gennemførelse af projektet Hvis der bevilges tilskud til tilgængelighedsprojektet, skal I som tilskudsmodtager senest 3 måneder efter, at projektet er gennemført, indsende regnskab og en kort redegørelse vedrørende projektet til mail: jobogvelfaerd@horsens.dk - skriv i emnefelt: tilgængelighedspulje Læs om Handicaprådet her.",
+    "deadline_table": [
+      {
+        "submit": "3. marts 2026",
+        "decided": "19. marts 2026"
+      },
+      {
+        "submit": "5. maj 2026",
+        "decided": "21. maj 2026"
+      },
+      {
+        "submit": "4. august 2026",
+        "decided": "20. august 2026"
+      },
+      {
+        "submit": "6. oktober 2026",
+        "decided": "22. oktober 2026"
+      },
+      {
+        "submit": "1. december 2026",
+        "decided": "17. december 2026"
+      }
+    ],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#tilgaengelighedspuljen-af",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "6. oktober 2026",
+        "date": "2026-10-06"
+      },
+      {
+        "raw": "1. december 2026",
+        "date": "2026-12-01"
+      }
+    ],
+    "past_deadlines": [
+      {
+        "raw": "3. marts 2026",
+        "date": "2026-03-03"
+      },
+      {
+        "raw": "5. maj 2026",
+        "date": "2026-05-05"
+      },
+      {
+        "raw": "4. august 2026",
+        "date": "2026-08-04"
+      }
+    ],
+    "deadline_type": "multi_round",
+    "status": "open",
+    "amounts_kr": [
+      200000
+    ],
+    "content_hash": "91be0c43de2f73a2a865326f4b53630190dc611d9a3610fce620365937c688d5",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfritidogidraet#tilgaengelighedspuljen-af",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Affaldspuljen: Har du en god genbrugs-idé?",
+    "summary": "Søg tilskud til aktiviteter og projekter inden for natur, miljø og bæredygtighed - eller send os din gode ideer til naturforbedringer i vores kommune.",
+    "description": "Har du en god idé til, hvordan vi kan få mere affaldssortering, genbrug eller cirkulær økonomi i Horsens, så kan du søge affaldspuljen. Vi uddeler midler til lokale ildsjæle, der ønsker at gøre en forskel med affald, så vi sammen kan skabe en renere og mere bæredygtig kommune. Der kan søges om støtte til aktiviteter, projekter og undervisningsforløb. Helt konkret kan puljen bruges til at dække materialer, udstyr, annoncering og andre lignende omkostninger i forbindelse med aktiviteten. Der kan undtagelsesvist gives støtte til løn, hvis den lønnede aktivitet adskiller sig tydeligt fra normal drift og produktion. Affaldspuljen udgør 100.000 kr. Hvem kan søge? Foreninger Uddannelsesinstitutioner Studerende/elever Virksomheder Privatpersoner. Sådan søger I Du eller I søger puljen via det elektroniske ansøgningsskema. (Log ind med NemID eller MitID) Ansøgningsfrister Vi behandler ansøgninger til puljen løbende. En bevillingsgruppe fra Teknik og Miljø vurderer de indsendte ansøgninger ud fra puljens formål om: Mere borgerengagement på affaldsområdet Mere innovation på affaldsområdet Mere genbrug og genanvendelse på affaldsområdet. Hvis dit projekt får tilskud, skal du være forberedt på, at tilskuddet ikke nødvendigvis dækker hele beløbet, du har ansøgt om. Retningslinjer Puljen støtter som udgangspunkt ikke: Normale drifts- og produktionsomkostninger Kontorartikler Transportudgifter Husleje Forplejningsudgifter over 1.000 kr. Har du spørgsmål? Har du flere spørgsmål, er du velkommen til at kontakte projektleder Caroline Strandbygaard på virksomhedsaffald@horsens.dk Vi glæder os til at læse din ansøgning.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#affaldspuljen-har-du-en-god-genbrugs-id--53",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [
+      100000,
+      1000
+    ],
+    "content_hash": "94fd67107b856cd556878edc27d49d32312f6d2f6772d050e062eb86568e2494",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#affaldspuljen-har-du-en-god-genbrugs-id--53",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Puljen til natur- og klimaforbedrende tiltag",
+    "summary": "Søg tilskud til aktiviteter og projekter inden for natur, miljø og bæredygtighed - eller send os din gode ideer til naturforbedringer i vores kommune.",
+    "description": "Bor du i en landsby, en lokal centerby i Horsens Kommune eller i Brædstrup, og har du en god idé til natur- og klimaforbedrende tiltag? Så kan I søge støtte hertil. Helt konkret giver puljen økonomisk støtte til udearealer og bygninger - særligt i forhold til energieffektiv omlægning, så der kan frigøres driftsmidler til aktiviteter som fx: Isolering Nye vinduer Varmeforsyning/varmekilde Solceller Energieffektivisering Biodiversitet (beplantninger med naturligt hjemmehørende arter og formidling heraf) Andre CO2-reducerende tiltag i bygningerne. Hvem kan søge? Puljen kan søges af foreninger eller virksomheder med et almennyttigt formål, der ejer bygninger til brug for fællesskabet i landsbyer og lokale centerbyer. Det kan være: Forsamlingshuse Klubhuse Fælleshuse Kulturhuse Andre bygninger, der kan anvendes af foreninger og andre fællesskaber. Sådan søger I I søger om puljen via det elektroniske ansøgningsskema. Ansøgningsfrister I 2026 er ansøgningsfristerne: 18. januar 2026 til behandling i udvalget 14. april 2026. 14. august 2026 til behandling i udvalget 5. oktober 2026. Retningslinjer For at kunne få midler fra puljen, skal ansøger kunne stille med en medfinansiering. Der kan søges op til 100.000 kr. pr. ansøger og der stilles krav om en medfinansiering på min. 50 % af den totale udgift med henblik på, at midlerne kan nå ud til flest mulige i lokalsamfundene. Samtidig skal jeres projekt kunne udformes på en måde, hvor der tages hensyn til bygningens arkitektur og mulige bevaringsværdi. For at kunne komme i betragtning til tilskud skal følgende betingelser opfyldes: Projektet skal kunne gennemføres indenfor 3 år fra tilsagnsdato Ved projektets afslutning indsendes det endelige regnskab til Horsens Kommune sammen med beskrivelse og billeder. Projektstedet skal være tilgængeligt for offentligheden Tilskud udbetales, når der er givet tilsagn til støtte, og når eventuelle krav om tilladelser og medfinansiering er opfyldt og indsendt (andre fonde, egen opsparing mv.) Læs mere herom i vores retningslinjer for puljen. Har du spørgsmål? Har du spørgsmål til puljen, er du velkommen til at kontakte Plan og By på på tlf. 29 63 21 59 og planogby@horsens.dk eller Jesper Nielsen på tlf. 76 29 70 30 eller ssjn@horsens.dk. Vi glæder os til at læse din ansøgning.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#puljen-til-natur-og-klimaforbedrende-tiltag-0e",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "5. oktober 2026",
+        "date": "2026-10-05"
+      }
+    ],
+    "past_deadlines": [],
+    "deadline_type": "fixed",
+    "status": "open",
+    "amounts_kr": [
+      100000
+    ],
+    "content_hash": "3b8233660418fe7b3019c526e2d06f5e356d7b3389f8baf33a7d869eb6edc3c3",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#puljen-til-natur-og-klimaforbedrende-tiltag-0e",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      },
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#puljen-til-natur-og-klimaforbedrende-tiltag-b6",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      },
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#puljen-til-natur-og-klimaforbedrende-tiltag-c0",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Naturpuljen: Søg penge til frilufts- og naturtiltag",
+    "summary": "Søg tilskud til aktiviteter og projekter inden for natur, miljø og bæredygtighed - eller send os din gode ideer til naturforbedringer i vores kommune.",
+    "description": "Har du en god idé til nye friluftstiltag eller naturforbedringer? Hvis du har en god idé til et projekt, som kan skabe grobund for nye friluftstiltag eller forbedre naturen - så kan du søge naturpuljen. Hvert år uddeler vi midler til lokale ildsjæle - private og foreninger - som selv står for at gennemføre projekter, der skal give mulighed for flere frilufts- og naturoplevelser eller sikre naturforbedringer. Helt konkret kan puljen bruges til at dække materialer, udstyr og andre lignende omkostninger i forbindelse med etableringen af projektet. Der er 1,5 mio. kr. i puljen årligt. Lokale projekter, der opnår støtte, vil typisk ligge under 200.000 kr. Et par eksempler på projekter fra tidligere år er: Oplevelsesplatform: Ved Lundum har en lokal gruppe fået opført en platform i tilknytning til Bryrupbanestien, hvorfra man kan nyde landskabet med fiskesøerne Shelters: Ved Endelavelejren er opsat to nye shelters delvist finansieret af midler fra Naturpuljen Stiforbindelse: Der er lavet en forbindelsessti fra den nye Bryggerskov ved Gedved til byens gadekær Sti og hegn til afgræsning: For at øge biodiversiteten er der på arealer ved Ring Sø etableret hegn til afgræsning med dyr. Kriterier for projekter, der kan finansieres af Naturpuljen For at dit forslag kan komme i betragtning, skal disse kriterier være opfyldt: F orslaget skal udføres på kommunale arealer, der er offentligt tilgængelige - eller på privatejede arealer med fuld offentlig adgang, dog på baggrund af en fuldmagt fra ejer Finansieringen dækker selve etableringen. Det betyder, at eventuel drift og vedligehold skal kunne løftes af lokale. Projekter, som kan komme i betragtning, skal kunne bidrage til at (et eller flere af nedenstående): udvikle flere friluftsområder og friluftsmuligheder samt understøttende faciliteter skabe lettere adgange til, i og mellem friluftsområder sikre større samskabelse om friluftsområder og friluftsaktiviteter gennem samarbejde og partnerskaber udbrede kendskabet til de rekreative områder, der findes inden for og uden for byskilte styrke formidling, kommunikation og branding om friluftsområder og friluftsaktiviteter øge biodiversiteten på kommunalt ejede arealer understøtte lokale initiativer, der bidrager til øget biodiversitet hos borgere, virksomheder, institutioner og foreninger forbedre naturtilstanden i Horsens Fjord, både land- og vandprojekter øge muligheden for tilgængelighed til naturen for alle. Vi tilstræber en geografisk fordeling rundt i kommunen – hvis ikke hvert år, så i hvert fald sammenholdt med tidligere år. Send os din ansøgning Send os din ansøgning via vores digitale ansøgningsformular. Vi modtager ansøgninger året rundt. På udvalgsmødet i januar beslutter Bæredygtigheds-, Natur- og Klimaudvalget, hvilke projekter der får tilskud i det indeværende år. Du kan også få indflydelse på, hvilke projekter vi realiserer Måske har du nyttig lokal viden om, hvor der med fordel kan laves naturprojekter, stiforbindelser eller andre støttefaciliteter til udeliv i et bestemt område? Så vil vi også meget gerne høre fra dig. Måske kan dit forslag bringes ind i vores egen planlægning af tiltag finansieret af Naturpuljen. Har du spørgsmål? Har du spørgsmål til Naturpuljen, er du velkommen til at kontakte os på teknikogmiljo@horsens.dk. Vi glæder os til at høre fra dig.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#naturpuljen-soeg-penge-til-frilufts-og-naturtiltag-e8",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [
+      200000
+    ],
+    "content_hash": "135f7366e293bc7433882e96ef30feb3447a9006a1995a539cd562f357f58a2e",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.4,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#naturpuljen-soeg-penge-til-frilufts-og-naturtiltag-e8",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Frøpuljen: Få gratis blomsterfrø til jeres fællesarealer. Søg før 12. april 2027",
+    "summary": "Søg tilskud til aktiviteter og projekter inden for natur, miljø og bæredygtighed - eller send os din gode ideer til naturforbedringer i vores kommune.",
+    "description": "Hvert år uddeler vi insektvenlige blomsterfrø til forskellige foreningers og institutioners gode biodiversitetsprojekter. Vi leverer frø og vejledning - og I står selv for anlæg og drift. Se hvordan jeres forening eller institution kan søge om at få blomsterfrø. Næste ansøgningsfrist er den 12. april 2027. Hvorfor søge frøpuljen? Ensartede, kortklippede plæner har meget lille biologisk værdi og kræver mange ture med plæneklipperen. Der er selvfølgelig brug for plæner til fodbold, leg og picnic, men har I et græsareal, som I ikke bruger til andet end at kigge på, kan I overveje at omlægge det til en vild blomstereng. På den måde skaber I en artsrig flora til gavn for dyr og insekter - og dermed er I med til at styrke biodiversiteten. Hvem kan søge frøpuljen? Grundejerforeninger, boligforeninger, institutioner og foreninger i Horsens Kommune kan søge puljen. I kan søge om den mængde frø, der svarer til etablering af 1000 kvm blomstereng. Vi prioriterer arealer, der er offentligt tilgængelige, så så mange som muligt kan få glæde af blomsterfloret. Er I en forening eller institution, som kunne være interesseret? Så vil vi opfordre jer til at afklare, om I har et egnet areal og vil lægge de nødvendige kræfter i etableringen. I ansøgningen skal der vedlægges et referat fra et møde, der dokumenterer, at projektet er gennemdrøftet. Hvad er det for nogle frø? I får en frøblanding, der er insektvenlig, og som giver nektar og pollen til insekterne. Det er overvejende hjemmehørende arter. Hvordan søger I? I ansøger ved at udfylde det her skema med jeres oplysninger. Har I nogen spørgsmål, er I meget velkomne til at kontakte os på biodiversitet@horsens.dk. I kan forvente svar på jeres ansøgning 10 dage efter ansøgningsfristen, hvorefter I kan afhente frøene på Horsens Rådhus, Chr M Østergaards Vej 4, Horsens. Hvordan kommer I i gang med at lave jeres blomstereng? Frøene skal i jorden i perioden maj til starten af juni - eller september-oktober til spiring året efter. I vores vejledning til anlæg af natureng kan I læse om, hvordan I forbereder jorden til at så jeres frøblanding. Husk også at indtaste jeres område på vores biodiversitets-kort, som I finder lige her. Så kan alle følge med i hvor og hvor mange her i Horsens Kommune, som er med til at styrke biodiversiteten. Hvordan plejer I arealet? Når et område er omlagt til vild blomstereng, kræver det mindre pleje end en græsplæne, men I slipper ikke helt for at pleje arealet. Det skal klippes 1-2 gange årligt, det afklippede skal fjernes, og det kan blive nødvendigt, særligt i opstartsfasen, at luge for brændenælder, gråbynke, kvikgræs og lignende hurtigt voksende planter, der ellers kan overtage området. I vores vejledning til anlæg og pleje af natureng kan I læse mere om, hvordan I passer godt på jeres nye, blomstrende område. Tjek vores Vild Med Horsens-hjemmeside Se mere på vores hjemmeside Vild Med Horsens, hvor du finder spirende inspiration.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#froepuljen-faa-gratis-blomsterfroe-til-jeres-faellesarealer-soeg-foer-12-april-2027-aa",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "12. april 2027",
+        "date": "2027-04-12"
+      }
+    ],
+    "past_deadlines": [],
+    "deadline_type": "fixed",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "f2ff92d0add9d558ebda308b4ae8b08defc25bc2bf816aa6845c06dc62864c77",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#froepuljen-faa-gratis-blomsterfroe-til-jeres-faellesarealer-soeg-foer-12-april-2027-aa",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Områdefornyelse i landsbyer og lokalcenterbyer",
+    "summary": "Søg tilskud til aktiviteter og projekter inden for natur, miljø og bæredygtighed - eller send os din gode ideer til naturforbedringer i vores kommune.",
+    "description": "Vil du være med til at præge dit lokalområde? Igen i år åbner vi op for at understøtte udviklingen af landsbyer og lokalcenterbyer gennem områdefornyelsesprogrammer. Det betyder, at I nu kan ansøge om at indgå i et samarbejde med os om at udarbejde et program for områdefornyelse i jeres lokalsamfund, hvor der er behov en samlet forbedring af offentlige arealer og gaderum. Har I et konkret mindre projekt, som I står klar til selv at gennemføre, kan I søge støtte via Oplandspuljen. Hvad kan der laves inden for rammerne af områdefornyelse? Der er brede rammer for, hvad landsbyer og lokalcenterbyer kan lave inden for rammerne af områdefornyelse. Et program for områdefornyelse kan f.eks. indeholde følgende: • Forbedring af gaderum, pladser og andre offentlige arealer • Etablering eller forbedring af grønne arealer eller rekreative områder • Trafiksikkerhed • Klima og biodiversitet • Legepladser, madpakkehuse og lignende. Hvad kan der ikke laves inden for rammerne af områdefornyelse? • Arrangementer og events • Initiativer med kommerciel karakter • Vedligehold af kommunal ejendom • Private arealer eller bygninger. Hvem kan søge? Lokalråd, beboerforeninger og lignende kan søge på vegne af landsbyer og lokalcenterbyer. Det er også muligt, at flere landsbyer og/eller lokalcenterbyer går sammen om at udarbejde områdefornyelsesprogrammer i samarbejde med os som kommune. Vi udarbejder programmerne i samråd med jer som borgere i lokalsamfundet og efter en bred inddragelsesproces. Det er også Horsens Kommune, der er ansvarlig for at gennemføre de konkrete projekter, herunder at vælge rådgivere og entreprenører. Horsens Kommune har ansvaret for den efterfølgende drift i samarbejde med den lokale bypedel. Sådan søger I? Send os en kort idébeskrivelse til planogby@horsens.dk. Skriv hvilke udfordringer, som områdefornyelsen i byen/landsbyen, skal være med til at løse. Den må gerne pege på konkrete steder, I ønsker at forbedre. Idébeskrivelsen er ikke tænkt som et færdigt områdefornyelsesprogram. Men derimod en ansøgning om at komme i betragtning til at udarbejde et program med hjælp fra og i samarbejde med os. Medarbejderne i Horsens Kommune, Plan og By, vil hjælpe med at omsætte jeres ideer til områdefornyelse i landsbyer og lokalcenterbyer. Ansøgningsfrister I 2025 er ansøgningsfristen Den 10. august 2025 med behandling i Oplandsudvalget den 9. oktober 2025. I kan forvente svar efter den administrative og politiske behandling. Retningslinjer Projektet skal kunne gennemføres inden 5 år fra godkendelsestidspunktet. Det er derfor et krav, at der laves realistiske tids- og aktivitetsplaner for det enkelte projekt. Har I spørgsmål? Skriv til os på planogby@horsens.dk, hvis I vil vide mere. I kan også ringe til os på tlf. 29 63 21 59. Vi glæder os til at høre fra jer.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#omraadefornyelse-i-landsbyer-og-lokalcenterbyer-96",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "2087d31bddb59247e33ff2fc91da10b418594b3c85c4fd48dbe1810326983c32",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/naturogbaeredygtighed#omraadefornyelse-i-landsbyer-og-lokalcenterbyer-96",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Studielivspuljen: Få støtte til at gøre studielivet sødere og sjovere",
+    "summary": "Som ung i Horsens kan du søge om støtte til dit kultur- eller studielivsprojekt. Læs mere om vores to unge-puljer her på siden.",
+    "description": "Det skal være fedt at være studerende i Horsens, Hedensted og Odder. Derfor har vi skabt studielivspuljen, som sigter efter at gøre studielivet i de tre kommuner endnu bedre. Med en samlet pulje på 500.000 kroner støtter puljen initiativer, som gør noget godt for enten det sociale eller faglige på dit studie. Måske du ved, hvordan I kan styrke sammenholdet på tværs af uddannelser? Gøre det sjovere at troppe op klokken tidligt mandag morgen? Eller få proppet nye faglige udfordringer ind i skemaet? Hvem kan søge? For at få del i pengene skal: idéen komme mere end én uddannelsesinstitution til gode. I kan fx slå jer sammen på tværs af folkeskole, ungdomsuddannelse og/eller videregående uddannelse om et initiativ. I kan også gå sammen på tværs af kommunegrænser og søsætte en aktivitet, som kan leve i både Horsens, Hedensted og Odder. idéen gøre noget godt for uddannelsesmiljøet. Det kan være aktiviteter, der gi’r hverdagen et sjovt, tværfagligt twist, styrker det sociale eller noget tredje – så længe, det gør det sjovere at være en del af en uddannelse i Horsens, Hedensted eller Odder. Du kan søge op til 150.000 kroner pr. aktivitet, og der skal minimum søges om 20.000 kroner. Puljen er på i alt 500.000 kroner årligt. Sådan søger I Du – eller I – søger puljen ved at udfylde ansøgningsskemaet. (du skal logge ind med NemID). Ansøgningsfrister Puljen kan søges løbende. Retningslinjer En forudsætning for at få tildelt midler er, at mindst to parter står bag aktiviteten, fx to uddannelsesinstitutioner (kan være folkeskole, ungdomsuddannelse og/eller videregående uddannelse) Principper for Studielivspuljen Midlerne skal bruges til at understøtte fortællingen om hele Horsens-, Hedensted- og Odder-området som et spændende uddannelsesområde at være ung og elev/studerende i Midlerne skal bruges til gavn for alle unge, elever og studerende i udskoling, ungdomsuddannelser og videregående uddannelser i Horsens, Hedensted og Odder kommuner Midlerne skal bruges til at finansiere eller efter konkret aftale medfinansiere konkrete initiativer, der kan understøtte visionen i forhold til det tværkommunale samarbejde på uddannelsesområdet i de tre kommuner. Studielivspuljen støtter ikke arrangementer, der har til formål at generere overskud, herunder velgørenheds- og støttearrangementer. Afrapportering Efter afholdelse af arrangementet skal I udfylde vores elektroniske afrapporteringsskema (du skal logge ind med NemID). Har du spørgsmål? Har du brug for sparring inden du søger puljen, er du velkommen til at kontakte Kultur- og Eventafdelingen på kultur@horsens.dk eller på 7629 2300.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/unge-puljer#studielivspuljen-faa-stoette-til-at-goere-studielivet-soedere-og-sjovere-cb",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "4e67c877bbe2c378f35dd26e3791cce4f6d18c53b32b805c0ca3e7f302153b17",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/unge-puljer#studielivspuljen-faa-stoette-til-at-goere-studielivet-soedere-og-sjovere-cb",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Hvad er fonde.dk?",
+    "summary": "Få hjælp til fundraising med gratis adgang til databasen fonde.dk.",
+    "description": "Vi har købt adgang til Fonde.dk, der er Danmarks største online fondsdatabase. Det betyder, at I som foreninger, lokalråd og selvejende museer i kommunen kan få adgang til at bruge siden. Siden indeholder forskellige værktøjer, I kan bruge til at målrette og effektivisere fundraisingen inden for en bred vifte af emner som kultur, natur, fritid, iværksætteri, ældre, børn, arkitektur og meget mere. Formålet er, at I som foreninger og lignende får de bedste betingelser for at kunne fundraise til de mange projekter, som ligger og venter rundt om i kommunen. Læs om Danmarks fundraising-portal på fonde.dk.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/soegeksternefondeogpuljer#hvad-er-fonde-dk--96",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "info_page",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "14fbfce79bd4414fa3f09837998857e77fcf40587088c2ac41b60631f6c3c9e9",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/soegeksternefondeogpuljer#hvad-er-fonde-dk--96",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Få adgang til fonde.dk",
+    "summary": "Få hjælp til fundraising med gratis adgang til databasen fonde.dk.",
+    "description": "Hvem kan få adgang? Er I en forening, et lokalråd eller selvejende museum i kommunen, kan I gratis få adgang til fonde.dk. I kan oprette én bruger per forening og lignende - og skal som medlemmer af samme forening altså dele det login, I får tildelt. Herudover må det udleverede login ikke gives til andre. Send en e-mail for at få adgang Få adgang til databasen fonde.dk ved at sende en e-mail til info@fonde.dk med følgende oplysninger: Navn (kontaktperson i bestyrelsen eller lignende) E-mail Navn på forening/enhed/afdeling eller lignende. Husk at skrive \"Horsens Kommune\" i e-mailens emnefelt. Fonde.dk sender dig dine login-oplysninger i løbet af 1-2 hverdage.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/soegeksternefondeogpuljer#faa-adgang-til-fonde-dk-2c",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "info_page",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "ae241bb1cd7ca3561aa92bea69b283cac0c73a716e49df277adcc52de1f19371",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/soegeksternefondeogpuljer#faa-adgang-til-fonde-dk-2c",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Support og betingelser for brugen af fonde.dk",
+    "summary": "Få hjælp til fundraising med gratis adgang til databasen fonde.dk.",
+    "description": "Har du brug for teknisk support eller har du spørgsmål til abonnementet, skal du kontakte Fonde.dk. Find kontaktoplysninger til support på fonde.dk. Vi stiller som kommune databasen til rådighed, men vi fraskriver os alt ansvar for brug af tjenesten i øvrigt.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/soegeksternefondeogpuljer#support-og-betingelser-for-brugen-af-fonde-dk-51",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "info_page",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "f190e040d76ad03a8beb8324116f0a96c022131f1ef5706f7a1295977474b439",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/soegeksternefondeogpuljer#support-og-betingelser-for-brugen-af-fonde-dk-51",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Støtte til frivilligt socialt arbejde",
+    "summary": "Arbejder du med frivilligt socialt arbejde, har du mulighed for at søge tilskud fra kommunens §18-pulje.",
+    "description": "§18-puljen giver tilskud til frivilligt socialt og sundhedsfremmende arbejde i Horsens Kommune. Foreninger og frivillige fællesskaber kan søge midler og få tilskud til aktiviteter som f.eks. kurser, foredrag, inspirationsture, udflugter og lignende, der styrker og udvikler frivillige fællesskaber i kommunen, samt gør en forskel for udsatte borgere. Har du spørgsmål? Vil du vide mere om puljen, kan du læse mere på Sund By eller kontakte Horsens Sund By på tlf. 76 29 36 75.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfrivilligtsocialtarbejde-18-puljen",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "stub",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "ac7a317d8cb58e9ce03900ec804ca75fe523891c01b0aef1aef69a278db47da3",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/stoettetilfrivilligtsocialtarbejde-18-puljen",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Områdefornyelse i landsbyer og lokalcenterbyer",
+    "summary": "Du kan søge om støtte til din landsby eller lokalcenterby fra Oplandspuljen og Områdefornyelsespuljen",
+    "description": "Vil I være med til at præge lokalområdet positivt? Horsens Kommune ønsker at understøtte udviklingen af landsbyer og lokalcenterbyer gennem områdefornyelse. Det betyder, at I nu kan ansøge om at indgå i et samarbejde med os om at udarbejde et program for områdefornyelse i jeres lokalsamfund, hvor der er behov for en samlet forbedring af offentlige arealer og gaderum. Der udarbejdes et program som danne grundlag for fysiske omdannelser i lokalområdet. Med et områdefornyelsesprogram følger politiske bevillinger til fysiske projekter, omdannelser og skal kunne gennemføres indenfor 5 år. Hvad kan der laves inden for rammerne af områdefornyelse? Områdefornyelse giver mange muligheder til en landsby eller lokalcenterby. Områdefornyelsen giver mulighed for at tænke større tanker i området på flere geografiske steder i byen. Et program for områdefornyelse kan f.eks. indeholde følgende: Forbedring af gaderum, pladser og andre offentlige arealer Etablering eller forbedring af grønne arealer eller rekreative områder Trafiksikkerhed Klima og biodiversitet Bygningsfornyelse Legepladser, madpakkehuse og lignende Hvad kan der ikke laves inden for rammerne af områdefornyelse? Arrangementer og events Initiativer med kommerciel karakter Vedligehold af kommunal ejendom Private arealer eller bygninger Hvem kan søge? Det er muligt for alle lokalråd, beboerforeninger og lignende at søge på vegne af landsbyer og lokalcenterbyer. Ansøgningen skal afspejle en bred tilslutning af borgerne i lokalområdet og inddrage borgeres interesser f.eks. igennem borgerinddragelse. Det er også muligt, at flere landsbyer og/eller lokalcenterbyer kan gå sammen om at få udarbejdet et områdefornyelsesprogram. Det er Horsens Kommune der udarbejder programmerne i samarbejde med jer som borgere i lokalsamfundet. Horsens Kommune er ansvarlig for at udarbejde programmet, gennemføre konkrete projekter, herunder at vælge rådgivere og entreprenører og for den efterfølgende drift evt. i samarbejde med lokale aktører. Sådan søger I? Start med at kontakte Plan og By, for en indledende dialog omkring jeres tanker og ideer, hvor vi kan vejlede jer i ansøgningsprocessen. Send os derefter en idébeskrivelse til planogby@horsens.dk, som skal indeholde: Hvilke udfordringer skal områdefornyelsen i byen/landsbyen, være med til at løse? Hvilke konkrete steder/områder/forløb ønsker I at forbedre? Hvordan har I inddraget borgerne i lokalsamfundet i tankerne bag ansøgningen? Idebeskrivelsen skal ikke indeholde priser, tilbud, rådgiverønsker eller lign. og er ikke tænkt som et færdigt områdefornyelsesprogram. Ideoplægget er derimod en ansøgning om at komme i betragtning til at få udarbejdet et program med hjælp fra og i samarbejde med os. Medarbejderne i Horsens Kommune, Plan og By, vil hjælpe med at omsætte jeres ideer til områdefornyelse i jeres lokalsamfund. Ansøgningsfrister 18. Januar 2026 til behandling i udvalget 14. april 2026. I kan forvente svar efter den administrative og politiske behandling. Har I spørgsmål? Skriv til os på planogby@horsens.dk, hvis I vil vide mere eller ring til os på på tlf. 29 63 21 59 Vi glæder os til at høre fra jer. Se tidligere vedtagne områdefornyelsesprogrammer her",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#omraadefornyelse-i-landsbyer-og-lokalcenterbyer-4e",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "87aa283bbae0cea558ba2647e21396b93f4cfbd05532f96bb1a7a4ae86347726",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#omraadefornyelse-i-landsbyer-og-lokalcenterbyer-4e",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Oplandspuljen",
+    "summary": "Du kan søge om støtte til din landsby eller lokalcenterby fra Oplandspuljen og Områdefornyelsespuljen",
+    "description": "Hvad støtter oplandspuljen? Bor du i enten Brædstrup, en landsby eller lokal centerby i Horsens Kommune, og har I planer om en ny legeplads, stier, shelters, bålhytter eller noget helt femte? Så bør I overveje, om oplandspuljen er noget for jer. Helt konkret kan puljen give støtte til: Etablering eller udvikling af en landsbypedelordning Lokal by- og landskabsudvikling (f.eks. nye stier, nye træer eller belysning, forskønnelse, belægninger - men ikke vejprojekter) Leg og bevægelse for børn, unge og andre Foreningsdannelse eller udvikling af eksisterende foreninger Skabelse, udvikling eller samling af lokale mødesteder Initiativer, der understøtter og styrker lokal aktivitet Midlertidige projekter for at teste ideer. Hvem kan søge? Alle med gode ideer til relevante projekter i landsbyer, lokale centerbyer og Brædstrup kan søge Oplandspuljen. Det er fx: Foreninger Enkeltpersoner med cvr-nummer. Sådan søger I Inden I søger puljen, er det vigtigt at I drøfter det ønskede projekt med Plan og By på planogby@horsens.dk. I skal, inden I ansøger, gøre jer grundige overvejelser i forhold til, hvem der efter færdiggørelse af projektet skal drifte og vedligeholde det, samt hvor pengene hertil skal komme fra - dette skal I gøre rede for i jeres ansøgning. Hvis projektet ønskes opført på anden mands jord, skal I have en fuldmagt på at I har lov til dette. I forbindelse med ansøgning skal vedhæfte følgende: Grundig projektbeskrivelse Min. 2 billeder af eksisterende forhold Budget for projektet Finansieringsplan for projektet Eventuel fuldmagt til at planere projektet på anden mands jord Projektarbejderne skal kunne gennemføres på 3 år fra eventuel modtagelse af tilsagn. Alle beløb og prisoverslag skal angives inkl. moms – undtaget herfra er værdien af eget arbejde, som angives eks. moms. Efter endte projektarbejder skal der indsendes regnskab samt dokumentation for betalte faktura til Horsens Kommune. Ansøgningsfrister Vi behandler løbende ansøgninger under 30.000 kr. Søger du mere end 30.000 kr. til dit projekt, bliver din ansøgning behandlet i Oplandsudvalget. I 2026 er ansøgningsfristerne: 18. januar 2026 til behandling i udvalget 13. april 2026. 15. maj 2026 (ekstraordinær ansøgningsfrist) til behandling i udvalget 10. august 2026. 14. august 2026 til behandling i udvalget 5. oktober 2026. Retningslinjer Oplandspuljen kan højest give 300.000 kr. (inkl. moms) i støtte. Mindstebeløbet er 10.000 kr. (inkl. moms). Vi prioriterer projekter ud fra følgende kriterier: Projektets mulige betydning for fællesskab og sammenhold i lokalsamfundet Om projektet tager udgangspunkt i byens og områdets identitet og stedbundne kvaliteter Der lægges vægt på tiltag af natur- og klimaforbedrende karakter. Oplandspuljen giver ikke støtte til: Analyser og undersøgelser Tilskud til drift og vedligehold Arrangementer og events Initiativer af kommerciel karakter Nyt inventar i bygninger Forsamlingshuse. Læs retningslinjerne for oplandspuljen inden du søger(PDF). Sådan søger I: I søger om puljen via det elektroniske ansøgningsskema (MitId) Har du spørgsmål? Har du spørgsmål til puljen, er du velkommen til at kontakte Plan og By på på tlf. 29 63 21 59 og planogby@horsens.dk eller Jesper Nielsen på tlf. 76 29 70 30 og ssjn@horsens.dk. Vi glæder os til at læse din ansøgning.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#oplandspuljen-c3",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "5. oktober 2026",
+        "date": "2026-10-05"
+      }
+    ],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "open",
+    "amounts_kr": [
+      30000,
+      300000,
+      10000
+    ],
+    "content_hash": "bbd70a3a83165216a030a141d99a896b4592a4240c220cceef84017af005eb7c",
+    "missing_fields": [
+      "cycle",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#oplandspuljen-c3",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Nedrivnings- og omdannelsespuljen i oplandet (lokalcenterbyer, landsbyer og det åbne land)",
+    "summary": "Du kan søge om støtte til din landsby eller lokalcenterby fra Oplandspuljen og Områdefornyelsespuljen",
+    "description": "Nedrivnings- og omdannelsespuljen i oplandet skal bidrage til at skabe attraktive og levende lokalsamfund i Horsens Kommunes landsbyer, lokalcenterbyer og det åbne land. Puljen støtter omdannelse, oprydning og nedrivning af faldefærdige, skæmmende eller ubenyttede bygninger i Lokalcenterbyer, landsbyer og det åbne land, for at forbedre og fremme bosætning og udvikling i lokale miljøer. Puljen er en del af kommunens arbejde med at udvikle lokalsamfund med respekt for deres særlige kendetegn. Hvem kan søge? Du kan søge puljen, hvis du er Privat ejer af en bolig eller erhvervsbygning Forening og virksomhed med ejerskab til relevante bygninger. Derudover kan kommunen selv opkøbe, omdanne eller nedrive på baggrund af strategiske hensyn i henhold til Horsens Kommunes delegationsplan med fokus på fx det visuelle, boligsociale, helhedsplaner og områdefornyelser. Opkøb vil ikke ske uden forudgående dialog med ejendomsejer. Hvilke projekter kan få støtte? Puljen støtter Strategisk opkøb, omdannelse og nedrivning som bidrager til byudvikling eller forbedring af lokalområdet Nedrivning eller omdannelse af erhvervsejendomme, herunder landbrugsejendomme, hvor erhvervet er nedlagt Oprydning og fjernelse af skrot og affald som udgangspunkt i forbindelse med nedrivning, omdannelse eller områdefornyelse Nedrivning eller omdannelse af boligejendomme og blandede ejendomme. For at få støtte skal følgende være opfyldt: Ejendommen er som udgangspunkt opført før 1960 Ejendommen er mangelfuldt vedligeholdt og væsentligt nedslidt Ejendommen er beliggende i en lokalcenterby, landsby eller i det åbne land. Ansøgning – prioritering og frister Ved ansøgninger til puljen lægges der særligt vægt på følgende: Synligt beliggende ejendomme som f.eks. synlig i bybilledet, ankomst til byen, på hovedgade mm. Ejendomme i områder med kulturmiljø og/eller hvor der arbejdes med områdefornyelse eller anden udvikling. Projekter med efterfølgende etablering af offentligt tilgængelige byrum i forbindelse med områdefornyelse eller etablering af nyt byggeri. Der kan ansøges om støtte fra puljen løbende hele året. Administration foretager vurderinger og prioriteringer af ansøgningerne. Hvor meget kan du få i støtte? Følgende gør sig gældende, når Horsens Kommune tildeler støtte fra puljen: Tilskudsprocenten til nedrivningsudgifterne fastsættes ud fra en vurdering af ejendommens tilstand og beliggenhed samt opgavens karakter Tilskudsprocenten kan i tilfælde hæves såfremt der er arbejdes med bæredygtighed og genanvendelse af materialer Udgifter til rådgivning, miljøscreening og affaldshåndtering kan opnå støtte • Støtten udbetales som kontant tilskud Hvis der opnås en værdistigning i forbindelse med nedrivning, skal dette modregnes i tilskuddet. Vigtige betingelser for støtte For at opnå støtte skal følgende være opfyldt: Nedrivningsarbejdet må ikke påbegyndes før skriftligt tilsagn er givet Tilskud udbetales som kontant tilskud efter godkendelse af projektarbejderne og godkendelse af regnskab Ejeren skal sikre frakobling af el, vand og gas af virksomheder med autorisation Plan for reetablering/efterfølgende anvendelse af matriklen skal fremgå. Fremtidige projekter skal være i overensstemmelse med Horsens Kommunes nødvendige godkendelser som f.eks. landzoneregler samt Tematillægget for landsbyer. Det forudsættes ved støtte til omdannelse eller nedrivning, at ejeren har ansvaret for at vedligeholde matriklen, eller at indgå en aftale om fremtidig brug og vedligeholdelse af grunden Nedrivningsarbejdet skal udføres af CVR-registrerede virksomheder. Der ydes ikke tilskud til eget arbejde. Arbejdet skal foregå under overenskomstlignende forhold. Er der lån i ejendommen, skal ansøger selv sørge for, at panthaverne giver samtykke til omdannelsen eller nedrivningen. Disse udgifter afholdes af ansøger. Der ydes, som udgangspunkt, ikke støtte til omdannelse eller nedrivning af udhuse alene, medmindre hovedbygningen er nedslidt og påtænkes nedrevet. Sådan søger du Processen foregår således: Indsend ansøgning med dokumentation for bygningens tilstand, herunder fotodokumentation, lovmæssige rapporter og to sammenlignelige tilbud på nedrivning, bortskaffelse og reetablering. Send ansøgningsmaterialet pr. e-mail til planogby@horsens.dk. Administrationen foretager besigtigelse, vurdering og udarbejder tilsagn på baggrund af indsendt ansøgningsmateriale. Tilsagn fremsendes til ansøger og nedrivning kan igangsættes. Udbetaling sker efter afsluttet arbejde og godkendt dokumentation Der kan ansøges om støtte fra puljen løbende hele året. Administration foretager vurderinger og prioriteringer af ansøgningerne. Har du spørgsmål? Kontakt afdelingen plan og by, planogby@horsens.dk, for vejledning om mulighederne i puljen og hjælp til din ansøgning.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#nedrivnings-og-omdannelsespuljen-i-oplandet-lokalcenterbyer-landsbyer-og-det-aabne-land--9c",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "c2835c2708e5746f6c16f22ed9c34e07e94efc5634d31367cee40421da6a471e",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/fornyelseilokalsamfund#nedrivnings-og-omdannelsespuljen-i-oplandet-lokalcenterbyer-landsbyer-og-det-aabne-land--9c",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Søg støtte til renovering af din bolig i Brædstrup",
+    "summary": "Søg støtte til forbedring af bygninger eller støjreducerende tiltag ved din bolig",
+    "description": "Søg støtte til renovering af din boligejendom i Brædstrup Horsens Kommune ønsker at understøtte den gode udvikling og forskønnelse af midtbyen i Brædstrup. Dette ved at øremærke en sum penge fra områdefornyelsen til økonomisk støtte til renovering og restaurering af ejendomme langs hovedgaden. Det er altså penge man som ejer får og som ikke skal tilbagebetales. Her kan du læse mere om tilskud til Bygningsfornyelse: Har du et bevaringsværdigt hus eller ejendom, kan du ansøge om tilskud til renovering/restaurering samt genopretning af tabte arkitektoniske kvaliteter. Der vil blive stillet en række betingelser fra Horsens Kommune i forbindelse med et eventuelt tilskud. Ydermere må de fysiske arbejder ikke være påbegyndt. Dog skal følgende betingelser være opfyldt: Ejendommen, eller en del heraf, skal være beliggende langs hovedgaden i Brædstrup. Ejendommen, eller en del heraf, skal være opført før 1960. Ejendommen skal indeholde ejer- eller udlejningsbolig/-er, men ejendommen må også gerne indeholde erhverv. Arbejderne skal udføres af registrerede håndværkere – eget arbejde støttes ikke. Projektarbejderne må ikke være påbegyndt Du skal være indstillet på mulig løbende dialog med Horsens Kommune og skal aflevere regnskab efter endt projektarbejde. Kommunen kan som udgangspunkt give tilskud til renovering og genopretning på bygningens klimaskærm (yderside), som f.eks. reparation, udskiftning eller fornyelse af tage, skorstene, tårne og spir, kviste, facader, altaner, vinduer, døre, karnapper, gesimser, altaner, trapper, ornamenter mv. Det er kommunen der i dialog med dig som ansøger, afgør, hvilke renoveringsarbejder du kan få støtte til. Såfremt der modtages tilskud til et projekt, tinglyser Kommunen en tilbagebetalingsdeklaration på ejendommen i en given periode. Tilbagebetalingsdeklarationen skal sikre, at ansøger ikke kommer til at tjene penge på et tilskud fra kommunen. Det er muligt at kombinere tilskud til din ejendom med lån i Horsens Býgningsforbedringsfond. Du kan læse mere om lån i fonden her. Ansøgning og krav til ansøgningen: Første step i ansøgning om tilskud til en ejendom er at tage kontakt til Plan og By, kontaktoplysninger kan du finde i bunden af denne side. Derefter skal du søge via en digital blanket, hvori følgende skal indsendes: Et uddybende projektforslag med grundig beskrivelse af ønskede arbejder. Der skal oplyses materialevalg og gerne vedlægges specifikationer på dette. Gerne historiske billeder og tegninger af ejendommen. Overslagspris på projektet Minimum 3 billeder af ejendommen i dag Da støttens overordnede formål er at bringe tilbage og forskønne, kan kommunen i dialog med dig, stille arkitektoniske, miljømæssige eller udførelsesmæssige betingelser for at yde støtte.Det kan f.eks. være krav om en bestemt udformning af vinduer og kviste, valg af materialer og farver mv. Kommunen kan også stille betingelse om, at bestemte arbejder bliver udført for at opnå støtte. Endelig kan kommunen fastsætte frister for arbejdernes gennemførelse og for indsendelse af byggeregnskab. Tilsagn: På baggrund af dialog fremsender kommunen et tilsagn til dig som ansøger. Kommunen opgør i tilsagnet de støtteberettigede udgifter, som bl.a. kan indeholde følgende udgifter: Udgifter til istandsættelse og i særlige tilfælde nedrivning. Udgifter til rådgiver, f.eks. arkitekt- og ingeniørbistand Tilsagnet gives ud fra overslagsbeløbet inkl. håndværkerudgifter. Hvis arbejderne bliver dyrere end beløbet, som tilsagnet gives ud fra, er det som udgangspunkt ikke en mulighed at øge tilskudsbeløbet. Det kan kræve en ny og/eller tilrettet ansøgning. Det fysiske arbejde må ikke påbegyndes, før der er opnået tilsagn om støtte fra kommunen. Efter modtagelse af tilsagn skal ansøger indhente mindst to direkte sammenlignelige tilbud fra forskellige håndværkere. Tilbuddene skal være inkl. moms og skal indsendes til kommunen. Såfremt der modtages anden støtte til samme projekt, skal dette støttebeløb oplyses ved ansøgning. Hvad sker der, hvis projektet ændres efter igangsætningen? Når byggearbejderne er i gang, kan der opstå uforudsete merudgifter eller forsinkelser i projektet. Det er vigtigt, at man som ansøger straks kontakter kommunen for at få kommunens stillingtagen til ændringerne. Hvis der foretages ændringer i projektet, som ikke er godkendt af kommunen, eller hvis byggeregnskab ikke indsendes inden for den frist, der er fastsat, kan støtten bortfalde. Færdiggørelse af projektarbejderne: Når alle projektarbejder er gennemført, skal følgende indsendes: Før- og efterbilleder af det færdiggjorte projekt Før- og efterbilleder af det færdiggjorte projekt Byggeregnskab Efter modtagelse af ovenstående, vil kommunen gennemgå det og efterfølgende aftale en tid for besigtigelse af projektarbejderne. Der vil i forbindelse med udbetaling af støtten blive tinglyst en tilbagebetalingsdeklaration, som betyder at man er forpligtet til at tilbagebetale en del af tilskuddet, hvis ejendommen sælges indenfor en given periode. Tilbagebetalingsdeklarationen kan du læse mere om i næste afsnit. Hvis ansøger ikke har bemærkninger til deklarationen, udfærdiges et udbetalingsbrev, og udbetaling af tilskudsbeløbet igangsættes. Kan støtten blive krævet tilbagebetalt? Hvis ejendommen senere skifter status - f.eks. hvis boligen overgår til erhverv - eller sælges, og der opnås en gevinst, som overstiger den sædvanlige ejendomsprisstigning i den forløbne periode, kan kommunen gøre krav på, at støtten skal tilbagebetales helt eller delvist. Overdragelse til medejer, ægtefælle og livsarving er dog altid undtaget. Kommunen tinglyser en deklaration på ejendommen om tilbagebetalingsforpligtelse. I den forbindelse fastlægger kommunen også, hvor mange år tilbagebetalingspligten skal gælde. Er du interesseret i at høre mere, så kontakt os på planogby@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-braedstrup-83",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "9c710223801f64073370587fc1ebb4b64c146879a8e0f6e6b59250f8d36fb298",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-braedstrup-83",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Søg støtte til renovering af din bolig i Nim",
+    "summary": "Søg støtte til forbedring af bygninger eller støjreducerende tiltag ved din bolig",
+    "description": "Søg støtte til renovering af din boligejendom i Nim Horsens Kommune ønsker at understøtte den gode udvikling og forskønnelse af midtbyen i Nim. Dette gør vi blandt andet ved at øremærke en sum penge fra områdefornyelsen til økonomisk støtte til renovering og restaurering af ejendomme langs hovedgaden. Det er altså penge man som ejer får og som ikke skal tilbagebetales. Her kan du læse mere om tilskud til Bygningsfornyelse: Har du et bevaringsværdigt hus eller ejendom, kan du ansøge om tilskud til renovering/restaurering samt genopretning af tabte arkitektoniske kvaliteter. Der vil blive stillet en række betingelser fra Horsens Kommune i forbindelse med et eventuelt tilskud. Ydermere må de fysiske arbejder ikke være påbegyndt. Dog skal følgende betingelser være opfyldt: Ejendommen skal være beliggende på Hovedgaden, Østerbyvej eller Eslundvej Ejendommen, eller en del heraf, skal være opført før 1960. Ejendommen skal indeholde ejer- eller udlejningsbolig/-er, men ejendommen må også gerne indeholde erhverv. Arbejderne skal udføres af registrerede håndværkere – eget arbejde støttes ikke. Projektarbejderne må ikke være påbegyndt Du skal være indstillet på mulig løbende dialog med Horsens Kommune og skal aflevere regnskab efter endt projektarbejde. Kommunen kan som udgangspunkt give tilskud til renovering og genopretning på bygningens klimaskærm (yderside), som f.eks. reparation, udskiftning eller fornyelse af tage, skorstene, tårne og spir, kviste, facader, altaner, vinduer, døre, karnapper, gesimser, altaner, trapper, ornamenter mv. Det er kommunen der i dialog med dig som ansøger, afgør, hvilke renoveringsarbejder du kan få støtte til. Såfremt der modtages tilskud til et projekt, tinglyser Kommunen en tilbagebetalingsdeklaration på ejendommen i en given periode. Tilbagebetalingsdeklarationen skal sikre, at ansøger ikke kommer til at tjene penge på et tilskud fra kommunen. Det er muligt at kombinere tilskud til din ejendom med lån i Horsens Býgningsforbedringsfond. Du kan læse mere om lån i fonden her. Ansøgning og krav til ansøgningen: Første step i ansøgning om tilskud til en ejendom er at tage kontakt til Plan og By, kontaktoplysninger kan du finde i bunden af denne side. Derefter skal du søge via en digital blanket, hvori følgende skal indsendes: Et uddybende projektforslag med grundig beskrivelse af ønskede arbejder. Der skal oplyses materialevalg og gerne vedlægges specifikationer på dette. Gerne historiske billeder og tegninger af ejendommen. Overslagspris på projektet Minimum 3 billeder af ejendommen i dag Da støttens overordnede formål er at bringe tilbage og forskønne, kan kommunen i dialog med dig, stille arkitektoniske, miljømæssige eller udførelsesmæssige betingelser for at yde støtte.Det kan f.eks. være krav om en bestemt udformning af vinduer og kviste, valg af materialer og farver mv. Kommunen kan også stille betingelse om, at bestemte arbejder bliver udført for at opnå støtte. Endelig kan kommunen fastsætte frister for arbejdernes gennemførelse og for indsendelse af byggeregnskab. Tilsagn: På baggrund af dialog fremsender kommunen et tilsagn til dig som ansøger. Kommunen opgør i tilsagnet de støtteberettigede udgifter, som bl.a. kan indeholde følgende udgifter: Udgifter til istandsættelse og i særlige tilfælde nedrivning. Udgifter til rådgiver, f.eks. arkitekt- og ingeniørbistand Tilsagnet gives ud fra overslagsbeløbet inkl. håndværkerudgifter. Hvis arbejderne bliver dyrere end beløbet, som tilsagnet gives ud fra, er det som udgangspunkt ikke en mulighed at øge tilskudsbeløbet. Det kan kræve en ny og/eller tilrettet ansøgning. Det fysiske arbejde må ikke påbegyndes, før der er opnået tilsagn om støtte fra kommunen. Efter modtagelse af tilsagn skal ansøger indhente mindst to direkte sammenlignelige tilbud fra forskellige håndværkere. Tilbuddene skal være inkl. moms og skal indsendes til kommunen. Såfremt der modtages anden støtte til samme projekt, skal dette støttebeløb oplyses ved ansøgning. Hvad sker der, hvis projektet ændres efter igangsætningen? Når byggearbejderne er i gang, kan der opstå uforudsete merudgifter eller forsinkelser i projektet. Det er vigtigt, at man som ansøger straks kontakter kommunen for at få kommunens stillingtagen til ændringerne. Hvis der foretages ændringer i projektet, som ikke er godkendt af kommunen, eller hvis byggeregnskab ikke indsendes inden for den frist, der er fastsat, kan støtten bortfalde. Færdiggørelse af projektarbejderne: Når alle projektarbejder er gennemført, skal følgende indsendes: Før- og efterbilleder af det færdiggjorte projekt Før- og efterbilleder af det færdiggjorte projekt Byggeregnskab Efter modtagelse af ovenstående, vil kommunen gennemgå det og efterfølgende aftale en tid for besigtigelse af projektarbejderne. Der vil i forbindelse med udbetaling af støtten blive tinglyst en tilbagebetalingsdeklaration, som betyder at man er forpligtet til at tilbagebetale en del af tilskuddet, hvis ejendommen sælges indenfor en given periode. Tilbagebetalingsdeklarationen kan du læse mere om i næste afsnit. Hvis ansøger ikke har bemærkninger til deklarationen, udfærdiges et udbetalingsbrev, og udbetaling af tilskudsbeløbet igangsættes. Kan støtten blive krævet tilbagebetalt? Hvis ejendommen senere skifter status - f.eks. hvis boligen overgår til erhverv - eller sælges, og der opnås en gevinst, som overstiger den sædvanlige ejendomsprisstigning i den forløbne periode, kan kommunen gøre krav på, at støtten skal tilbagebetales helt eller delvist. Overdragelse til medejer, ægtefælle og livsarving er dog altid undtaget. Kommunen tinglyser en deklaration på ejendommen om tilbagebetalingsforpligtelse. I den forbindelse fastlægger kommunen også, hvor mange år tilbagebetalingspligten skal gælde. Er du interesseret i at høre mere, så kontakt os på planogby@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-nim-91",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "70d5a6187ea0dd29203a49591241877f9c1e271c76eea1bf9c3ec7a050b342ce",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-nim-91",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Søg støtte til renovering af din bolig i Østbirk",
+    "summary": "Søg støtte til forbedring af bygninger eller støjreducerende tiltag ved din bolig",
+    "description": "Søg støtte til renovering af din boligejendom i Østbirk Horsens Kommune ønsker at understøtte den gode udvikling og forskønnelse af midtbyen i Østbirk. Dette gør vi blandt andet ved at øremærke en sum penge fra områdefornyelsen til økonomisk støtte til renovering og restaurering af ejendomme langs hovedgaden. Det er altså penge man som ejer får og som ikke skal tilbagebetales. Her kan du læse mere om tilskud til Bygningsfornyelse: Har du et bevaringsværdigt hus eller ejendom, kan du ansøge om tilskud til renovering/restaurering samt genopretning af tabte arkitektoniske kvaliteter. Der vil blive stillet en række betingelser fra Horsens Kommune i forbindelse med et eventuelt tilskud. Ydermere må de fysiske arbejder ikke være påbegyndt. Dog skal følgende betingelser være opfyldt: Ejendommen skal være beliggende på Storegade Ejendommen, eller en del heraf, skal være opført før 1960. Ejendommen skal indeholde ejer- eller udlejningsbolig/-er, men ejendommen må også gerne indeholde erhverv. Arbejderne skal udføres af registrerede håndværkere – eget arbejde støttes ikke. Projektarbejderne må ikke være påbegyndt Du skal være indstillet på mulig løbende dialog med Horsens Kommune og skal aflevere regnskab efter endt projektarbejde. Kommunen kan som udgangspunkt give tilskud til renovering og genopretning på bygningens klimaskærm (yderside), som f.eks. reparation, udskiftning eller fornyelse af tage, skorstene, tårne og spir, kviste, facader, altaner, vinduer, døre, karnapper, gesimser, altaner, trapper, ornamenter mv. Det er kommunen der i dialog med dig som ansøger, afgør, hvilke renoveringsarbejder du kan få støtte til. Såfremt der modtages tilskud til et projekt, tinglyser Kommunen en tilbagebetalingsdeklaration på ejendommen i en given periode. Tilbagebetalingsdeklarationen skal sikre, at ansøger ikke kommer til at tjene penge på et tilskud fra kommunen. Det er muligt at kombinere tilskud til din ejendom med lån i Horsens Býgningsforbedringsfond. Du kan læse mere om lån i fonden her. Ansøgning og krav til ansøgningen: Første step i ansøgning om tilskud til en ejendom er at tage kontakt til Plan og By på planogby@horsens.dk. Derefter skal du sende os en mail med følgende oplysninger og materiale: Et uddybende projektforslag med grundig beskrivelse af ønskede arbejder. Der skal oplyses materialevalg og gerne vedlægges specifikationer på dette. Gerne historiske billeder og tegninger af ejendommen. Overslagspris på projektet Minimum 3 billeder af ejendommen i dag Da støttens overordnede formål er at bringe bygninger tilbage og forskønne, kan kommunen i dialog med dig, stille arkitektoniske, miljømæssige eller udførelsesmæssige betingelser for at yde støtte. Det kan fx være krav om en bestemt udformning af vinduer og kviste, valg af materialer og farver mv. Kommunen kan også stille betingelse om, at bestemte arbejder bliver udført for at opnå støtte. Endelig kan kommunen fastsætte frister for arbejdernes gennemførelse og for indsendelse af byggeregnskab. Tilsagn: På baggrund af dialog fremsender kommunen et tilsagn til dig som ansøger. Kommunen opgør i tilsagnet de støtteberettigede udgifter, som bl.a. kan indeholde følgende udgifter: Udgifter til istandsættelse og i særlige tilfælde nedrivning. Udgifter til rådgiver, f.eks. arkitekt- og ingeniørbistand Tilsagnet gives ud fra overslagsbeløbet inkl. håndværkerudgifter. Hvis arbejderne bliver dyrere end beløbet, som tilsagnet gives ud fra, er det som udgangspunkt ikke en mulighed at øge tilskudsbeløbet. Det kan kræve en ny og/eller tilrettet ansøgning. Det fysiske arbejde må ikke påbegyndes, før der er opnået tilsagn om støtte fra kommunen. Efter modtagelse af tilsagn skal ansøger indhente mindst to direkte sammenlignelige tilbud fra forskellige håndværkere. Tilbuddene skal være inkl. moms og skal indsendes til kommunen. Såfremt der modtages anden støtte til samme projekt, skal dette støttebeløb oplyses ved ansøgning. Hvad sker der, hvis projektet ændres efter igangsætningen? Når byggearbejderne er i gang, kan der opstå uforudsete merudgifter eller forsinkelser i projektet. Det er vigtigt, at man som ansøger straks kontakter kommunen for at få kommunens stillingtagen til ændringerne. Hvis der foretages ændringer i projektet, som ikke er godkendt af kommunen, eller hvis byggeregnskab ikke indsendes inden for den frist, der er fastsat, kan støtten bortfalde. Færdiggørelse af projektarbejderne: Når alle projektarbejder er gennemført, skal følgende indsendes: Før- og efterbilleder af det færdiggjorte projekt Før- og efterbilleder af det færdiggjorte projekt Byggeregnskab Efter modtagelse af ovenstående, vil kommunen gennemgå det og efterfølgende aftale en tid for besigtigelse af projektarbejderne. Der vil i forbindelse med udbetaling af støtten blive tinglyst en tilbagebetalingsdeklaration, som betyder at man er forpligtet til at tilbagebetale en del af tilskuddet, hvis ejendommen sælges indenfor en given periode. Tilbagebetalingsdeklarationen kan du læse mere om i næste afsnit. Hvis ansøger ikke har bemærkninger til deklarationen, udfærdiges et udbetalingsbrev, og udbetaling af tilskudsbeløbet igangsættes. Kan støtten blive krævet tilbagebetalt? Hvis ejendommen senere skifter status - f.eks. hvis boligen overgår til erhverv - eller sælges, og der opnås en gevinst, som overstiger den sædvanlige ejendomsprisstigning i den forløbne periode, kan kommunen gøre krav på, at støtten skal tilbagebetales helt eller delvist. Overdragelse til medejer, ægtefælle og livsarving er dog altid undtaget. Kommunen tinglyser en deklaration på ejendommen om tilbagebetalingsforpligtelse. I den forbindelse fastlægger kommunen også, hvor mange år tilbagebetalingspligten skal gælde. Er du interesseret i at høre mere, så kontakt os på planogby@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-oestbirk-f8",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "6a0b68898afd7bcfe4871a3dedeac88bb86914e30a5c4510e59f30783eb18272",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-oestbirk-f8",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Søg støtte til renovering af din bolig i Horsens",
+    "summary": "Søg støtte til forbedring af bygninger eller støjreducerende tiltag ved din bolig",
+    "description": "Søg støtte til renovering af din boligejendom i Horsens Horsens Kommune ønsker at understøtte den gode udvikling og forskønnelse af byens ejendomme. Det gør vi blandt andet ved at øremærke en sum penge til økonomisk støtte til renovering og restaurering af byens ejendomme. Det er altså penge man som ejer får og som ikke skal tilbagebetales. Her kan du læse mere om tilskud til Bygningsfornyelse: Har du et bevaringsværdigt hus eller ejendom, kan du ansøge om tilskud til renovering/restaurering samt genopretning af tabte arkitektoniske kvaliteter. Der vil blive stillet en række betingelser fra Horsens Kommune i forbindelse med et eventuelt tilskud. Ydermere må de fysiske arbejder ikke være påbegyndt. Følgende betingelser skal være opfyldt: Ejendommen, eller en del heraf, skal være opført før 1960. Ejendommen skal indeholde ejer- eller udlejningsbolig/-er, men ejendommen må også gerne indeholde erhverv. Arbejderne skal udføres af registrerede håndværkere – eget arbejde støttes ikke. Projektarbejderne må ikke være påbegyndt Du skal være indstillet på mulig løbende dialog med Horsens Kommune og skal aflevere regnskab efter endt projektarbejde Ejendommen skal have en SAVE-værdi mellem 1-6 (middel-høj bevaringsværdi). Administrationen foretager ved ansøgning en SAVE-vurdering før og efter renovering. herudover prioriteres ejendomme som er beliggende indenfor Lokalplan 150 indenfor Lokalplan 200 med synlighed i gaderummet eller med visuel betydning for villavejen i et udpeget kulturmiljø Kommunen kan som udgangspunkt give tilskud til renovering og genopretning på bygningens klimaskærm (yderside), som f.eks. reparation, udskiftning eller fornyelse af tage, skorstene, tårne og spir, kviste, facader, altaner, vinduer, døre, karnapper, gesimser, altaner, trapper, ornamenter mv. Det er kommunen, der i dialog med ansøger, afgør, hvilke renoveringsarbejder du kan få støtte til. Såfremt der modtages tilskud til et projekt, tinglyser Kommunen en tilbagebetalingsdeklaration på ejendommen i en given periode. Tilbagebetalingsdeklarationen skal sikre, at ansøger ikke kommer til at tjene penge på et tilskud fra kommunen. Det er muligt at kombinere tilskud til din ejendom med lån i Horsens Bygningsforbedringsfond. Du kan læse mere om lån i fonden her. Ansøgning og krav til ansøgningen: Første step i ansøgning om tilskud til en ejendom er at tage kontakt til Plan og By, kontaktoplysninger kan du finde i bunden af denne side. Der afholdes internt møde 1 gang om måneden hvor indkomne henvendelser bliver drøftet, derfor forekommer der lidt ventetid. Derefter skal du søge via en digital blanket, hvori følgende skal indsendes: Et uddybende projektforslag med grundig beskrivelse af ønskede arbejder. Der skal oplyses materialevalg og gerne vedlægges specifikationer på dette. Gerne historiske billeder og tegninger af ejendommen. Overslagspris på projektet Minimum 3 billeder af ejendommen i dag Da støttens overordnede formål er at bringe tilbage og forskønne, kan kommunen i dialog med dig, stille arkitektoniske, miljømæssige eller udførelsesmæssige betingelser for at yde støtte. Det kan f.eks. være krav om en bestemt udformning af vinduer og kviste, valg af materialer og farver mv. Kommunen kan også stille betingelse om, at bestemte arbejder bliver udført for at opnå støtte. Endelig kan kommunen fastsætte frister for arbejdernes gennemførelse og for indsendelse af byggeregnskab. Tilsagn: På baggrund af dialog fremsender kommunen et tilsagn til dig som ansøger. Kommunen opgør i tilsagnet de støtteberettigede udgifter, som bl.a. kan indeholde følgende udgifter: Udgifter til istandsættelse og i særlige tilfælde nedrivning. Udgifter til rådgiver, f.eks. arkitekt- og ingeniørbistand Tilsagnet gives ud fra overslagsbeløbet inkl. håndværkerudgifter. Hvis arbejderne bliver dyrere end beløbet, som tilsagnet gives ud fra, er det som udgangspunkt ikke en mulighed at øge tilskudsbeløbet. Det kan kræve en ny og/eller tilrettet ansøgning. Det fysiske arbejde må ikke påbegyndes, før der er opnået tilsagn om støtte fra kommunen. Efter modtagelse af tilsagn skal ansøger indhente mindst to direkte sammenlignelige tilbud fra forskellige håndværkere. Tilbuddene skal være inkl. moms og skal indsendes til kommunen. Såfremt der modtages anden støtte til samme projekt, skal dette støttebeløb oplyses ved ansøgning. Hvad sker der, hvis projektet ændres efter igangsætningen? Når byggearbejderne er i gang, kan der opstå uforudsete merudgifter eller forsinkelser i projektet. Det er vigtigt, at man som ansøger straks kontakter kommunen for at få kommunens stillingtagen til ændringerne. Hvis der foretages ændringer i projektet, som ikke er godkendt af kommunen, eller hvis byggeregnskab ikke indsendes inden for den frist, der er fastsat, kan støtten bortfalde. Færdiggørelse af projektarbejderne: Når alle projektarbejder er gennemført, skal følgende indsendes: Før- og efterbilleder af det færdiggjorte projekt Før- og efterbilleder af det færdiggjorte projekt Byggeregnskab Efter modtagelse af ovenstående, vil kommunen gennemgå det og efterfølgende aftale en tid for besigtigelse af projektarbejderne. Der vil i forbindelse med udbetaling af støtten blive tinglyst en tilbagebetalingsdeklaration, som betyder at man er forpligtet til at tilbagebetale en del af tilskuddet, hvis ejendommen sælges indenfor en given periode. Tilbagebetalingsdeklarationen kan du læse mere om i næste afsnit. Hvis ansøger ikke har bemærkninger til deklarationen, udfærdiges et udbetalingsbrev, og udbetaling af tilskudsbeløbet igangsættes. Kan støtten blive krævet tilbagebetalt? Hvis ejendommen senere skifter status - f.eks. hvis boligen overgår til erhverv - eller sælges, og der opnås en gevinst, som overstiger den sædvanlige ejendomsprisstigning i den forløbne periode, kan kommunen gøre krav på, at støtten skal tilbagebetales helt eller delvist. Overdragelse til medejer, ægtefælle og livsarving er dog altid undtaget. Kommunen tinglyser en deklaration på ejendommen om tilbagebetalingsforpligtelse. I den forbindelse fastlægger kommunen også, hvor mange år tilbagebetalingspligten skal gælde. Er du interesseret i at høre mere, så kontakt os på planogby@horsens.dk",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-horsens-21",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [],
+    "content_hash": "37921c898ffef032e7cc332473d5659842b102ee281968564d5670aa677850bf",
+    "missing_fields": [
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.5,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-stoette-til-renovering-af-din-bolig-i-horsens-21",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Søg lån i Horsens Bygningsforbedringsfond",
+    "summary": "Søg støtte til forbedring af bygninger eller støjreducerende tiltag ved din bolig",
+    "description": "Vil du søge lån til forbedringer af din bevaringsværdige bygning i Horsens? Ejer du en bevaringsværdig bygning, og vil du gerne sætte bygningen i stand udvendigt i den oprindelige karakter og stil? Så kan du søge Bygningsforbedringsfonden for Horsens Kommune om et rente- og afdragsfrit lån. Du kan søge, hvis din bygning er bevaringsværdig med en SAVE-værdi mellem 1 og 9 og er beliggende i Horsens Kommune. Fondens har til formål er, at yde lån til istandsættelser på bygningers udvendige bygningsdele, herunder at bringe ejendomme eller dele heraf tilbage til det historiske udtryk på en bæredygtig, æstetisk og byggeteknisk korrekt måde. Find ud af om din bygning er bevaringsværdig ved at søge din adresse frem på det digitale kort på kommuneplan2021.horsens.dk. Fondens bestyrelse behandler ansøgningerne og afgør, hvem der kan få tildelt lån, og hvor store lånene skal være. Bestyrelsen består af politikere, repræsentanter for foreninger i byen og fra vores Plan og By-afdeling. Hvad og hvem er Horsens Bygningsforbedringsfond? Bygningsforbedringsfonden for Horsens Kommune er en ren kommunal fond, hvorigennem private bygningsejere kan søge rente- og afdragsfrie lån til istandsættelse og forbedring af bevaringsværdige bygninger. Fondens formål er at tilskynde og påvirke private bygningsejere til at istandsætte bevaringsværdige bygninger, herunder at bringe ejendomme eller dele heraf tilbage til det historiske udtryk på en bæredygtig, æstetisk og byggeteknisk korrekt måde og kan stille betingelser for arbejderne for til gengæld at tildele rente- og afdragsfrie lån. Fondens bestyrelse Formand Jakob Bille (formand for Plan- og vejudvalget) Næstformand Martin Weihe Esbensen (Bedre Bymiljø) Anders Schou Vigild (medlem af Horsens Byråd) Pia Nørregaard Rasmussen (Horsens Udlejerforening) Jens Christian Pasgaard (Stadsarkitekt og Chef for Plan, Byg og Erhverv, Horsens Kommune) Du kan læse mere om Bygningsforbedringsfonden i denne folder (PDF) Hvad kan der gives lån til? Fonden tildeler lån til arbejder med udvendige bygningssider. Forbedringerne kan omfatte en eller flere bygningsdele - fx: Tårn eller spir, skorsten, kviste, tag, gesimser, trapper, gitre, ornamenter, facade, vinduer, døre, porte, rækværk, sokkel mv. Der gives lån til de arbejder, der forbedrer ejendomme, herunder bringer ejendomme eller dele heraf tilbage til det historiske udtryk på en bæredygtig, æstetisk og byggeteknisk korrekt måde. Bygningsarbejderne bør tilpasses den omliggende bebyggelse og friarealer. Hvad gives der ikke lån til? Der gives ikke lån til arbejder, der er påbegyndt eller gennemført. Ej heller til dele af et projekt. Fondens bestyrelse ønsker at være medbestemmende og kan stille krav til valg af løsninger og materialer lige fra arbejdernes start. Fondens bestyrelse skelner mellem almindelig vedligeholdelse og direkte bygningsforbedringer. Der bliver primært givet lån til forbedringer og i langt mindre grad til vedligeholdelse. Der gives ikke lån til arbejder inde i bygningen. Hvem kan søge lån? Private ejere af boligejendomme i Horsens Kommune kan søge om lån. Ejendommen skal være fra før 1960 og vurderet med en bevaringsværdi mellem 1 og 9 i Kommuneatlas Horsens. Der kan søges flere gange til samme ejendom og lånet kan under særlige omstændigheder kombineres med Byfornyelsesmidler. Lånets betingelser og størrelse Ved tilsagn om lån vil fondens bestyrelse opstille betingelser i forbindelse med de pågældende arbejder og/eller til andre forhold på bygningen. Betingelserne bliver som regel stillet for at forbedre helhedsindtrykket af bygningen. Betingelserne og arbejderne skal være opfyldt, før lånet udbetales. Der gives aldrig lån, der dækker 100% af udgifterne - dertil er fondens midler alt for små. Bestyrelsens tildeler lån på 20-50% af omkostningerne og lånets størrelse vurderes ud fra projektet. Mindste lån er på 25.000 kr., idet låntager også skal betale tinglysningsafgift af lånet. Lån fra fonden ydes som rente- og afdragsfrie lån til ejere af bygninger. Lånet ydes mod pant i den faste ejendom og har en løbetid på maksimum 20 år. Udbetaling af lånet kan først finde sted efter godkendelse af de udførte arbejder, og efter at pantebrevet på lånet er tinglyst. I tilfælde af låneomlægning rykker pantebrevet alene ved særskilt påtegning tilbage for realkreditlån, der tinglyses på ejendommen, jf. tinglysningslovens § 15A.. Lån forfalder ved ejerskifte af ejendommen. Fortolkningen af, hvornår der sker ejerskifte af ejendommen, skal forstås i bredest mulig forstand. Således er ejerskifte også, hvis blot 1% af aktierne handles af selskabet, der står registreret som ejer. Tilbagebetalte lån indgår i fondens beholdning og genudlånes. Sådan søger du Inden du søger, vil det være en rigtig god ide at kontakte planafdelingen og få en snak om dit ønskede projekt/renovering. Planafdelingen kan kontaktes på planogby@horsens.dk. Søg om lån ved Horsens Bygningsforbedringsfond via den digitale ansøgningsformular (kræver NemID) Sådan forløber en sag Ansøgningsblanketten inklusive bilag udfyldes og indsendes via den digitale ansøgningsformular. Ansøgningen vurderes af fondens sekretær, og såfremt forudsætningerne for at søge er opfyldt, indstilles ansøgningen til næstkommende bestyrelsesmøde. Der afholdes bestyrelsesmøde 4 gange om året, hvor de indkomne ansøgninger behandles. Det afgøres på møderne, hvem der tildeles lån, og hvor store disse skal være. Der sendes svar til alle - både afslag og tildeling af lån. De ejere, der har fået lån, meddeler fondens sekretær, at de accepterer betingelserne og i så fald, hvornår arbejderne forventes igangsat og er færdige. Når arbejderne er færdigmeldte, tager fondens sekretær ud for at se, at de aftalte arbejder er fuldført. Herefter udarbejdes et pantebrev med pant i den pågældende ejendom. Dette tinglyses på ejendommen. Efter tinglysningen udbetales lånet minus tinglysningsafgiften på ansøgers Nemkonto. Lånet tilbagebetales til fonden ved enhver handel af ejendommen eller ved udløb af lånets løbetid. Fondens bestyrelse bestemmer suverænt, hvem der tildeles lån og størrelsen af lånene, efter vurdering af de enkelte ansøgninger. Fondens beslutninger vedrørende tildeling af lån kan ikke påklages til anden administrativ myndighed. Fondens vedtægter, mødedatoer, dagsordener og referater Vedtægter for Horsens Bygningsforbedringsfond På dette link kan du læse vedtægterne for Horsens Bygningsforbedringsfond (PDF) Mødedatoer 2026 Den 19. februar 2026 - frist for ansøgning den 12. januar 2026 Den 28. maj 2026 - frist for ansøgning den 15. april 2026 Den 24. september 2026 - frist for ansøgning den 15. juli 2026 Den 26. november 2026 - frist for ansøgning den 15. oktober 2026 Se Bygningsforbedringsfondens dagsordener og referater fra møderne. Læs mere om hvordan vi indhenter og opbevarer dine oplysninger i forbindelse med Bygningsforbedringsfonden På dette link kan du blive klogere på, hvor vi indhenter og gemmer dine oplysninger i forbindelse med tilsagn om lån fra Bygningsforbedringsfonden, samt hvilke rettigheder du har, når kommunen behandler dine personoplysninger.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-laan-i-horsens-bygningsforbedringsfond-01",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "24. september 2026",
+        "date": "2026-09-24"
+      },
+      {
+        "raw": "26. november 2026",
+        "date": "2026-11-26"
+      },
+      {
+        "raw": "15. oktober 2026",
+        "date": "2026-10-15"
+      }
+    ],
+    "past_deadlines": [],
+    "deadline_type": "multi_round",
+    "status": "open",
+    "amounts_kr": [
+      25000
+    ],
+    "content_hash": "dcf2d0a8f206bed136d6151999b047920c8094766fa1c70b6114ad6cef536e77",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#soeg-laan-i-horsens-bygningsforbedringsfond-01",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Støjpuljen: Søg støtte til støjdæmpende virkemidler",
+    "summary": "Søg støtte til forbedring af bygninger eller støjreducerende tiltag ved din bolig",
+    "description": "Ejer du en bolig, som er plaget af støj udefra? Bor du ud til en meget trafikeret vej? Se her, om du kan søge vores støjpulje, som giver tilskud til støjdæmpende virkemidler i forbindelse med gener fra trafikstøj. Kortlægning af støj Vi har af en uvildig rådgiver fået foretaget en støjberegning. På den baggrund er der inden for byzone i Horsens Kommune udpeget og kategoriseret støjbelastede ejendomme, hvor beregningen er mere end 58 dB. Gå til WebKort for at se, om din ejendom er kategoriseret som støjbelastet (søg din adresse frem i WebKort). Hvem kan søge støjpuljen? Puljemidler kan kun søges til boliger, der er i Horsens Kommunes støjkortlægning påvirkes med vejstøj over 58 dB ejendomme, der ikke er udpeget som støjplagede, men som ligger i første række mod støjkilden og ligger på række med flere støjplagede boliger, såfremt ejendommens facade er indtil 25 meter fra skel mod vej. Puljemidler kan søges af ejerne af den enkelte bolig, grundejerforeninger eller ejerforeninger ikke søges til udlejningsejendomme ikke søges af boligselskaber eller øvrige selskaber med CVR-nummer, undtagen dog grundejerforeninger og ejerforeninger. Vilkår og indledende vurdering Horsens Kommune laver en indledende vurdering af ejendommen under følgende vilkår: Vi vurderer, hvilket tiltag, der giver bedst effekt for den enkelte ejendom. Der kan kun opnås tilskud til én type støjdæmpende virkemiddel pr. ejendom. Vi kan afvise en ansøgning, hvis vi vurderer, at etablering af et støjdæmpende virkemiddel ikke står mål med effekten, eksempelvis hvis prisen for etablering bliver uforholdsmæssigt høj i forhold til effekten, eller hvis det vurderes, at det ikke er muligt at opnå byggetilladelse hertil. Der kan kun opnås tilskud til ejendomme, der lovligt kan benyttes som helårsbolig. Hvilke støjdæmpende virkemidler kan man søge tilskud til? 1. Støjværn Der ydes kun tilskud til støjværn, der opfylder Vejreglernes vejledning om støjskærme, og som er af konstruktion med stålkassetter. Ansøger skal etablere og vedligeholde klatrebeplantning, som dækker støjskærmen. Horsens Kommune forestår vurderingen af, hvordan støjværnet skal placeres under inddragelse af borgerens ønsker. Der ydes tilskud til værn i de dele af ejendommen, der er støjbelastet over 58 dB, og alene hvor der ikke på grunden er øvrige konstruktioner, der skærmer støjen. Der kan kun søges tilskud til støjværn for ejendomme, der ligger direkte op mod støjkilden. Der kan alene søges om tilskud til selve støjværnet, og ikke porte, døre og lignende. Projekter udformes i videst muligt omfang, så de ikke medfører afledte driftsomkostninger for Horsens Kommune for så vidt angår arealer, der understøtter vejens funktion (for eksempel oprensning af grøfter, der afvander vejarealer). Hvis Horsens Kommune vurderer, at et projekt under overholdelse af de øvrige retningslinjer kan realiseres, men medfører afledte driftsomkostninger for Horsens Kommune til vedligehold af sådanne arealer, kræver projektet, at der ved politisk behandling tildeles afledte driftsmidler til det konkrete projekt. Projekter udformes i videst muligt omfang, så de etableres på privat grund. Hvis Horsens Kommune vurderer, at et projekt under overholdelse af de øvrige retningslinjer kan realiseres, men medfører etablering på et offentligt ejet areal og arealet dermed alene kan tilgås fra privat grund, vil pligten til vedligehold af arealet for så vidt angår almindelig, grøn drift (græsslåning, beskæring af beplantning m.v.) overdrages til ansøgeren ved tinglysning af vedligeholdelsespligten på ejendommen der får tilskud til støjværnet. Støjpuljens midler benyttes ikke til vedligehold af arealet forud for overdragelse af vedligeholdelsespligten. Arealet overdrages i forbindelse med tinglysning af vedligeholdet, og arealet overdrages som det fremstår. Den største effekt af et støjværn opnås ved at der etableres et længere, sammenhængende støjværn. Derfor opfordres ansøgere i forbindelse med ansøgning om at undersøge, om det er relevant for naboejendomme at søge samtidig, så ansøgerne kan behandles som et samlet projekt, med forventeligt bedre effekt, lavere egenbetaling for den enkelte ejendom og forventelig højere prioritering af projektet. Såfremt en ansøger i et samlet projekt efter evaluering af pris og effekt ikke ønsker at tiltræde aftale, bortfalder projektet i sin helhed, og eventuelle tilbageværende ansøgere skal søge på ny fra en senere støjpulje. 2. Støjdæmpende vinduer Der ydes støtte til samtlige vinduer i den væg, der vender mod støjkilden, og for tilstødende vægge ydes tilskud til de vinduespartier, der rammes af mere end 58 dB jf. Horsens Kommunes støjkortlægning. Der ydes kun støtte til vinduer i opholdsrum. Opholdsrum defineres som stuer, soverum, værelser, kamre og køkkenet. Derimod er badeværelser, bryggerser, inddækkede terrasser, udestuer og gangarealer ikke omfattet. Endvidere er kældre, der ikke er registreret som boligareal er ikke omfattet. Der ydes kun støtte til udskiftning af vinduer, der er minimum 10 år gamle. Tilskuddenes størrelse Projekter, der opnår tilskud, tildeles For støjværn ydes tilskud på 65 % af den samlede tilbudspris uden moms. Ansøgers egenbetaling svinger afhængig af det konkrete projekt, men vil i udgangspunktet typisk ligge i intervallet 35.000-60.000 kr. Hertil kommer udgifter til rydning af eventuel hegn/hæk, som ansøger selv skal betale 100 %. For vinduer ydes tilskud på 65 % af rudens pris uden moms, dog maks. 500 kr. uden moms pr. m2 rudeareal. Eventuelle prisstigninger efter tilbudstidspunktet er Horsens Kommune uvedkommende. Indhentning af tilbud For tilbudsindhentning gælder at: Horsens kommune indhenter tilbud på støjværn. Ved opgaver over 100.000 kr. skal der indhentes flere tilbud på opgaven. Ansøger forpligter sig først til projektet, når de kender egenbetalingen for deres projekt. Ansøger forestår selv tilbudsindhentning for ruder. Der skal minimum indhentes to tilbud. Tilbuddene skal fremsendes til Horsens Kommune i forbindelse med ansøgning om tilskud. Af tilbuddene skal prisen for ruderne være udspecificeret. Tidsfrister og ansøgningsproces Ansøgninger kan indsendes løbende, sidste frist er 1. september året før. Tilbud forventes indhentet/fremsendt senest medio december fra entreprenører og fremdeles året før. Ansøgninger samles og forelægges til politisk behandling i april måned i året for støjpuljen. Projektet skal gennemføres det år, hvor tilsagnet er bevilget. Prioritering af projekter For prioritering af projekter gælder at: Projekterne vil blive indstillet i prioriteret rækkefølge til politisk behandling i det relevante udvalg efter, hvad der giver størst samlede effekt, økonomisk og støjmæssigt. Der foretages i den sammenhæng en vægtning, så projekter, hvor støjværn primært reducerer støj ved selve boligen, prioriteres højere, frem for projekter hvor støjværnet primært reducerer støj i havearealer. For tilskud til vinduer prioriteres udskiftning af ældre vinduer højest. Fakturering Fakturering for støjskærme skal ske fra entreprenøren direkte til Horsens Kommune for den del, der ydes tilskud til. Dokumentation af udgifter for ruder skal indsendes til Horsens Kommune for den del, der ydes tilskud til, hvorefter udbetaling foretages fra Horsens Kommune. Søg tilskud fra støjpuljen Tjek først at betingelserne i ovenstående retningslinjer opfyldt. Hent og udfyld ansøgningsskemaet til støjpuljen (pdf) Send os din ansøgning vedhæftet en e-mail til trafik@horsens.dk. Hent vores vejledning til støjpuljen (pdf). Øvrige projekter Hvis vi ikke modtager ansøgninger til støjpuljen, kan midlerne anvendes til kommunale projekter, eksempelvis til etablering af støjreducerende belægninger.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#stoejpuljen-soeg-stoette-til-stoejdaempende-virkemidler-d9",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "rolling",
+    "status": "open",
+    "amounts_kr": [
+      60000,
+      500,
+      100000
+    ],
+    "content_hash": "a6897accc0cbe134a87ec2cca169bf184a060442b7292c398aef9fbbc2672bc3",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/bygninger#stoejpuljen-soeg-stoette-til-stoejdaempende-virkemidler-d9",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Retningslinjer for foreninger i samarbejdet med skoler",
+    "summary": "Foreningen skal inden et samarbejde påbegyndes med en skole have gjort sig bekendt med og efterleve følgende retningslinjer for foreningen og de foreningspersoner som står for aktiviteterne i skolen.",
+    "description": "Børneattest En børneattest er en særlig form for straffeattest, som kun indeholder oplysninger om domme m.v. for seksualforbrydelser begået mod børn under 15 år. Udstedelse af en børneattest kræver altid samtykke fra den person, attesten vedrører. På børne‐ og ungeområdet skal der altid indhentes en børneattest hvis følgende betingelser er opfyldt: 1. Der er direkte kontakt med børn under 15 år, eller mulighed for at opnå direkte kontakt. Direkte kontakt omfatter hovedsagelig kontakt, som giver mulighed for at skabe et tillidsforhold mellem barnet og den voksne. 2. Der foreligger en form for aftale om ansættelses- eller beskæftigelsesforhold. 3. Muligheden for at opnå direkte kontakt med barnet foreligger som led i udførelse af personens opgaver. 4. Der er tale om en fast tilknytning, dvs. en tilknytning som ligger ud over en kortvarig og enkeltstående kontakt. Vær opmærksom på, at pågældende person som attesten vedrører tillige skal give sit samtykke til, at attesten udleveres til skolen/dagtilbuddet. Børneattesten skal foreligge før samarbejdet påbegyndes. Tavshedspligt Ansatte ved Horsens Kommune er omfattet af forvaltningslovens § 27 om tavshedspligt. Forvaltningslovens § 27 har følgende ordlyd: Den, der virker inden for den offentlige forvaltning, har tavshedspligt, jf. straffelovens § 152 og §§ 152 c-152 f, med hensyn til oplysninger om: 1. Enkeltpersoners private, herunder økonomiske, forhold og 2. Tekniske indretninger eller fremgangsmåder eller om drifts- eller forretningsforhold el.lign., for så vidt det er af væsentlig økonomisk betydning for den person eller virksomhed, oplysningerne angår, at oplysningerne ikke videregives. (…) Forsikringsforhold Horsens Kommunes forsikringer dækker som udgangspunkt kun medarbejdere, som er ansat i Horsens Kommune. Udgangspunktet er derfor, at det er samarbejdsaktørens ansvar at sørge for, at de pågældende frivillige, ansatte mv. som samarbejdsaktøren ”sender” til opfyldelse af aftalen, enten er dækket af egne, private ulykkes- og ansvarsforsikringer, eller at samarbejdsaktøren har tegnet arbejdsskade- og erhvervsansvarsforsikringer, som dækker de pågældende. Hvis der ikke er tegnet de nævnte forsikringer, kan de pågældende risikere, at få pålagt et personligt erstatningsansvar hvis de forårsager skade på andre eller andres ting, eller ikke at være dækket af en forsikring, hvis de selv kommer til skade. En skade KAN dog være dækket af Horsens Kommunes forsikringer. Dette kræver dog, at den tilskadekomne er underlagt instruktionsbeføjelse i forhold til Horsens Kommune, og den aktivitet som den tilskadekomne udfører, skulle være udført af en af kommunens ansatte, hvis ikke aktiviteten udføres af den tilskadekomne, og aktiviteten er udført i kommunens interesse Afgørelse af om en skade er dækket af Horsens Kommunes forsikringer vil afhænge af en konkret vurdering. Tilsyn Samarbejde med folkeskoler: I medfør af folkeskolelovens § 52, og bekendtgørelse nr. 703 af 23. juni 2014 om tilsynet med folkeskolens elever i skoletiden, har skolen pligt til at føre tilsyn med skolens elever i skoletiden. Det betyder blandt andet, at skolen har ansvaret for, at de opgaver som samarbejdsaktøren løser, udføres i overensstemmelse med reglerne. Samarbejdsaktøren er forpligtet til at udføre tilsynet på skolens vegne, i overensstemmelse med skolelederens anvisninger. Skolelederen er i den forbindelse berettiget til at besigtige de lokaliteter hvor opgaverne løses ligesom skolelederen er berettiget til adgang til lokalerne mhp. stikprøvevis kontrol.",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/retningslinjerforforeningerisamarbejdetmedskoler",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "info_page",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "28f990c487d7141a77d7e5f66c590ed7a6307e512c2fbd14c94de9759420c244",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/retningslinjerforforeningerisamarbejdetmedskoler",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Grøn pulje",
+    "summary": "Søg støtte til projekter, som er til gavn for lokalsamfund og naboer til nye vindmøller og solcelleanlæg",
+    "description": "I forbindelse med etablering af solcelleanlæg eller vindmøller skal der oprettes en grøn pulje for hvert vedvarende energi-projekt (VE-anlæg). Det er opstillerne af VE-anlægget, som skal betale til grøn pulje, og kommunen som administrerer midlerne. Formålet med puljen er at støtte forskellige lokale projekter, som er til gavn for naboer til VE-anlæg og til gavn for lokalsamfundet generelt. Projekterne kan fx indebære klima- og naturtiltag, energiforbedringer og andre grønne tiltag, byforskønnelse og have rekreative og kulturelle formål. Når en pulje er åben, kan du finde den her på siden Der er endnu ikke åbnet for, at man kan søge om midler fra grøn pulje, da puljen først bliver aktuel i forbindelse med etablering af et konkret solcelleanlæg eller vindmøller. Retningslinjer Se vores retningslinjer for ansøgningsproces og fordeling af midler fra puljen (pdf).",
+    "deadline_table": [],
+    "source_url": "https://horsens.dk/fritid/soegstoette/groenpulje",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [],
+    "past_deadlines": [],
+    "deadline_type": "unknown",
+    "status": "unknown",
+    "amounts_kr": [],
+    "content_hash": "1aed91abb9631dbdd9d71ba0dfc8f633f6af64646d24ec6ebe0965bbab389766",
+    "missing_fields": [
+      "deadline",
+      "cycle",
+      "funding_amount",
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "status",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.35,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/groenpulje",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  },
+  {
+    "title": "Tilgængelighedspulje",
+    "summary": "Søg støtte til initiativer, der gør steder og aktiviteter mere tilgængelige for flere.",
+    "description": "Horsens Kommune har en Tilgængelighedspulje på over 200.000 kr. årligt. Formålet med Tilgængelighedspuljen er at støtte initiativer, der sikrer gode tilgængeligheds- og anvendelsesforhold i Horsens Kommune. Puljen støtter projekter der skaber, eller øger, tilgængeligheden, og gør det muligt for mennesker med en funktionsnedsættelse at færdes og deltage i alle dele af samfundet på lige fod med andre. Projektet skal være placeret et sted med offentlig adgang i Horsens Kommune. Hvordan defineres tilgængelighed? Tilgængelighed kan være både fysisk, psykisk og mentalt. Det kan fx være ramper, skærmende omstændigheder eller andre tiltag, der gør arrangementer, eller steder, tilgængelige for en målgruppe, som ellers ville have svært ved at deltage på lige fod med andre. Du kan søge midler til: midlertidige arrangementer eller begivenheder, hvis der kan skabes tilgængelighed for en gruppe, som ellers ikke har mulighed for at deltage permanente ændringer af fysiske forhold - eksempelvis ramper, døråbnere, handicaptoiletter mm. Der kan ydes støtte til såvel et selvstændigt projekt, som en forbedring af tilgængeligheds-og anvendelsesforhold i et eksisterende projekt (etableret eller projekteret) Midler fra Tilgængelighedspuljen kan enten finansiere hele projektet eller indgå som medfinansiering i andre puljeansøgninger. Hvis projektet er et bygge- eller anlægsprojekt, skal de nødvendige byggetilladelser være indhentet på forhånd. Hvad skal en ansøgning indeholde? En beskrivelse af projektet En redegørelse for, hvordan projektet arbejder med at øge tilgængeligheden Et konkret budget, herunder indhentet pristilbud. Angivelse af CVR-nummer Hvad kan du ikke søge støtte til? Tiltag hos privat person eller privat husstand Tilskud til driftsudgifter Sådan gør du: Udfyld ansøgningsskemaet og vedhæft projektbeskrivelse, budget, indhentet pristilbud og eventuelle bilag\n\nHar du spørgsmål til Tilgængelighedspuljen, og/eller hvordan du søger, er du meget velkommen til at kontakte Handicaprådets administration; Sara Arnfeldt Kammersgaard, mail: saar@horsens.dk, telefon: 24 79 42 55 Ansøgningsfrist Indsendelse af ansøgninger kan ske løbende. I skemaet kan du se dato for, hvornår ansøgningen senest skal være modtaget for at kunne blive behandlet ved næstkommende møde: Hvordan behandler Handicaprådet min ansøgning? Når din ansøgning ankommer, screener Handicaprådet for, om den lever op til de fastsatte kriterier, og om budgettet er realistisk. Din ansøgning kommer på Handicaprådets offentlige dagsorden, når den skal behandles. Det er Handicaprådet der alene afgør om et projekt tildeles midler fra Tilgængelighedspuljen. Handicaprådet er ikke bundet af det ansøgte beløb. Handicaprådet kan derfor vælge at tildele et projekt et mindre beløb end det, som er ansøgt om. Du får direkte besked lige efter, at din ansøgning er behandlet på rådets møde. Dokumentation for gennemførelse af projektet Hvis der bevilges tilskud til tilgængelighedsprojektet, skal I som tilskudsmodtager senest 3 måneder efter, at projektet er gennemført, indsende regnskab og en kort redegørelse vedrørende projektet til mail: jobogvelfaerd@horsens.dk - skriv i emnefelt: tilgængelighedspulje Læs om Handicaprådet her.\n\nSeneste tildelinger fra puljen Handicaprådet har i 2024 og 2025 uddelt følgende midler fra tilgængelighedspuljen. Haldrup forsamlingshus 197.711 kr. Hanstedholm - natursti 133.500 kr. Friluftsteamet på vegne af Handicaprådet - strandmåtte på Husodde strand 50.000 kr. Folkekirkens nødhjælp, rampe ved bagindgang 6.125 kr.",
+    "deadline_table": [
+      {
+        "submit": "3. marts 2026",
+        "decided": "19. marts 2026"
+      },
+      {
+        "submit": "5. maj 2026",
+        "decided": "21. maj 2026"
+      },
+      {
+        "submit": "4. august 2026",
+        "decided": "20. august 2026"
+      },
+      {
+        "submit": "6. oktober 2026",
+        "decided": "22. oktober 2026"
+      },
+      {
+        "submit": "1. december 2026",
+        "decided": "17. december 2026"
+      }
+    ],
+    "source_url": "https://horsens.dk/fritid/soegstoette/tilgaengelighedspulje",
+    "funding_body": "Horsens Kommune",
+    "level": "municipal",
+    "funder_type": "public_pool",
+    "application_language": "da",
+    "source": "horsens_kommune",
+    "last_checked": "2026-09-15T10:01:27.328359+00:00",
+    "record_kind": "call",
+    "deadlines": [
+      {
+        "raw": "6. oktober 2026",
+        "date": "2026-10-06"
+      },
+      {
+        "raw": "1. december 2026",
+        "date": "2026-12-01"
+      }
+    ],
+    "past_deadlines": [
+      {
+        "raw": "3. marts 2026",
+        "date": "2026-03-03"
+      },
+      {
+        "raw": "5. maj 2026",
+        "date": "2026-05-05"
+      },
+      {
+        "raw": "4. august 2026",
+        "date": "2026-08-04"
+      }
+    ],
+    "deadline_type": "multi_round",
+    "status": "open",
+    "amounts_kr": [
+      200000,
+      197711,
+      133500,
+      50000,
+      6125
+    ],
+    "content_hash": "7263c0e307dd333bcb40e0571c6140cb20f1cb1a4961bd33f96ff56541bac9e3",
+    "missing_fields": [
+      "thematic_areas",
+      "keywords",
+      "opening_date",
+      "project_duration",
+      "eligibility_conditions",
+      "target_applicant_types",
+      "ngo_eligible",
+      "required_partners",
+      "submission_route"
+    ],
+    "completeness": 0.55,
+    "call_sources": [
+      {
+        "source": "horsens_kommune",
+        "source_url": "https://horsens.dk/fritid/soegstoette/tilgaengelighedspulje",
+        "last_checked": "2026-09-15T10:01:27.328359+00:00"
+      }
+    ]
+  }
+]

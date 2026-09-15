@@ -220,18 +220,6 @@ skipped. Never add a rule that returns a bare number.
 
 ### Evaluation
 
-There is no train/test split, because the system is not trained. Three layers instead:
-
-1. Unit tests per rule, especially edge cases: missing data, hard-eligibility failure.
-2. Invariant tests derived from the project's own delimitation claims (e.g. a hard-eligibility
-   failure can never produce a "strong fit").
-3. Agreement against PYN's own expert labels — the Funding Opportunities Map contains ~70 rows
-   already rated Strong/Possible/Conditional with a lead/partner role. **Tune weights on §3 only;
-   validate on §4–§6.** Tuning against the full label set and then reporting agreement on it is
-   circular.
-
-The label set contains no negative examples, so generate those manually from real but irrelevant
-calls.
 
 ---
 
