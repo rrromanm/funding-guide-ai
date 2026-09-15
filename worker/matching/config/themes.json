@@ -1,0 +1,8 @@
+{
+  "local_community": ["lokalsamfund", "lokalområde", "fællesskab", "forening", "borger", "landsby", "opland"],
+  "youth": ["unge", "ungdom", "børn", "youth"],
+  "student": ["studerende", "studieliv", "uddannelse", "student"],
+  "social": ["social", "frivillig", "inklusion", "udsat", "ensom", "integration"],
+  "international": ["international", "interkulturel", "tværkulturel", "udveksling", "nyankomne"],
+  "green": ["natur", "klima", "grøn", "bæredygtig", "miljø", "genbrug", "biodiversitet", "affald"]
+}
