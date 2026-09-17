@@ -1,17 +1,14 @@
-# for each source: discover() -> fetch() -> parse() -> normalise() -> dedupe() -> matching
+# for each source: discover() -> fetch() -> parse() -> normalise() -> dedupe() -> store()
 from __future__ import annotations
 
-import json
 from datetime import datetime, timezone
-from pathlib import Path
 
 import requests
 
 from scrapers.config import REQUEST_TIMEOUT, USER_AGENT
 from scrapers.pipeline.normalise import normalise
+from scrapers.pipeline.store import store
 from scrapers.sources import SOURCES
-
-WORKER = Path(__file__).resolve().parent.parent.parent
 
 def fetch(url: str) -> str | None:
     try:
@@ -63,30 +60,36 @@ def dedupe(records: list[dict]) -> list[dict]:
     return list(merged.values())
 
 
-def run() -> list[dict]:
-    records = []
+def run() -> tuple[list[dict], list[dict]]:
+    records, health = [], []
     for source in SOURCES:
         name = source.__name__.rsplit(".", 1)[-1]
         print(f"- {name}")
+        stamp = datetime.now(timezone.utc).isoformat()
         try:
             got = collect(source)
         except Exception as exc:
             print(f"    ! {name} aborted ({exc.__class__.__name__}: {exc})")
-            continue
-        print(f"    {len(got)} raw records")
+            got = []
+        else:
+            print(f"    {len(got)} raw records")
         records.extend(got)
+        health.append({"key": name,
+                       "name": source.DEFAULTS.get("funding_body", name),
+                       "source_type": source.DEFAULTS.get("level"),
+                       "last_checked": stamp if got else None})
 
     # Normalise before dedupe, because dedupe needs the content_hash
-    return dedupe(normalise(records))
+    return dedupe(normalise(records)), health
 
 
 if __name__ == "__main__":
-    results = run()
-    out = WORKER / "data/normalised.json"
-    out.write_text(json.dumps(results, ensure_ascii=False, indent=2))
+    results, health = run()
 
     kinds = {}
     for r in results:
         kinds[r["record_kind"]] = kinds.get(r["record_kind"], 0) + 1
-    print(f"\n{len(results)} records -> {out}")
-    print("  " + ", ".join(f"{v} {k}" for k, v in sorted(kinds.items())))
+    print("\n" + ", ".join(f"{v} {k}" for k, v in sorted(kinds.items())))
+
+    calls, rounds = store(results, health)
+    print(f"stored {calls} calls, {rounds} rounds")

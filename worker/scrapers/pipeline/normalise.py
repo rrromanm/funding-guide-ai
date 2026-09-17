@@ -1,27 +1,3 @@
-"""Shared normaliser: raw per-source records -> comparable funding-call records.
-
-WHERE THIS SITS
-    discover() -> fetch() -> parse() -> [normalise()] -> dedupe() -> matching
-
-A source's parse() hands back loose page text: a title, maybe a summary, a blob of
-description, maybe a deadline table. That is not yet comparable across sources — a
-Danish municipal page and an English EU page describe the same things differently.
-This module turns that text into the same set of typed fields every time:
-
-    record_kind     is this an actual call, a stub, or just an info page?
-    deadlines       upcoming rounds, as ISO dates
-    past_deadlines  rounds already gone (kept: they predict the next cycle)
-    deadline_type   fixed / multi_round / rolling / unknown   (the "cycle" axis)
-    status          open / closed / unknown                   (the "status" axis)
-    amounts_kr      any DKK figures found
-    content_hash    identity, used by dedupe() to merge sightings
-    missing_fields  which of the 20 modelled fields this record lacks
-    completeness    that, as a 0-1 ratio, feeding the confidence label
-
-Nothing here names a funder or a website, which is why one copy serves all sources.
-
-Branch coverage lives in tests/test_normalise.py.
-"""
 from __future__ import annotations
 
 import hashlib

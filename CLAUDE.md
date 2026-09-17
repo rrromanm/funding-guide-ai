@@ -93,59 +93,6 @@ interface. Never special-case a source inside the pipeline.
 
 ---
 
-## 4. Data model
-
-Defined in `supabase/migrations/`. Core tables: `funding_calls`, `call_sources`, `org_profile`,
-`match_results`, `watchlist`, plus field overrides and ingestion logging.
-
-### funding_calls
-
-Programme name and call title · funding body · thematic areas and keywords · short summary and
-cleaned long description · opening date and deadline · estimated project duration · eligibility
-conditions and target applicant types · whether NGOs are eligible and whether newer/smaller
-organisations are realistic · number of required partners · application language and submission
-route · last-checked date · confidence level.
-
-Three structural decisions that differ from the naive version:
-
-- **`level` and `funder_type` are separate.** Geography (local / municipal / regional / national /
-  Nordic / EU) and funder category (public pool / private foundation / EU programme) are
-  independent axes. Collapsing them into one `level_of_funding` enum loses information and produces
-  unfillable filter values.
-- **`status` and `cycle` are separate.** Status is upcoming / open / closed / archived. Cycle is
-  recurring / rolling / annual / continuous. A call can be closed *and* recurring — that
-  combination is exactly what predicts the next round.
-- **Budget range was replaced by `funding_type` + `unit_cost_rules` (JSONB).** PYN's real funding
-  activity is Erasmus+ mobility: reimbursement-based per-participant unit costs, travel by distance
-  band, accommodation and meals covered. A single min–max range cannot represent that.
-
-### Supporting tables
-
-- **`call_sources`** — one row per sighting of a call at a source URL. Deduplication depends on
-  this: the same Erasmus+ action can arrive from both the Programme Guide and the EU portal, and
-  the retained record must keep every URL it was seen at.
-- **Field overrides** — manual edits must survive the next ingestion run of that source. Without
-  this, correcting a mis-parsed deadline is undone on the next crawl.
-
-### org_profile
-
-Legal status, country, address, year established · thematic areas · target and age groups · local
-and international project experience · previous role experience (applicant / coordinator / partner)
-· preferred project size, themes, partner countries · languages · staff capacity and time available
-for proposal writing · annual strategic priorities.
-
-The profile currently holds placeholder values in `worker/scripts/seed_profile.py`. PYN's real
-profile still needs to be collected.
-
-### match_results
-
-Score and fit label (strong fit / possible fit / weak fit / not recommended) · explanation ·
-matched themes, target groups, activities · warnings · confidence · applicant-vs-partner
-recommendation with justification · language recommendation with reason · manual override state
-(the original engine output is retained alongside any override).
-
----
-
 ## 5. Funding sources
 
 **There is no usable public API anywhere on this source list.** This was verified, not assumed:
