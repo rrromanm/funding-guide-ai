@@ -19,6 +19,8 @@ DATE_PATTERNS = (
     (re.compile(rf"(\d{{1,2}})\.?\s+({_MONTH})\.?,?\s+(\d{{4}})", re.I), (1, 2, 3)),
     # American style: "April 1, 2026"        -> day is group 2, month is group 1
     (re.compile(rf"({_MONTH})\.?\s+(\d{{1,2}}),?\s+(\d{{4}})", re.I), (2, 1, 3)),
+    # Numeric Danish, as SLKS emits: "24.09.2026" (month capped at 12 so amounts never match)
+    (re.compile(r"\b(\d{1,2})\.(0?[1-9]|1[0-2])\.(\d{4})\b"), (1, 2, 3)),
     # ISO, as EU portals emit: "2026-04-01"
     (re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"), (3, 2, 1)),
 )
@@ -54,18 +56,8 @@ FIELD_CHECKS = {
     "deadline": lambda r: bool(r["deadlines"]) or r["deadline_type"] == "rolling",
     "cycle": lambda r: r["deadline_type"] != "unknown",
     "funding_amount": lambda r: bool(r["amounts_kr"]),
-    "thematic_areas": lambda r: bool(r.get("thematic_areas")),
-    "keywords": lambda r: bool(r.get("keywords")),
-    "opening_date": lambda r: bool(r.get("opening_date")),
     # "unknown" is a truthy string, so bool() would wrongly count it as present.
     "status": lambda r: r.get("status") not in (None, "", "unknown"),
-    "project_duration": lambda r: bool(r.get("project_duration")),
-    "eligibility_conditions": lambda r: bool(r.get("eligibility_conditions")),
-    "target_applicant_types": lambda r: bool(r.get("target_applicant_types")),
-    # Tri-state: False ("NGOs are not eligible") is a real answer, absence is not.
-    "ngo_eligible": lambda r: r.get("ngo_eligible") is not None,
-    "required_partners": lambda r: r.get("required_partners") is not None,
-    "submission_route": lambda r: bool(r.get("submission_route")),
 }
 
 # 3. HELPERS

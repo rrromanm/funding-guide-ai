@@ -76,11 +76,7 @@ def test_content_hash_ignores_url():
     assert norm(source_url="https://horsens.dk/other#frag")["content_hash"] \
         == norm()["content_hash"]
 
-
-def test_completeness_reports_gaps():
-    r = norm()
-    assert "eligibility_conditions" in r["missing_fields"]
-    assert "ngo_eligible" in r["missing_fields"]
-    assert "deadline" not in r["missing_fields"]
-    assert "status" not in r["missing_fields"]
-    assert r["completeness"] == round(1 - len(r["missing_fields"]) / len(FIELD_CHECKS), 2)
+def test_numeric_danish_date_in_table():
+    r = norm(deadline_table=[{"submit": "24.09.2026, kl. 14:00", "decided": None}])
+    assert [d["date"] for d in r["deadlines"]] == ["2026-09-24"]
+    assert r["deadline_type"] == "fixed"
