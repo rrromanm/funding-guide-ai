@@ -48,7 +48,7 @@ def score_call(call: dict, profile: dict, config: dict, rules) -> dict:
         confidence = "high"
 
     return {
-        "call_id": call["content_hash"],
+        "call_id": call["id"],
         "title": call["title"],
         "score": score,
         "fit_label": label,
