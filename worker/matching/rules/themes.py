@@ -10,7 +10,7 @@ def theme_overlap(call, profile, config):
     text = f"{call.get('title') or ''} {call.get('description') or ''}".lower()
     reasons = []
     for theme, keywords in config["themes"].items():
-        if theme not in profile["framings"]:
+        if theme not in profile["themes"]:
             continue 
         hits = [kw for kw in keywords if re.search(r"\b" + re.escape(kw), text)]
         if hits:

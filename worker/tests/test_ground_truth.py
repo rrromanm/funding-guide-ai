@@ -1,6 +1,15 @@
 from matching.run import run
 
-RESULTS = {r["call_id"]: r for r in run()}
+PROFILE = {
+    "name": "Pangaea Youth Network",
+    "municipality": "Horsens",
+    "has_facilities": True,
+    "staff_count": 0,
+    "established_year": 2023,
+    "themes": ["local_community", "youth", "student", "social", "international", "green"],
+}
+
+RESULTS = {r["call_id"]: r for r in run(PROFILE)}
 
 
 def _all(fragment: str) -> list[dict]:
@@ -19,14 +28,20 @@ def test_strong_or_possible_fits():
     assert _one("Udviklings- og aktivitetspuljen")["fit_label"] in ("strong_fit", "possible_fit")
 
 
-def test_homeowner_and_facility_pools_blocked():
+def test_homeowner_pools_blocked():
     for r in _all("renovering af din bolig") + _all("Bygningsforbedringsfond") \
-            + _all("Støjpuljen") + _all("Nedrivnings- og omdannelsespuljen"):
+            + _all("Støjpuljen"):
         assert r["has_blocking_barrier"], r["title"]
         assert r["fit_label"] == "not_recommended", r["title"]
-    faci = _one("Facilitetspuljen")
-    assert faci["has_blocking_barrier"]
-    assert any(x["rule_key"] == "facility_only" for x in faci["reasons"])
+
+
+def test_facility_gate_blocks_only_without_a_venue():
+    faci = [r for r in run({**PROFILE, "has_facilities": False})
+            if "Facilitetspuljen" in r["title"]]
+    assert faci, "no matched call titled like 'Facilitetspuljen'"
+    assert faci[0]["has_blocking_barrier"]
+    assert any(x["rule_key"] == "facility_only" for x in faci[0]["reasons"])
+    assert not _one("Facilitetspuljen")["has_blocking_barrier"]
 
 
 def test_blocker_never_outweighed_by_themes():
