@@ -1,7 +1,6 @@
 {
   "name": "Pangaea Youth Network",
   "legal_status": "nonprofit_association",
-  "city": "Horsens",
   "municipality": "Horsens Kommune",
   "region": "Midtjylland",
   "country": "DK",
@@ -26,9 +25,8 @@
   ],
   "languages": ["da", "en"],
   "established_recently": true,
-  "admin_capacity": "limited",
-  "has_venue": false,
-  "paid_staff": false,
+  "has_facilities": false,
+  "staff_count": 0,
   "experience_role": "partner",
   "experience_scope": "international youth projects"
 }

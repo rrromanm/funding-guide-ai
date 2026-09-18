@@ -11,8 +11,8 @@ ENV_FILE = Path(__file__).resolve().parent.parent.parent / ".env"
 
 CALL_COLS = (
     "source source_url content_hash title summary description funding_body level funder_type "
-    "status deadline_type amounts_kr eligibility ngo_eligible record_kind application_language "
-    "last_checked missing_fields completeness other_urls updated_at"
+    "status deadline_type amounts_kr eligibility ngo_eligible record_kind "
+    "last_checked missing_fields completeness updated_at"
 ).split()
 
 ROUND_COLS = ("call_id", "round_no", "deadline_date", "decision_date")
@@ -55,7 +55,6 @@ def to_source(rec: dict) -> dict:
 
 def to_call(rec: dict) -> dict:
     row = {f: rec.get(f) for f in CALL_COLS}
-    row["other_urls"] = [s["source_url"] for s in rec["call_sources"][1:]]
     row["updated_at"] = rec["last_checked"]
     return row
 

@@ -14,7 +14,6 @@ def test_every_record_maps_to_a_call_row():
         assert row["record_kind"] in ("call", "stub", "info_page")
         assert row["level"] in (None, "local", "municipal", "regional", "national", "nordic", "eu")
         assert row["funder_type"] in (None, "public_pool", "foundation", "eu_programme", "other")
-        assert len(row["other_urls"]) == len(rec["call_sources"]) - 1
 
 
 def test_rounds_carry_both_dates_and_unique_numbers():

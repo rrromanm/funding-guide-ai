@@ -1,3 +1,10 @@
 .DS_Store
 __pycache__/
 *.py[cod]
+
+# Claude / agent instruction files stay local
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.claude/
+.mcp.json
