@@ -61,7 +61,7 @@ def facility_only(call, profile, config):
     if ACTIVITY.search(text) and not FACILITY.search(call.get("title") or ""):
         return [Reason("info", "facility_mentioned",
                        "Call mentions facilities but also funds activities")]
-    if not profile.get("has_venue"):
+    if not profile.get("has_facilities"):
         return [Reason("blocker", "facility_only",
                        "Pool funds physical facilities/buildings only and PYN has no venue",
                        -100)]
@@ -71,7 +71,7 @@ def facility_only(call, profile, config):
 def geographic(call, profile, config):
     if call.get("level") != "municipal":
         return []
-    home = profile.get("municipality") or profile.get("city") or ""
+    home = profile.get("municipality") or ""
     if home and re.search(re.escape(home.split()[0]), _text(call), re.IGNORECASE):
         return [Reason("info", "geographic_match",
                        f"Activity is in {home}, where {profile['name']} is based")]
