@@ -9,6 +9,7 @@ venv/
 # Packaging (from pip install -e .)
 build/
 dist/
+*.egg-info/
 
 # Testing
 .pytest_cache/
