@@ -6,13 +6,14 @@ from matching.run import run
 PROFILE = {
     "name": "Pangaea Youth Network",
     "municipality": "Horsens",
-    "has_facilities": False,
+    "has_facilities": True,
     "staff_count": 0,
     "established_year": 2023,
     "themes": ["local_community", "youth", "student", "social", "international", "green"],
 }
 
-RESULTS = {r["call_id"]: r for r in run(PROFILE)}
+CALLS = json.loads((Path(__file__).parent / "fixtures/calls.json").read_text())
+RESULTS = {r["call_id"]: r for r in run(CALLS, PROFILE)}
 
 def _all(fragment: str) -> list[dict]:
     hits = [r for r in RESULTS.values() if fragment in r["title"]]
@@ -38,7 +39,7 @@ def test_homeowner_pools_blocked():
 
 
 def test_facility_gate_blocks_only_without_a_venue():
-    faci = [r for r in run({**PROFILE, "has_facilities": False})
+    faci = [r for r in run(CALLS, {**PROFILE, "has_facilities": False})
             if "Facilitetspuljen" in r["title"]]
     assert faci, "no matched call titled like 'Facilitetspuljen'"
     assert faci[0]["has_blocking_barrier"]
