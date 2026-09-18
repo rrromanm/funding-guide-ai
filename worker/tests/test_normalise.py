@@ -1,6 +1,6 @@
 from datetime import date
 
-from scrapers.pipeline.normalise import FIELD_CHECKS, normalise
+from scrapers.pipeline.normalise import normalise
 
 TODAY = date(2026, 1, 1)
 
@@ -15,7 +15,6 @@ SAMPLE = {
 
 
 def norm(**overrides) -> dict:
-    """One normalised record built from SAMPLE with the given fields replaced."""
     return normalise([dict(SAMPLE, **overrides)], today=TODAY)[0]
 
 

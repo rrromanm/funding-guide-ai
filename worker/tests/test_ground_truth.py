@@ -1,6 +1,10 @@
+import json
+from pathlib import Path
+
 from matching.run import run
 
-RESULTS = {r["call_id"]: r for r in run()}
+CALLS = json.loads((Path(__file__).parent / "fixtures/calls.json").read_text())
+RESULTS = {r["call_id"]: r for r in run(CALLS)}
 
 
 def _all(fragment: str) -> list[dict]:

@@ -5,3 +5,4 @@ USER_AGENT = (
     "FundingGuideAI/0.1 (bachelor project, Pangaea Youth Network; "
     "contact@pangaeayouth.org)"
 )
+FETCH_DELAY = 1
