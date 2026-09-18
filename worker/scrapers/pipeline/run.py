@@ -1,6 +1,7 @@
 # for each source: discover() -> fetch() -> parse() -> normalise() -> dedupe() -> store()
 from __future__ import annotations
 
+import time
 from datetime import datetime, timezone
 
 import requests
@@ -30,8 +31,9 @@ def collect(source) -> list[dict]:
     records = []
     for url in source.discover():
         html = fetch(url)
+        time.sleep(1)
         if html is None:
-            continue 
+            continue
         try:
             records.extend(source.parse(url, html))
         except Exception as exc:
@@ -39,8 +41,7 @@ def collect(source) -> list[dict]:
 
     stamp = datetime.now(timezone.utc).isoformat()
     for record in records:
-        # DEFAULTS carries what the source knows about itself and the parser cannot
-        record.update(source.DEFAULTS, source=name, last_checked=stamp)
+        record.update({**source.DEFAULTS, **record}, source=name, last_checked=stamp)
     return records
 
 

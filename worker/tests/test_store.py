@@ -1,9 +1,25 @@
-import json
+from datetime import date
 from pathlib import Path
 
+from scrapers.pipeline.normalise import normalise
+from scrapers.pipeline.run import dedupe
 from scrapers.pipeline.store import CALL_COLS, ROUND_COLS, to_call, to_rounds
 
-RECORDS = json.loads((Path(__file__).parent.parent / "data/normalised.json").read_text())
+BODY = "Du kan søge op til 150.000 kr. " + "x" * 500
+SEEN = {"source": "horsens", "last_checked": "2026-01-01T00:00:00+00:00"}
+RAW = [
+    {**SEEN, "title": "Prosepuljen", "source_url": "https://horsens.dk/a",
+     "description": BODY + " Ansøgningsfrist er 1. april 2026 og 1. september 2026."},
+    {**SEEN, "title": "Tabelpuljen", "source_url": "https://horsens.dk/b",
+     "description": BODY,
+     "deadline_table": [{"submit": "1. april 2025", "decided": "1. juni 2025"},
+                        {"submit": "1. april 2026", "decided": "1. juni 2026"}]},
+    {**SEEN, "title": "Tabelpuljen", "source_url": "https://horsens.dk/b-copy",
+     "description": BODY,
+     "deadline_table": [{"submit": "1. april 2025", "decided": "1. juni 2025"},
+                        {"submit": "1. april 2026", "decided": "1. juni 2026"}]},
+]
+RECORDS = dedupe(normalise(RAW, today=date(2026, 1, 1)))
 
 def test_every_record_maps_to_a_call_row():
     for rec in RECORDS:
