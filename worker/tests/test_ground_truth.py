@@ -1,16 +1,18 @@
+import json
+from pathlib import Path
+
 from matching.run import run
 
 PROFILE = {
     "name": "Pangaea Youth Network",
     "municipality": "Horsens",
-    "has_facilities": True,
+    "has_facilities": False,
     "staff_count": 0,
     "established_year": 2023,
     "themes": ["local_community", "youth", "student", "social", "international", "green"],
 }
 
 RESULTS = {r["call_id"]: r for r in run(PROFILE)}
-
 
 def _all(fragment: str) -> list[dict]:
     hits = [r for r in RESULTS.values() if fragment in r["title"]]
