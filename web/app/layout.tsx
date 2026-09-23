@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Nunito_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/sidebar";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -32,10 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${poppins.variable} ${nunitoSans.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex">
-        <Sidebar />
-        <main className="flex-1 min-w-0">{children}</main>
-      </body>
+      <body className="min-h-full flex">{children}</body>
     </html>
   );
 }

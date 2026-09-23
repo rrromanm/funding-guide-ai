@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "@/app/login/actions";
 
 const nav = [
   { href: "/", label: "Funding calls", count: 6 },
@@ -69,10 +70,15 @@ export default function Sidebar() {
           <div className="flex size-11 items-center justify-center rounded-full bg-violet-50 font-semibold text-violet-800">
             RM
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="font-bold leading-tight">Romans M.</div>
             <div className="text-[14px] text-muted">Grants coordinator</div>
           </div>
+          <form action={signOut} className="ml-auto">
+            <button type="submit" className="btn btn-tertiary">
+              Sign out
+            </button>
+          </form>
         </div>
       </div>
     </aside>
