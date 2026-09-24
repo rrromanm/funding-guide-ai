@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env --watch src/index.ts",
+    "start": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env src/index.ts",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22",
+    "@types/swagger-ui-express": "^4.1.8",
+    "typescript": "^5"
+  }
+}
