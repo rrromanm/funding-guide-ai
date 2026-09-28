@@ -7,10 +7,10 @@ from psycopg.rows import dict_row
 
 from matching.engine import score_call
 from matching.rules import RULES
+from matching.store import store_matches
 from scrapers.pipeline.store import dsn
 
 WORKER = Path(__file__).resolve().parent.parent
-OUT = WORKER / "out/match_results.json"
 
 CONFIG = {"themes": json.loads((WORKER / "matching/config/themes.json").read_text())}
 
@@ -38,5 +38,6 @@ def run(calls: list[dict] | None = None, profile: dict | None = None) -> list[di
 
 if __name__ == "__main__":
     results = run()
-    OUT.write_text(json.dumps(results, indent=2, ensure_ascii=False, default=str))
-    print(f"scored {len(results)} calls -> {OUT}")
+    matches, reasons = store_matches(results)
+    print(f"stored {matches} matches, {reasons} reasons "
+          f"({len(results) - matches} left to the admin's review)")
