@@ -1,12 +1,14 @@
 import { createApp } from "./app.ts";
+import { env } from "./config/env.ts";
+import { db } from "./lib/db.ts";
 
-const app = createApp();
-const port = Number(process.env.PORT ?? 4000);
-
-if (!Number.isInteger(port)) {
-  console.error(`Invalid PORT: ${process.env.PORT}`);
+if (!env.DATABASE_URL) {
+  console.error("DATABASE_URL is required");
   process.exit(1);
 }
+
+const app = createApp();
+const port = env.PORT;
 
 const server = app.listen(port, () => {
   console.log(`API listening on http://localhost:${port}`);
@@ -14,7 +16,7 @@ const server = app.listen(port, () => {
 
 function shutdown(signal: string) {
   console.log(`${signal} received, shutting down`);
-  server.close(() => process.exit(0));
+  server.close(() => void db.destroy().then(() => process.exit(0)));
   server.closeIdleConnections();
 
   // ponytail: 5s ceiling so a stuck request can't outlast the orchestrator's kill window

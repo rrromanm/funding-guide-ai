@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
+import { env } from "./config/env.ts";
 import { openapi } from "./openapi.ts";
 import { healthRouter } from "./modules/health/health.router.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
@@ -10,7 +11,7 @@ export function createApp() {
   const app = express();
 
   app.use(helmet());
-  app.use(cors({ origin: process.env.CORS_ORIGIN ?? "http://localhost:3000" }));
+  app.use(cors({ origin: env.CORS_ORIGIN }));
   app.use(express.json());
 
   // Swagger UI
