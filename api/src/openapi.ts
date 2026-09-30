@@ -21,7 +21,10 @@ export const openapi = {
                   required: ["status", "uptime"],
                   properties: {
                     status: { type: "string", const: "ok" },
-                    uptime: { type: "number", description: "Seconds since start" },
+                    uptime: {
+                      type: "number",
+                      description: "Seconds since start",
+                    },
                   },
                 },
               },
