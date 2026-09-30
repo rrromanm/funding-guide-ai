@@ -57,6 +57,9 @@ a:hover {
   .btn-primary {
     @apply bg-green-500 text-white hover:bg-green-600;
   }
+  .btn-destructive {
+    @apply bg-red-600 text-white hover:bg-red-700;
+  }
   .btn-violet {
     @apply bg-violet-600 text-white hover:bg-violet-800;
   }
