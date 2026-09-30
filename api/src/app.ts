@@ -4,6 +4,7 @@ import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
 import { env } from "./config/env.ts";
 import { openapi } from "./openapi.ts";
+import { callsRouter } from "./modules/calls/calls.router.ts";
 import { healthRouter } from "./modules/health/health.router.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
 
@@ -20,6 +21,7 @@ export function createApp() {
 
   // Routes
   app.use("/health", healthRouter);
+  app.use("/api/calls", callsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

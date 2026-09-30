@@ -70,11 +70,11 @@ export interface FundingCall {
 
 export interface FundingRound {
   call_id: number;
-  deadline_date: Timestamp | null;
-  decision_date: Timestamp | null;
-  expected_next_open_date: Timestamp | null;
+  deadline_date: string | null;
+  decision_date: string | null;
+  expected_next_open_date: string | null;
   id: Generated<number>;
-  open_date: Timestamp | null;
+  open_date: string | null;
   round_no: number | null;
 }
 

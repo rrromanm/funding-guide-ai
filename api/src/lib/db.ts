@@ -5,6 +5,7 @@ import type { DB } from "./db-types.ts";
 
 pg.types.setTypeParser(20, Number);
 pg.types.setTypeParser(1700, Number);
+pg.types.setTypeParser(1082, (value) => value);
 
 export const db = new Kysely<DB>({
   dialect: new PostgresDialect({

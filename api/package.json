@@ -14,7 +14,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "db:types": "kysely-codegen --dialect postgres --include-pattern=\"public.*\" --numeric-parser number --type-mapping '{\"int8\":\"number\"}' --out-file src/lib/db-types.ts && prettier --write src/lib/db-types.ts"
+    "db:types": "kysely-codegen --dialect postgres --include-pattern=\"public.*\" --numeric-parser number --date-parser string --type-mapping '{\"int8\":\"number\"}' --out-file src/lib/db-types.ts && prettier --write src/lib/db-types.ts"
   },
   "dependencies": {
     "cors": "^2.8.6",

@@ -32,4 +32,21 @@ describe("GET /openapi.json", () => {
     expect(res.body.openapi).toMatch(/^3\./);
     expect(res.body.paths).toHaveProperty("/health");
   });
+
+  it("documents the calls endpoints from the zod schemas", async () => {
+    const res = await request(app).get("/openapi.json");
+    const list = res.body.paths["/api/calls"].get;
+
+    expect(list.parameters.map((p: { name: string }) => p.name)).toEqual([
+      "q",
+      "status",
+      "level",
+      "limit",
+      "offset",
+    ]);
+    expect(
+      list.responses["200"].content["application/json"].schema.properties.items,
+    ).toBeDefined();
+    expect(res.body.paths).toHaveProperty("/api/calls/{id}");
+  });
 });
