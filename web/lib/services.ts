@@ -1,5 +1,48 @@
 import { fundingCalls as initialFundingCalls, notifications as initialNotifications, orgProfile as initialOrgProfile } from "./mock-data";
-import type { FitLabel, FundingCall, Notification, OrgProfile } from "./types";
+import type { FitLabel, FundingCall, Notification, OrgProfile, SourceListResponse } from "./types";
+
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
+function isSourceListResponse(value: unknown): value is SourceListResponse {
+  if (!value || typeof value !== "object" || !("items" in value) || !Array.isArray(value.items)) {
+    return false;
+  }
+
+  return value.items.every((item) => {
+    if (!item || typeof item !== "object") {
+      return false;
+    }
+
+    const source = item as Record<string, unknown>;
+    const counts = source.counts;
+    return (
+      typeof source.key === "string" &&
+      typeof source.name === "string" &&
+      (source.sourceType === null || typeof source.sourceType === "string") &&
+      (source.baseUrl === null || typeof source.baseUrl === "string") &&
+      (source.lastChecked === null || typeof source.lastChecked === "string") &&
+      !!counts &&
+      typeof counts === "object" &&
+      ["total", "relevant", "open", "closed"].every(
+        (field) => typeof (counts as Record<string, unknown>)[field] === "number",
+      )
+    );
+  });
+}
+
+export async function getFundingSources(): Promise<SourceListResponse> {
+  const response = await fetch(`${apiBaseUrl}/api/sources`, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Source endpoint returned ${response.status}`);
+  }
+
+  const payload: unknown = await response.json();
+  if (!isSourceListResponse(payload)) {
+    throw new Error("Source endpoint returned an unexpected response");
+  }
+
+  return payload;
+}
 
 export function getFundingCalls(): FundingCall[] {
   return structuredClone(initialFundingCalls);
