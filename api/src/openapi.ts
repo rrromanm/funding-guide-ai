@@ -4,6 +4,7 @@ import {
   callListResponse,
   listCallsQuery,
 } from "./modules/calls/calls.schema.ts";
+import { sourceListResponse } from "./modules/sources/sources.schema.ts";
 
 function jsonSchema(schema: z.ZodType, io: "input" | "output" = "output") {
   const { $schema, ...rest } = z.toJSONSchema(schema, { io });
@@ -99,6 +100,19 @@ export const openapi = {
         responses: {
           "200": jsonResponse("A page of calls", callListResponse),
           "400": errorResponse,
+        },
+      },
+    },
+    "/api/sources": {
+      get: {
+        summary: "List scraped sources with their call counts",
+        description:
+          "One row per configured source, ordered by name. Counts cover the " +
+          "source's calls excluding scraped info pages; `relevant` counts the " +
+          "calls the matcher rates a strong or possible fit and nobody dismissed.",
+        tags: ["sources"],
+        responses: {
+          "200": jsonResponse("Every source", sourceListResponse),
         },
       },
     },
