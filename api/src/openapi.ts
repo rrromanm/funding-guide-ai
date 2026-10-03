@@ -4,6 +4,8 @@ import {
   callListResponse,
   listCallsQuery,
 } from "./modules/calls/calls.schema.ts";
+import { notificationListResponse } from "./modules/notifications/notifications.schema.ts";
+import { profileResponse } from "./modules/profile/profile.schema.ts";
 import { sourceListResponse } from "./modules/sources/sources.schema.ts";
 
 function jsonSchema(schema: z.ZodType, io: "input" | "output" = "output") {
@@ -99,6 +101,31 @@ export const openapi = {
         responses: {
           "200": jsonResponse("A page of calls", callListResponse),
           "400": errorResponse,
+        },
+      },
+    },
+    "/api/notifications": {
+      get: {
+        summary: "List notifications about relevant funding calls",
+        description:
+          "Newest first. A notification whose recommendation the admin " +
+          "dismissed is left out.",
+        tags: ["notifications"],
+        responses: {
+          "200": jsonResponse("Every notification", notificationListResponse),
+        },
+      },
+    },
+    "/api/profile": {
+      get: {
+        summary: "Get PYN's organisational profile",
+        description:
+          "A singleton -- there is one profile and it has no id in the path. " +
+          "Themes and target groups come from the profile's tags.",
+        tags: ["profile"],
+        responses: {
+          "200": jsonResponse("The profile", profileResponse),
+          "404": errorResponse,
         },
       },
     },
