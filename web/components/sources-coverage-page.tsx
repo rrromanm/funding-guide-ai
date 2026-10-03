@@ -39,7 +39,6 @@ function SourceRow({ source }: { source: SourceListItem }) {
             <h3 className="font-display text-[19px] font-bold text-ink-900">{source.name}</h3>
             <span className="chip-neutral">{formatSourceType(source.sourceType)}</span>
           </div>
-          <p className="mt-1 font-mono text-[12px] text-muted">{source.key}</p>
           {source.baseUrl && (
             <a
               href={source.baseUrl}
@@ -165,7 +164,7 @@ export default function SourcesCoveragePage() {
               <p className="font-mono text-[11px] uppercase tracking-[.12em] text-muted">discover → fetch → parse → normalise → dedupe → store</p>
             </div>
             <div>
-              {sources.map((source) => <SourceRow key={source.key} source={source} />)}
+              {sources.map((source) => <SourceRow key={source.id} source={source} />)}
             </div>
           </section>
 

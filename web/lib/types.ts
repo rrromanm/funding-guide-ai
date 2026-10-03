@@ -18,7 +18,7 @@ export interface SourceCounts {
 }
 
 export interface SourceListItem {
-  key: string;
+  id: number;
   name: string;
   sourceType: string | null;
   baseUrl: string | null;

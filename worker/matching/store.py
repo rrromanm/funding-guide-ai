@@ -5,13 +5,14 @@ import psycopg
 from scrapers.pipeline.store import dsn
 
 MATCH_COLS = ("call_id", "score", "fit_label")
-REASON_COLS = ("match_id", "kind", "rule_key", "message", "weight")
+REASON_COLS = ("match_id", "kind", "message", "weight")
 
 MATCH_SQL = (
     f"insert into match_result ({', '.join(MATCH_COLS)}) "
     f"values ({', '.join(['%s'] * len(MATCH_COLS))}) "
     "on conflict (call_id) do update set "
     + ", ".join(f"{c} = excluded.{c}" for c in MATCH_COLS if c != "call_id")
+    + ", updated_at = now()"
     + " where match_result.review_status = 'generated' "
     "returning id"
 )

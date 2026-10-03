@@ -3,20 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env --watch src/index.ts",
     "start": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env src/index.ts",
-    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "db:types": "kysely-codegen --dialect postgres --include-pattern=\"public.*\" --numeric-parser number --date-parser string --type-mapping '{\"int8\":\"number\"}' --out-file src/lib/db-types.ts && prettier --write src/lib/db-types.ts"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.1.0",
-    "swagger-ui-express": "^5.0.1"
+    "helmet": "^8.3.0",
+    "kysely": "^0.29.6",
+    "pg": "^8.23.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.0",
-    "@types/node": "^22",
+    "@types/node": "^24.19.0",
+    "@types/pg": "^8.23.1",
+    "@types/supertest": "^7.2.1",
     "@types/swagger-ui-express": "^4.1.8",
-    "typescript": "^5"
+    "kysely-codegen": "^0.20.0",
+    "prettier": "^3.9.9",
+    "supertest": "^7.3.0",
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }
