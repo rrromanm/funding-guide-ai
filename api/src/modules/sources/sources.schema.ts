@@ -3,7 +3,7 @@ import { z } from "zod";
 // Responses
 
 export const sourceListItem = z.object({
-  key: z.string(),
+  id: z.number(),
   name: z.string(),
   sourceType: z.string().nullable(),
   baseUrl: z.string().nullable(),
@@ -18,7 +18,7 @@ export const sourceListItem = z.object({
       open: z.number(),
       closed: z.number(),
     })
-    .describe("Calls from this source. Scraped info pages are not counted."),
+    .describe("Calls from this source."),
 });
 
 export const sourceListResponse = z.object({

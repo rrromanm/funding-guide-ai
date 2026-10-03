@@ -1,4 +1,3 @@
-import { sql } from "kysely";
 import { db } from "../../lib/db.ts";
 import type { SourceListResponse } from "./sources.schema.ts";
 
@@ -7,14 +6,14 @@ const RELEVANT_FIT = ["strong_fit", "possible_fit"];
 export async function findSources(): Promise<SourceListResponse> {
   const rows = await db
     .selectFrom("funding_source")
-    .leftJoin("funding_call", (join) =>
-      join
-        .onRef("funding_call.source", "=", "funding_source.key")
-        .on("funding_call.record_kind", "!=", "info_page"),
+    .leftJoin(
+      "funding_call",
+      "funding_call.funding_source_id",
+      "funding_source.id",
     )
     .leftJoin("match_result", "match_result.call_id", "funding_call.id")
     .select(({ fn }) => [
-      "funding_source.key",
+      "funding_source.id",
       "funding_source.name",
       "funding_source.source_type",
       "funding_source.base_url",
@@ -30,21 +29,17 @@ export async function findSources(): Promise<SourceListResponse> {
         .as("closed"),
       fn
         .count<number>("funding_call.id")
-        .filterWhere(
-          sql<string>`coalesce(match_result.manual_fit_label, match_result.fit_label)`,
-          "in",
-          RELEVANT_FIT,
-        )
+        .filterWhere("match_result.fit_label", "in", RELEVANT_FIT)
         .filterWhere("match_result.review_status", "!=", "dismissed")
         .as("relevant"),
     ])
-    .groupBy("funding_source.key")
+    .groupBy("funding_source.id")
     .orderBy("funding_source.name")
     .execute();
 
   return {
     items: rows.map((row) => ({
-      key: row.key,
+      id: row.id,
       name: row.name,
       sourceType: row.source_type?.trim() || null,
       baseUrl: row.base_url?.trim() || null,

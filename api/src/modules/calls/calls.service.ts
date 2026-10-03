@@ -1,15 +1,11 @@
-import { sql, type ExpressionBuilder, type Selectable } from "kysely";
+import { sql, type ExpressionBuilder } from "kysely";
 import { NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
-import type { DB, FundingCall } from "../../lib/db-types.ts";
+import type { DB } from "../../lib/db-types.ts";
 import {
   CALL_LEVELS,
   CALL_STATUSES,
-  CONFIDENCE_LEVELS,
-  DEADLINE_TYPES,
   FUNDER_TYPES,
-  RECORD_KINDS,
-  THEMES,
   type CallDetail,
   type CallListItem,
   type CallListResponse,
@@ -21,12 +17,13 @@ const LIST_COLUMNS = [
   "funding_call.title",
   "funding_call.summary",
   "funding_call.funding_body",
-  "funding_call.source",
+  "funding_source.name as source",
   "funding_call.level",
   "funding_call.status",
-  "funding_call.deadline_type",
-  "funding_call.amounts_kr",
-  "funding_call.confidence",
+  "funding_call.recurring",
+  "funding_call.budget_min",
+  "funding_call.budget_max",
+  "funding_call.currency",
   "funding_call.updated_at",
 ] as const;
 
@@ -36,17 +33,15 @@ const DETAIL_COLUMNS = [
   "funding_call.eligibility",
   "funding_call.ngo_eligible",
   "funding_call.funder_type",
-  "funding_call.record_kind",
-  "funding_call.region",
-  "funding_call.municipality",
   "funding_call.source_url",
-  "funding_call.missing_fields",
-  "funding_call.completeness",
-  "funding_call.last_checked",
+  "funding_call.external_id",
+  "funding_source.last_checked",
   "funding_call.created_at",
 ] as const;
 
-function nextDeadline(eb: ExpressionBuilder<DB, "funding_call">) {
+type Queried = "funding_call" | "funding_source";
+
+function nextDeadline(eb: ExpressionBuilder<DB, Queried>) {
   return eb
     .selectFrom("funding_round")
     .select(({ fn }) => fn.min("funding_round.deadline_date").as("deadline"))
@@ -56,11 +51,10 @@ function nextDeadline(eb: ExpressionBuilder<DB, "funding_call">) {
 }
 
 function filters(
-  eb: ExpressionBuilder<DB, "funding_call">,
+  eb: ExpressionBuilder<DB, Queried>,
   { q, status, level }: ListCallsQuery,
 ) {
   const conditions = [
-    eb("funding_call.record_kind", "!=", "info_page"),
     status
       ? eb("funding_call.status", "=", status)
       : eb("funding_call.status", "!=", "closed"),
@@ -89,6 +83,11 @@ export async function findCalls(
   const [rows, count] = await Promise.all([
     db
       .selectFrom("funding_call")
+      .innerJoin(
+        "funding_source",
+        "funding_source.id",
+        "funding_call.funding_source_id",
+      )
       .select((eb) => [...LIST_COLUMNS, nextDeadline(eb)])
       .where((eb) => filters(eb, query))
       .orderBy(sql`deadline asc nulls last`)
@@ -98,6 +97,11 @@ export async function findCalls(
       .execute(),
     db
       .selectFrom("funding_call")
+      .innerJoin(
+        "funding_source",
+        "funding_source.id",
+        "funding_call.funding_source_id",
+      )
       .select((eb) => eb.fn.countAll<number>().as("total"))
       .where((eb) => filters(eb, query))
       .executeTakeFirstOrThrow(),
@@ -114,29 +118,40 @@ export async function findCalls(
 export async function findCallById(id: number): Promise<CallDetail> {
   const row = await db
     .selectFrom("funding_call")
-    .select((eb) => [
-      ...DETAIL_COLUMNS,
-      nextDeadline(eb),
-      sql<string[]>`funding_call.themes::text[]`.as("themes"),
-    ])
+    .innerJoin(
+      "funding_source",
+      "funding_source.id",
+      "funding_call.funding_source_id",
+    )
+    .select((eb) => [...DETAIL_COLUMNS, nextDeadline(eb)])
     .where("funding_call.id", "=", id)
     .executeTakeFirst();
 
   if (!row) throw new NotFoundError("Call not found");
 
-  const rounds = await db
-    .selectFrom("funding_round")
-    .select([
-      "round_no",
-      "open_date",
-      "deadline_date",
-      "decision_date",
-      "expected_next_open_date",
-    ])
-    .where("call_id", "=", id)
-    .orderBy("round_no")
-    .orderBy("deadline_date")
-    .execute();
+  const [themes, rounds] = await Promise.all([
+    db
+      .selectFrom("funding_call_tag")
+      .innerJoin("tag", "tag.id", "funding_call_tag.tag_id")
+      .select("tag.label")
+      .where("funding_call_tag.call_id", "=", id)
+      .where("tag.type", "=", "theme")
+      .orderBy("tag.label")
+      .execute(),
+    db
+      .selectFrom("funding_round")
+      .select([
+        "round_no",
+        "open_date",
+        "deadline_date",
+        "decision_date",
+        "expected_next_open_date",
+      ])
+      .where("call_id", "=", id)
+      .orderBy("round_no")
+      .orderBy("deadline_date")
+      .execute(),
+  ]);
 
   return {
     ...toListItem(row),
@@ -144,13 +159,9 @@ export async function findCallById(id: number): Promise<CallDetail> {
     eligibility: text(row.eligibility),
     ngoEligible: row.ngo_eligible,
     funderType: oneOf(FUNDER_TYPES, row.funder_type),
-    recordKind: oneOf(RECORD_KINDS, row.record_kind) ?? "call",
-    themes: allOf(THEMES, row.themes),
-    region: row.region,
-    municipality: text(row.municipality),
+    themes: themes.map((theme) => theme.label),
     sourceUrl: row.source_url,
-    missingFields: row.missing_fields,
-    completeness: row.completeness,
+    externalId: row.external_id,
     lastChecked: row.last_checked?.toISOString() ?? null,
     createdAt: row.created_at.toISOString(),
     rounds: rounds.map((round) => ({
@@ -163,21 +174,21 @@ export async function findCallById(id: number): Promise<CallDetail> {
   };
 }
 
-// Derived from the generated table type, so the column list stays the single source of truth.
-type ListRow = Pick<
-  Selectable<FundingCall>,
-  | "id"
-  | "title"
-  | "summary"
-  | "funding_body"
-  | "source"
-  | "level"
-  | "status"
-  | "deadline_type"
-  | "amounts_kr"
-  | "confidence"
-  | "updated_at"
-> & { deadline: string | null };
+type ListRow = {
+  id: number;
+  title: string;
+  summary: string | null;
+  funding_body: string | null;
+  source: string;
+  level: string | null;
+  status: string;
+  recurring: boolean;
+  budget_min: number | null;
+  budget_max: number | null;
+  currency: string;
+  updated_at: Date;
+  deadline: string | null;
+};
 
 function toListItem(row: ListRow): CallListItem {
   return {
@@ -188,20 +199,17 @@ function toListItem(row: ListRow): CallListItem {
     source: row.source,
     level: oneOf(CALL_LEVELS, row.level),
     status: oneOf(CALL_STATUSES, row.status) ?? "unknown",
-    deadlineType: oneOf(DEADLINE_TYPES, row.deadline_type) ?? "unknown",
+    recurring: row.recurring,
     deadline: row.deadline,
-    amountsKr: row.amounts_kr,
-    confidence: oneOf(CONFIDENCE_LEVELS, row.confidence),
+    budgetMin: row.budget_min,
+    budgetMax: row.budget_max,
+    currency: row.currency,
     updatedAt: row.updated_at.toISOString(),
   };
 }
 
 function text(value: string | null) {
   return value?.trim() || null;
-}
-
-function allOf<T extends string>(values: readonly T[], list: string[]) {
-  return list.filter((item): item is T => values.includes(item as T));
 }
 
 function oneOf<T extends string>(values: readonly T[], value: string | null) {

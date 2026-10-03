@@ -93,8 +93,7 @@ export const openapi = {
         summary: "List funding calls",
         description:
           "Ordered by the nearest upcoming deadline, calls without one last. " +
-          "Closed calls are excluded unless `status=closed` is given, and scraped " +
-          "info pages are never listed.",
+          "Closed calls are excluded unless `status=closed` is given.",
         tags: ["calls"],
         parameters: queryParameters(listCallsQuery),
         responses: {
@@ -108,7 +107,7 @@ export const openapi = {
         summary: "List scraped sources with their call counts",
         description:
           "One row per configured source, ordered by name. Counts cover the " +
-          "source's calls excluding scraped info pages; `relevant` counts the " +
+          "source's calls; `relevant` counts the " +
           "calls the matcher rates a strong or possible fit and nobody dismissed.",
         tags: ["sources"],
         responses: {

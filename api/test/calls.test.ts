@@ -49,7 +49,8 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
     const [first] = res.body.items;
     expect(typeof first.id).toBe("number");
     expect(typeof first.title).toBe("string");
-    expect(Array.isArray(first.amountsKr)).toBe(true);
+    expect(typeof first.recurring).toBe("boolean");
+    expect(typeof first.currency).toBe("string");
   });
 
   it("orders by the nearest upcoming deadline, undated calls last", async () => {
@@ -106,22 +107,11 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
     for (const item of res.body.items) expect(item.level).toBe("municipal");
   });
 
-  it("hides scraped info pages from the list but still serves them by id", async () => {
-    const infoPage = await db
-      .selectFrom("funding_call")
-      .select(["id", "title"])
-      .where("record_kind", "=", "info_page")
-      .executeTakeFirst();
+  it("names the source each call came from", async () => {
+    const res = await request(app).get("/api/calls?limit=5");
 
-    if (!infoPage) return;
-
-    const search = await request(app).get(
-      `/api/calls?q=${encodeURIComponent(infoPage.title)}`,
-    );
-    expect(search.body.total).toBe(0);
-
-    const direct = await request(app).get(`/api/calls/${infoPage.id}`);
-    expect(direct.status).toBe(200);
+    expect(res.status).toBe(200);
+    for (const item of res.body.items) expect(item.source).toBeTruthy();
   });
 });
 
@@ -138,7 +128,6 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
     expect(res.body.id).toBe(withRounds.call_id);
     expect(res.body.sourceUrl).toMatch(/^https?:\/\//);
     expect(Array.isArray(res.body.themes)).toBe(true);
-    expect(Array.isArray(res.body.missingFields)).toBe(true);
     expect(res.body.rounds.length).toBeGreaterThan(0);
 
     for (const round of res.body.rounds) {

@@ -28,7 +28,7 @@ describe.skipIf(!process.env.DATABASE_URL)(
       expect(res.body.items.length).toBeGreaterThan(0);
 
       const [first] = res.body.items;
-      expect(typeof first.key).toBe("string");
+      expect(typeof first.id).toBe("number");
       expect(typeof first.name).toBe("string");
       expect(first.counts.total).toBeGreaterThanOrEqual(
         first.counts.open + first.counts.closed,

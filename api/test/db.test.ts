@@ -12,15 +12,15 @@ describe.skipIf(!process.env.DATABASE_URL)("db", () => {
     expect(result.rows[0]?.one).toBe(1);
   });
 
-  it("reads funding_call with numeric ids and completeness", async () => {
+  it("reads funding_call with numeric ids and budgets", async () => {
     const row = await db
       .selectFrom("funding_call")
-      .select(["id", "completeness"])
-      .where("completeness", "is not", null)
+      .select(["id", "budget_max"])
+      .where("budget_max", "is not", null)
       .limit(1)
       .executeTakeFirstOrThrow();
 
     expect(typeof row.id).toBe("number");
-    expect(typeof row.completeness).toBe("number");
+    expect(typeof row.budget_max).toBe("number");
   });
 });

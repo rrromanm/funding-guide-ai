@@ -15,29 +15,6 @@ export const FUNDER_TYPES = [
   "eu_programme",
   "other",
 ] as const;
-export const DEADLINE_TYPES = [
-  "fixed",
-  "multi_round",
-  "rolling",
-  "unknown",
-] as const;
-export const RECORD_KINDS = ["call", "stub", "info_page"] as const;
-export const CONFIDENCE_LEVELS = ["low", "medium", "high"] as const;
-export const THEMES = [
-  "local_community",
-  "youth",
-  "student",
-  "social",
-  "international",
-  "green",
-] as const;
-export const DK_REGIONS = [
-  "Hovedstaden",
-  "Sjælland",
-  "Syddanmark",
-  "Midtjylland",
-  "Nordjylland",
-] as const;
 
 // Requests
 
@@ -62,18 +39,21 @@ export const callListItem = z.object({
   title: z.string(),
   summary: z.string().nullable(),
   fundingBody: z.string().nullable(),
-  source: z.string(),
+  source: z.string().describe("Name of the funding_source the call came from."),
   level: z.enum(CALL_LEVELS).nullable(),
   status: z.enum(CALL_STATUSES),
-  deadlineType: z.enum(DEADLINE_TYPES),
+  recurring: z
+    .boolean()
+    .describe("The call runs in rounds and is expected to reopen."),
   deadline: z
     .string()
     .nullable()
     .describe(
-      "Nearest round deadline still ahead. Null for rolling calls and calls whose rounds have all passed.",
+      "Nearest round deadline still ahead. Null for recurring calls between rounds and calls whose rounds have all passed.",
     ),
-  amountsKr: z.array(z.number()),
-  confidence: z.enum(CONFIDENCE_LEVELS).nullable(),
+  budgetMin: z.number().nullable(),
+  budgetMax: z.number().nullable(),
+  currency: z.string(),
   updatedAt: z.string(),
 });
 
@@ -97,14 +77,16 @@ export const callDetail = callListItem.extend({
   eligibility: z.string().nullable(),
   ngoEligible: z.boolean().nullable(),
   funderType: z.enum(FUNDER_TYPES).nullable(),
-  recordKind: z.enum(RECORD_KINDS),
-  themes: z.array(z.enum(THEMES)),
-  region: z.enum(DK_REGIONS).nullable(),
-  municipality: z.string().nullable(),
-  sourceUrl: z.string(),
-  missingFields: z.array(z.string()),
-  completeness: z.number().nullable(),
-  lastChecked: z.string().nullable(),
+  themes: z.array(z.string()).describe("Theme tags on the call."),
+  sourceUrl: z
+    .string()
+    .nullable()
+    .describe("Null for a call added by hand without one."),
+  externalId: z.string().nullable(),
+  lastChecked: z
+    .string()
+    .nullable()
+    .describe("When a scraper run last visited this call's source."),
   createdAt: z.string(),
   rounds: z.array(callRound),
 });

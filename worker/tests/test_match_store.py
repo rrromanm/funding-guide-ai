@@ -1,14 +1,9 @@
-import json
-import re
-from pathlib import Path
-
 from matching.run import run
 from matching.store import MATCH_COLS, MATCH_SQL, REASON_COLS, to_match, to_reasons
+from tests.schema import columns
 from tests.test_ground_truth import CALLS, PROFILE
 
 RESULTS = run(CALLS, PROFILE)
-MIGRATION = (Path(__file__).parent.parent.parent / "supabase/migrations"
-             / "20260926120000_match_result.sql").read_text()
 
 
 def test_every_result_maps_to_a_match_row():
@@ -27,7 +22,7 @@ def test_reasons_carry_their_match_id_and_a_known_kind():
         assert set(row) == set(REASON_COLS)
         assert row["match_id"] == 1
         assert row["kind"] in ("blocker", "barrier", "strength", "info")
-        assert row["rule_key"] and row["message"].strip()
+        assert row["message"].strip()
 
 
 def test_a_reviewed_match_is_never_overwritten():
@@ -35,10 +30,6 @@ def test_a_reviewed_match_is_never_overwritten():
     assert "where match_result.review_status = 'generated'" in MATCH_SQL
 
 
-def test_columns_exist_in_the_migration():
-    def columns(table: str) -> set[str]:
-        body = re.search(rf"create table {table} \((.*?)\n\);", MIGRATION, re.S).group(1)
-        return {m.group(1) for m in re.finditer(r"^\s{2}(\w+)\s+\w", body, re.M)}
-
+def test_columns_exist_in_the_schema():
     assert set(MATCH_COLS) <= columns("match_result")
     assert set(REASON_COLS) <= columns("match_reason")
