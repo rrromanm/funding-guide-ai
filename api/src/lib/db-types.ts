@@ -5,24 +5,7 @@
 
 import type { ColumnType } from "kysely";
 
-export type ArrayType<T> =
-  ArrayTypeImpl<T> extends (infer U)[] ? U[] : ArrayTypeImpl<T>;
-
-export type ArrayTypeImpl<T> =
-  T extends ColumnType<infer S, infer I, infer U>
-    ? ColumnType<S[], I[], U[]>
-    : T[];
-
-export type DkRegion =
-  "Hovedstaden" | "Midtjylland" | "Nordjylland" | "Sjælland" | "Syddanmark";
-
-export type FundingTheme =
-  | "green"
-  | "international"
-  | "local_community"
-  | "social"
-  | "student"
-  | "youth";
+export type CallStatus = "closed" | "open" | "unknown" | "upcoming";
 
 export type Generated<T> =
   T extends ColumnType<infer S, infer I, infer U>
@@ -33,6 +16,8 @@ export type Numeric = ColumnType<number, number | string, number | string>;
 
 export type ReviewStatus = "dismissed" | "generated" | "overridden";
 
+export type TagType = "country" | "other" | "sector" | "target_group" | "theme";
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Api {
@@ -41,31 +26,30 @@ export interface Api {
 }
 
 export interface FundingCall {
-  amounts_kr: Generated<number[]>;
-  completeness: Numeric | null;
-  confidence: Generated<string | null>;
-  content_hash: string;
+  budget_max: Numeric | null;
+  budget_min: Numeric | null;
   created_at: Generated<Timestamp>;
-  deadline_type: Generated<string>;
+  currency: Generated<string>;
   description: string | null;
   eligibility: string | null;
+  external_id: string | null;
   funder_type: string | null;
   funding_body: string | null;
+  funding_source_id: number;
   id: Generated<number>;
-  last_checked: Timestamp | null;
   level: string | null;
-  missing_fields: Generated<string[]>;
-  municipality: string | null;
   ngo_eligible: boolean | null;
-  record_kind: Generated<string>;
-  region: DkRegion | null;
-  source: string;
-  source_url: string;
-  status: Generated<string>;
+  recurring: Generated<boolean>;
+  source_url: string | null;
+  status: Generated<CallStatus>;
   summary: string | null;
-  themes: Generated<ArrayType<FundingTheme>>;
   title: string;
   updated_at: Generated<Timestamp>;
+}
+
+export interface FundingCallTag {
+  call_id: number;
+  tag_id: number;
 }
 
 export interface FundingRound {
@@ -81,8 +65,7 @@ export interface FundingRound {
 export interface FundingSource {
   active: Generated<boolean>;
   base_url: string | null;
-  created_at: Generated<Timestamp>;
-  key: string;
+  id: Generated<number>;
   last_checked: Timestamp | null;
   name: string;
   source_type: string | null;
@@ -93,7 +76,6 @@ export interface MatchReason {
   kind: string;
   match_id: number;
   message: string;
-  rule_key: string;
   weight: Generated<number>;
 }
 
@@ -103,35 +85,52 @@ export interface MatchResult {
   created_at: Generated<Timestamp>;
   fit_label: string;
   id: Generated<number>;
-  manual_fit_label: string | null;
   manual_score: number | null;
+  org_profile_id: Generated<number>;
   review_status: Generated<ReviewStatus>;
   score: number;
+  updated_at: Generated<Timestamp>;
+}
+
+export interface Notification {
+  created_at: Generated<Timestamp>;
+  id: Generated<number>;
+  match_id: number;
+  message: string;
+  read: Generated<boolean>;
 }
 
 export interface OrgProfile {
+  admin_capacity: string | null;
+  city: string;
   country: string;
-  created_at: Timestamp;
-  established_year: number | null;
-  has_facilities: boolean;
   id: number;
   legal_status: string;
-  municipality: string;
   name: string;
-  region: DkRegion;
   staff_count: number;
-  target_groups: string[];
-  themes: ArrayType<FundingTheme>;
-  updated_at: Timestamp;
-  updated_by: string | null;
+}
+
+export interface OrgProfileTag {
+  org_profile_id: number;
+  tag_id: number;
+}
+
+export interface Tag {
+  id: Generated<number>;
+  label: string;
+  type: TagType;
 }
 
 export interface DB {
   api: Api;
   funding_call: FundingCall;
+  funding_call_tag: FundingCallTag;
   funding_round: FundingRound;
   funding_source: FundingSource;
   match_reason: MatchReason;
   match_result: MatchResult;
+  notification: Notification;
   org_profile: OrgProfile;
+  org_profile_tag: OrgProfileTag;
+  tag: Tag;
 }
