@@ -69,6 +69,19 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
       expect(deadline).toBeNull();
   });
 
+  it("includes the match score, manual override first", async () => {
+    const match = await db
+      .selectFrom("match_result")
+      .select(["call_id", "score", "manual_score"])
+      .executeTakeFirst();
+    if (!match) return;
+
+    const res = await request(app).get(`/api/calls/${match.call_id}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.score).toBe(match.manual_score ?? match.score);
+  });
+
   it("paginates with offset", async () => {
     const page = await request(app).get("/api/calls?limit=2");
     const next = await request(app).get("/api/calls?limit=2&offset=2");

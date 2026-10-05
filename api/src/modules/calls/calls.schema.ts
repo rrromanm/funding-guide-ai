@@ -51,6 +51,12 @@ export const callListItem = z.object({
     .describe(
       "Nearest round deadline still ahead. Null for recurring calls between rounds and calls whose rounds have all passed.",
     ),
+  score: z
+    .number()
+    .nullable()
+    .describe(
+      "Match score 0-100 (manual override wins). Null until the worker scores the call.",
+    ),
   budgetMin: z.number().nullable(),
   budgetMax: z.number().nullable(),
   currency: z.string(),

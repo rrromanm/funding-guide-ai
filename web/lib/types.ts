@@ -14,6 +14,7 @@ export interface FundingCallListItemDto {
   status: ApiCallStatus;
   recurring: boolean;
   deadline: string | null;
+  score: number | null;
   budgetMin: number | null;
   budgetMax: number | null;
   currency: string;
@@ -58,6 +59,7 @@ export interface FundingCallListItem {
   status: CallStatus;
   recurringCall: boolean;
   deadline?: string;
+  score?: number;
   amountMin?: number;
   amountMax?: number;
   currency: string;
@@ -76,6 +78,7 @@ export interface FundingCallDetails {
   amountMin?: number;
   amountMax?: number;
   currency: string;
+  score?: number;
   eligibility: string;
   ngoEligible: boolean | null;
   status: CallStatus;
