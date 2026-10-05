@@ -32,13 +32,7 @@ def _is_association(text: str) -> bool:
     return bool(ASSOCIATION.search(OWNER_ASSOCIATION.sub(" ", text)))
 
 
-def _danish(call: dict) -> bool:
-    return call.get("application_language") in (None, "da")
-
-
 def applicant_type(call, profile, config):
-    if not _danish(call):
-        return []
     text = _text(call)
     if PRIVATE_OWNER.search(_lead(call)) and not _is_association(_lead(call)):
         return [Reason("blocker", "applicant_type_mismatch",
@@ -52,8 +46,6 @@ def applicant_type(call, profile, config):
 
 
 def facility_only(call, profile, config):
-    if not _danish(call):
-        return []
     text = _text(call)
     if not FACILITY.search(text):
         return []
@@ -71,7 +63,7 @@ def facility_only(call, profile, config):
 def geographic(call, profile, config):
     if call.get("level") != "municipal":
         return []
-    home = profile.get("municipality") or ""
+    home = profile.get("city") or ""
     if home and re.search(re.escape(home.split()[0]), _text(call), re.IGNORECASE):
         return [Reason("info", "geographic_match",
                        f"Activity is in {home}, where {profile['name']} is based")]

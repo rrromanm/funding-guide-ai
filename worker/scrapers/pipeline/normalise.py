@@ -40,27 +40,7 @@ ROLLING_RE = re.compile(r"løbende|hele året|\brolling\b|year-round|\bongoing\b
 STUB_MAX_CHARS = 500
 
 
-# 2. COMPLETENESS CHECK
-# The 20 fields funding_calls models.
-# Counting the failures gives missing_fields, and
-# the ratio gives completeness
-FIELD_CHECKS = {
-    "title": lambda r: bool(r.get("title")),
-    "funding_body": lambda r: bool(r.get("funding_body")),
-    "summary": lambda r: bool(r.get("summary")),
-    "description": lambda r: bool(r.get("description")),
-    "level": lambda r: bool(r.get("level")),
-    "funder_type": lambda r: bool(r.get("funder_type")),
-    "application_language": lambda r: bool(r.get("application_language")),
-    # A rolling pool has no date but is not missing its deadline — it has no deadline.
-    "deadline": lambda r: bool(r["deadlines"]) or r["deadline_type"] == "rolling",
-    "cycle": lambda r: r["deadline_type"] != "unknown",
-    "funding_amount": lambda r: bool(r["amounts_kr"]),
-    # "unknown" is a truthy string, so bool() would wrongly count it as present.
-    "status": lambda r: r.get("status") not in (None, "", "unknown"),
-}
-
-# 3. HELPERS
+# 2. HELPERS
 def _iso(m: re.Match, groups: tuple[int, int, int]) -> str:
     """One regex match -> "YYYY-MM-DD", given where day/month/year sit in it."""
     day, month, year = (m.group(g) for g in groups)
@@ -102,7 +82,7 @@ def _amounts(text: str) -> list[int]:
     return out
 
 
-# 4. THE NORMALISER
+# 3. THE NORMALISER
 def normalise(records: list[dict], today: date | None = None) -> list[dict]:
     cutoff = (today or date.today()).isoformat()
     out = []
@@ -110,7 +90,7 @@ def normalise(records: list[dict], today: date | None = None) -> list[dict]:
         rec = dict(raw)
         desc = rec.get("description") or ""
 
-        # What kind of page is this?
+        # What kind of page is this? Not stored -- store() drops info pages.
         if not APPLY_RE.search(desc):
             rec["record_kind"] = "info_page"
         elif len(desc) < STUB_MAX_CHARS:
@@ -145,12 +125,8 @@ def normalise(records: list[dict], today: date | None = None) -> list[dict]:
 
         rec["amounts_kr"] = _amounts(desc)
 
-        # Hash of title + description, to avoid duplicates across sources.
         content = re.sub(r"\s+", " ", f"{rec.get('title') or ''}\n{desc}").strip()
         rec["content_hash"] = hashlib.sha256(content.encode()).hexdigest()
 
-        missing = [f for f, check in FIELD_CHECKS.items() if not check(rec)]
-        rec["missing_fields"] = missing
-        rec["completeness"] = round(1 - len(missing) / len(FIELD_CHECKS), 2)
         out.append(rec)
     return out

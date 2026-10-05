@@ -5,10 +5,9 @@ from matching.run import run
 
 PROFILE = {
     "name": "Pangaea Youth Network",
-    "municipality": "Horsens",
+    "city": "Horsens",
     "has_facilities": True,
     "staff_count": 0,
-    "established_year": 2023,
     "themes": ["local_community", "youth", "student", "social", "international", "green"],
 }
 

@@ -1,26 +1,36 @@
-import express, { type ErrorRequestHandler } from "express";
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
-import { healthRouter } from "./routes/health.ts";
+import { env } from "./config/env.ts";
 import { openapi } from "./openapi.ts";
+import { callsRouter } from "./modules/calls/calls.router.ts";
+import { healthRouter } from "./modules/health/health.router.ts";
+import { notificationsRouter } from "./modules/notifications/notifications.router.ts";
+import { profileRouter } from "./modules/profile/profile.router.ts";
+import { sourcesRouter } from "./modules/sources/sources.router.ts";
+import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
 
 export function createApp() {
   const app = express();
 
+  app.use(helmet());
+  app.use(cors({ origin: env.CORS_ORIGIN }));
   app.use(express.json());
 
-  app.use(healthRouter);
-
+  // Swagger UI
   app.get("/openapi.json", (_req, res) => res.json(openapi));
-  const docsCss = ":root { color-scheme: light; }";
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapi, { customCss: docsCss }));
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapi));
 
-  app.use((_req, res) => res.status(404).json({ error: "Not found" }));
+  // Routes
+  app.use("/health", healthRouter);
+  app.use("/api/calls", callsRouter);
+  app.use("/api/notifications", notificationsRouter);
+  app.use("/api/profile", profileRouter);
+  app.use("/api/sources", sourcesRouter);
 
-  const onError: ErrorRequestHandler = (err, _req, res, _next) => {
-    console.error(err);
-    res.status(500).json({ error: "Internal server error" });
-  };
-  app.use(onError);
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   return app;
 }

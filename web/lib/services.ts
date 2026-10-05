@@ -16,7 +16,7 @@ function isSourceListResponse(value: unknown): value is SourceListResponse {
     const source = item as Record<string, unknown>;
     const counts = source.counts;
     return (
-      typeof source.key === "string" &&
+      typeof source.id === "number" &&
       typeof source.name === "string" &&
       (source.sourceType === null || typeof source.sourceType === "string") &&
       (source.baseUrl === null || typeof source.baseUrl === "string") &&

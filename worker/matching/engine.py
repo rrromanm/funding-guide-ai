@@ -3,7 +3,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 KINDS = {"blocker", "barrier", "strength", "info"}
-DECISIVE_FIELDS = ("title", "description", "deadline", "status", "level")
+
+
+DECISIVE_FIELDS = {
+    "title": lambda c: bool(c.get("title")),
+    "description": lambda c: bool(c.get("description")),
+    "deadline": lambda c: bool(c.get("deadline")) or bool(c.get("recurring")),
+    "status": lambda c: c.get("status") not in (None, "", "unknown"),
+    "level": lambda c: bool(c.get("level")),
+}
 STRONG, POSSIBLE, WEAK = 45, 25, 10
 
 
@@ -39,7 +47,7 @@ def score_call(call: dict, profile: dict, config: dict, rules) -> dict:
         label = "not_recommended"
 
     # Determine confidence level based on missing fields and unknown gates
-    missing = [f for f in DECISIVE_FIELDS if f in call.get("missing_fields", ())]
+    missing = [f for f, present in DECISIVE_FIELDS.items() if not present(call)]
     if unknown_gate or len(missing) >= 2:
         confidence = "low"
     elif missing:

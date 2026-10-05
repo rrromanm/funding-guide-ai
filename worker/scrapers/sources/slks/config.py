@@ -4,6 +4,7 @@ LIST_PARAMS = {"tx_lftilskudsbase_pi7[order]": "application_deadline asc"}
 PAGE_PARAM = "tx_lftilskudsbase_general[@widget_0][currentPage]"
 
 DEFAULTS = {
+    "funding_body": "Slots- og Kulturstyrelsen",
     "level": "national",
     "funder_type": "public_pool",
     "application_language": "da",
