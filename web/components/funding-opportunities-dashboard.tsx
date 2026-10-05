@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getFundingCalls } from "@/lib/services";
 import { PageHeader, StatusBadge, EmptyState } from "@/components/common";
 import { getDisplayedDeadline } from "@/lib/funding-deadlines";
-import type { FundingCall } from "@/lib/types";
+import type { FundingCall, FundingCallListItem } from "@/lib/types";
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -25,7 +25,9 @@ const formatDate = (value?: string) => {
 };
 
 export default function FundingOpportunitiesDashboard() {
-  const calls = getFundingCalls();
+  const [calls, setCalls] = useState<FundingCallListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All levels");
   const [selectedTheme, setSelectedTheme] = useState("All themes");
@@ -34,10 +36,30 @@ export default function FundingOpportunitiesDashboard() {
   const [page, setPage] = useState(1);
   const pageSize = 6;
 
+  const loadCalls = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      setCalls(await getFundingCalls());
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      void loadCalls();
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [loadCalls]);
+
   const levels = ["All levels", ...new Set(calls.map((call) => call.fundingLevel).filter(Boolean))];
   const themes = [
     "All themes",
-    ...new Set(calls.flatMap((call) => call.themes.map((tag) => tag.value))),
+    ...new Set(calls.flatMap((call) => (call.themes ?? []).map((tag) => tag.value))),
   ];
   const statuses = ["All statuses", "OPEN", "UPCOMING", "CLOSED", "UNKNOWN"];
   const regions = ["All regions", ...new Set(calls.flatMap((call) => call.relevantRegions ?? []))];
@@ -48,13 +70,13 @@ export default function FundingOpportunitiesDashboard() {
     return calls.filter((call) => {
       const matchesSearch =
         !normalized ||
-        call.title.toLowerCase().includes(normalized) ||
-        call.fundingBody.toLowerCase().includes(normalized) ||
-        call.summary.toLowerCase().includes(normalized);
+          call.title.toLowerCase().includes(normalized) ||
+          call.fundingBody.toLowerCase().includes(normalized) ||
+          call.summary.toLowerCase().includes(normalized);
 
       const matchesLevel = selectedLevel === "All levels" || call.fundingLevel === selectedLevel;
       const matchesTheme =
-        selectedTheme === "All themes" || call.themes.some((tag) => tag.value === selectedTheme);
+        selectedTheme === "All themes" || (call.themes ?? []).some((tag) => tag.value === selectedTheme);
       const matchesStatus = selectedStatus === "All statuses" || call.status === selectedStatus;
       const matchesRegion =
         selectedRegion === "All regions" || (call.relevantRegions ?? []).includes(selectedRegion);
@@ -125,18 +147,16 @@ export default function FundingOpportunitiesDashboard() {
             <label className="field-label">Theme</label>
             <select
               value={selectedTheme}
-              onChange={(event) => {
-                setSelectedTheme(event.target.value);
-                setPage(1);
-              }}
-              className="input"
+              disabled
+              className="input disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {themes.map((theme) => (
+              {themes.slice(0, 1).map((theme) => (
                 <option key={theme} value={theme}>
                   {theme}
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-[12px] text-muted">Not available from the current API</p>
           </div>
 
           <div>
@@ -161,18 +181,16 @@ export default function FundingOpportunitiesDashboard() {
             <label className="field-label">Region</label>
             <select
               value={selectedRegion}
-              onChange={(event) => {
-                setSelectedRegion(event.target.value);
-                setPage(1);
-              }}
-              className="input"
+              disabled
+              className="input disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {regions.map((region) => (
+              {regions.slice(0, 1).map((region) => (
                 <option key={region} value={region}>
                   {region}
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-[12px] text-muted">Not available from the current API</p>
           </div>
         </div>
 
@@ -188,10 +206,22 @@ export default function FundingOpportunitiesDashboard() {
         </div>
       </section>
 
-      {visibleCalls.length === 0 ? (
+      {loading ? (
+        <div className="card space-y-4" role="status" aria-label="Loading funding opportunities">
+          {[1, 2, 3, 4].map((item) => <div key={item} className="h-14 animate-pulse rounded-[12px] bg-violet-50" />)}
+        </div>
+      ) : error ? (
+        <div className="card flex flex-col items-start gap-4">
+          <div>
+            <h2 className="font-display text-[21px] font-bold text-ink-900">Funding opportunities could not be loaded.</h2>
+            <p className="mt-2 text-[15px] text-ink-600">The API did not return the opportunity list.</p>
+          </div>
+          <button type="button" className="btn btn-secondary" onClick={() => void loadCalls()}>Retry</button>
+        </div>
+      ) : visibleCalls.length === 0 ? (
         <EmptyState
-          title="No funding opportunities found."
-          description="Try adjusting your search or filters."
+          title={calls.length === 0 ? "No funding opportunities are currently available." : "No funding opportunities found."}
+          description={calls.length === 0 ? "The API returned no opportunities." : "Try adjusting your search or filters."}
           action={
             <button type="button" className="btn btn-secondary" onClick={clearFilters}>
               Clear filters
@@ -214,11 +244,6 @@ export default function FundingOpportunitiesDashboard() {
               </thead>
               <tbody>
                 {visibleCalls.map((call) => {
-                  const deadline = getDisplayedDeadline(call.fundingRounds, call.status);
-                  const recurringLabel = call.recurringCall && call.expectedReopeningDate
-                    ? `Expected to reopen: ${formatDate(call.expectedReopeningDate)}`
-                    : null;
-
                   return (
                     <tr key={call.id} className="border-t border-hairline align-top">
                       <td className="px-5 py-4">
@@ -229,18 +254,13 @@ export default function FundingOpportunitiesDashboard() {
                           {call.recurringCall && (
                             <div className="chip-neutral">Recurring call</div>
                           )}
-                          {recurringLabel && (
-                            <div className="text-[13px] text-muted">{recurringLabel}</div>
-                          )}
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-ink-600">{call.fundingBody}</td>
-                      <td className="px-5 py-4 text-ink-600">{formatDate(deadline)}</td>
+                      <td className="px-5 py-4 text-ink-600">{call.fundingBody || "—"}</td>
+                      <td className="px-5 py-4 text-ink-600">{formatDate(call.deadline)}</td>
                       <td className="px-5 py-4"><StatusBadge status={call.status} /></td>
                       <td className="px-5 py-4">
-                        <span className="inline-flex rounded-full bg-violet-50 px-3 py-1.5 text-[13px] font-bold text-violet-800">
-                          {call.matchResult.overallScore}/100
-                        </span>
+                        <span className="text-ink-600">—</span>
                       </td>
                       <td className="px-5 py-4">
                         <Link href={`/opportunities/${call.id}`} className="font-bold text-violet-600 hover:no-underline hover:text-violet-800">
