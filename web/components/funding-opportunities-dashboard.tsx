@@ -72,8 +72,7 @@ export default function FundingOpportunitiesDashboard() {
         !normalized ||
           call.title.toLowerCase().includes(normalized) ||
           call.fundingBody.toLowerCase().includes(normalized) ||
-          call.summary.toLowerCase().includes(normalized) ||
-          call.source.toLowerCase().includes(normalized);
+          call.summary.toLowerCase().includes(normalized);
 
       const matchesLevel = selectedLevel === "All levels" || call.fundingLevel === selectedLevel;
       const matchesTheme =
@@ -148,18 +147,16 @@ export default function FundingOpportunitiesDashboard() {
             <label className="field-label">Theme</label>
             <select
               value={selectedTheme}
-              onChange={(event) => {
-                setSelectedTheme(event.target.value);
-                setPage(1);
-              }}
-              className="input"
+              disabled
+              className="input disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {themes.map((theme) => (
+              {themes.slice(0, 1).map((theme) => (
                 <option key={theme} value={theme}>
                   {theme}
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-[12px] text-muted">Not available from the current API</p>
           </div>
 
           <div>
@@ -184,18 +181,16 @@ export default function FundingOpportunitiesDashboard() {
             <label className="field-label">Region</label>
             <select
               value={selectedRegion}
-              onChange={(event) => {
-                setSelectedRegion(event.target.value);
-                setPage(1);
-              }}
-              className="input"
+              disabled
+              className="input disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {regions.map((region) => (
+              {regions.slice(0, 1).map((region) => (
                 <option key={region} value={region}>
                   {region}
                 </option>
               ))}
             </select>
+            <p className="mt-1 text-[12px] text-muted">Not available from the current API</p>
           </div>
         </div>
 
@@ -243,7 +238,7 @@ export default function FundingOpportunitiesDashboard() {
                   <th className="px-5 py-4">Funder</th>
                   <th className="px-5 py-4">Deadline</th>
                   <th className="px-5 py-4">Status</th>
-                  <th className="px-5 py-4">Source</th>
+                  <th className="px-5 py-4">Match score</th>
                   <th className="px-5 py-4">Action</th>
                 </tr>
               </thead>
@@ -265,7 +260,7 @@ export default function FundingOpportunitiesDashboard() {
                       <td className="px-5 py-4 text-ink-600">{formatDate(call.deadline)}</td>
                       <td className="px-5 py-4"><StatusBadge status={call.status} /></td>
                       <td className="px-5 py-4">
-                        <span className="text-ink-600">{call.source}</span>
+                        <span className="text-ink-600">—</span>
                       </td>
                       <td className="px-5 py-4">
                         <Link href={`/opportunities/${call.id}`} className="font-bold text-violet-600 hover:no-underline hover:text-violet-800">
