@@ -2,6 +2,47 @@ export type CallStatus = "UPCOMING" | "OPEN" | "CLOSED" | "UNKNOWN";
 export type TagType = "Theme" | "TargetGroup" | "Sector" | "Country" | "Other";
 export type ReviewStatus = "GENERATED" | "OVERRIDDEN" | "DISMISSED";
 export type FitLabel = "Strong fit" | "Good fit" | "Possible fit" | "Limited fit";
+export type ApiCallStatus = "upcoming" | "open" | "closed" | "unknown";
+
+export interface FundingCallListItemDto {
+  id: number;
+  title: string;
+  summary: string | null;
+  fundingBody: string | null;
+  source: string;
+  level: string | null;
+  status: ApiCallStatus;
+  recurring: boolean;
+  deadline: string | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  currency: string;
+  updatedAt: string;
+}
+
+export interface FundingCallListResponseDto {
+  items: FundingCallListItemDto[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface FundingCallListItem {
+  id: string;
+  title: string;
+  summary: string;
+  fundingBody: string;
+  fundingLevel: string;
+  source: string;
+  status: CallStatus;
+  recurringCall: boolean;
+  deadline?: string;
+  amountMin?: number;
+  amountMax?: number;
+  currency: string;
+  themes?: Tag[];
+  relevantRegions?: string[];
+}
 
 export interface FundingSource {
   id: string;

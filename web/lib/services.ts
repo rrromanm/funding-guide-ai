@@ -1,5 +1,16 @@
 import { fundingCalls as initialFundingCalls, notifications as initialNotifications, orgProfile as initialOrgProfile } from "./mock-data";
-import type { FitLabel, FundingCall, Notification, OrgProfile, SourceListResponse } from "./types";
+import type {
+  ApiCallStatus,
+  CallStatus,
+  FitLabel,
+  FundingCall,
+  FundingCallListItem,
+  FundingCallListItemDto,
+  FundingCallListResponseDto,
+  Notification,
+  OrgProfile,
+  SourceListResponse,
+} from "./types";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
@@ -30,6 +41,103 @@ function isSourceListResponse(value: unknown): value is SourceListResponse {
   });
 }
 
+function isCallListResponse(value: unknown): value is FundingCallListResponseDto {
+  if (
+    !value ||
+    typeof value !== "object" ||
+    !("items" in value) ||
+    !Array.isArray(value.items) ||
+    typeof (value as Record<string, unknown>).total !== "number" ||
+    typeof (value as Record<string, unknown>).limit !== "number" ||
+    typeof (value as Record<string, unknown>).offset !== "number"
+  ) {
+    return false;
+  }
+
+  return value.items.every((item) => {
+    if (!item || typeof item !== "object") {
+      return false;
+    }
+
+    const call = item as Record<string, unknown>;
+    return (
+      typeof call.id === "number" &&
+      typeof call.title === "string" &&
+      (call.summary === null || typeof call.summary === "string") &&
+      (call.fundingBody === null || typeof call.fundingBody === "string") &&
+      typeof call.source === "string" &&
+      (call.level === null || typeof call.level === "string") &&
+      ["upcoming", "open", "closed", "unknown"].includes(call.status as string) &&
+      typeof call.recurring === "boolean" &&
+      (call.deadline === null || typeof call.deadline === "string") &&
+      (call.budgetMin === null || typeof call.budgetMin === "number") &&
+      (call.budgetMax === null || typeof call.budgetMax === "number") &&
+      typeof call.currency === "string" &&
+      typeof call.updatedAt === "string"
+    );
+  });
+}
+
+function mapCallStatus(status: ApiCallStatus): CallStatus {
+  return status.toUpperCase() as CallStatus;
+}
+
+function mapFundingCallListItem(call: FundingCallListItemDto): FundingCallListItem {
+  return {
+    id: String(call.id),
+    title: call.title,
+    summary: call.summary ?? "",
+    fundingBody: call.fundingBody ?? "",
+    fundingLevel: call.level ?? "",
+    source: call.source,
+    status: mapCallStatus(call.status),
+    recurringCall: call.recurring,
+    deadline: call.deadline ?? undefined,
+    amountMin: call.budgetMin ?? undefined,
+    amountMax: call.budgetMax ?? undefined,
+    currency: call.currency,
+  };
+}
+
+async function fetchCallPage(query: string): Promise<FundingCallListResponseDto> {
+  const response = await fetch(`${apiBaseUrl}/api/calls?${query}`, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Funding calls endpoint returned ${response.status}`);
+  }
+
+  const payload: unknown = await response.json();
+  if (!isCallListResponse(payload)) {
+    throw new Error("Funding calls endpoint returned an unexpected response");
+  }
+
+  return payload;
+}
+
+async function fetchAllCallPages(status?: ApiCallStatus): Promise<FundingCallListItemDto[]> {
+  const items: FundingCallListItemDto[] = [];
+  const limit = 100;
+  let offset = 0;
+  let total = 0;
+
+  do {
+    const query = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+    if (status) {
+      query.set("status", status);
+    }
+
+    const page = await fetchCallPage(query.toString());
+    items.push(...page.items);
+    total = page.total;
+    offset += page.items.length;
+
+    if (page.items.length === 0) {
+      break;
+    }
+  } while (offset < total);
+
+  return items;
+}
+
 export async function getFundingSources(): Promise<SourceListResponse> {
   const response = await fetch(`${apiBaseUrl}/api/sources`, { cache: "no-store" });
   if (!response.ok) {
@@ -44,8 +152,15 @@ export async function getFundingSources(): Promise<SourceListResponse> {
   return payload;
 }
 
-export function getFundingCalls(): FundingCall[] {
-  return structuredClone(initialFundingCalls);
+export async function getFundingCalls(): Promise<FundingCallListItem[]> {
+  const [currentCalls, closedCalls] = await Promise.all([
+    fetchAllCallPages(),
+    fetchAllCallPages("closed"),
+  ]);
+  const uniqueCalls = new Map<number, FundingCallListItemDto>();
+
+  [...currentCalls, ...closedCalls].forEach((call) => uniqueCalls.set(call.id, call));
+  return [...uniqueCalls.values()].map(mapFundingCallListItem);
 }
 
 export function getFundingCall(id: string): FundingCall | undefined {
