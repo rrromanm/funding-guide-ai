@@ -147,27 +147,27 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         <aside className="space-y-6">
           <div className="card">
             <p className="eyebrow mb-3">AI Recommendation</p>
-            {!call.matchResult ? <p className="text-[15px] text-muted">Recommendation not available.</p> : <>
+            {call.score === undefined ? <p className="text-[15px] text-muted">Recommendation not available.</p> : <>
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <div className="font-display text-[28px] font-bold tracking-[-.04em] text-ink-900">
-                    {call.matchResult.overallScore}/100
+                    {call.score}/100
                   </div>
                   <div className="text-[14px] text-muted">Fit score</div>
                 </div>
-                <span className="chip chip-possible">{call.matchResult.fitLabel}</span>
+                {call.matchResult && <span className="chip chip-possible">{call.matchResult.fitLabel}</span>}
               </div>
 
-              <p className="mb-4 text-[15px] text-ink-600">{call.matchResult.explanation}</p>
+              {call.matchResult && <p className="mb-4 text-[15px] text-ink-600">{call.matchResult.explanation}</p>}
 
               <div className="mb-4">
                 <div className="meter">
-                  <div className="meter-fill-violet" style={{ width: `${call.matchResult.overallScore}%` }} />
+                  <div className="meter-fill-violet" style={{ width: `${call.score}%` }} />
                 </div>
               </div>
 
               <div className="space-y-3">
-                {call.matchResult.reasons.map((reason) => (
+                {call.matchResult?.reasons.map((reason) => (
                   <div key={reason.id} className="rounded-[16px] border border-hairline bg-canvas p-3">
                     <div className="font-bold text-ink-900">{reason.title}</div>
                     <p className="mt-1 text-[14px] leading-relaxed text-ink-600">{reason.description}</p>
