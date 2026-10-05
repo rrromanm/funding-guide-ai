@@ -260,7 +260,7 @@ export default function FundingOpportunitiesDashboard() {
                       <td className="px-5 py-4 text-ink-600">{formatDate(call.deadline)}</td>
                       <td className="px-5 py-4"><StatusBadge status={call.status} /></td>
                       <td className="px-5 py-4">
-                        <span className="text-ink-600">—</span>
+                        <span className="text-ink-600">{call.score === undefined ? "—" : `${call.score}/100`}</span>
                       </td>
                       <td className="px-5 py-4">
                         <Link href={`/opportunities/${call.id}`} className="font-bold text-violet-600 hover:no-underline hover:text-violet-800">

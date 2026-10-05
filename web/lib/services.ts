@@ -72,6 +72,7 @@ function isCallListResponse(value: unknown): value is FundingCallListResponseDto
       ["upcoming", "open", "closed", "unknown"].includes(call.status as string) &&
       typeof call.recurring === "boolean" &&
       (call.deadline === null || typeof call.deadline === "string") &&
+      (call.score === null || typeof call.score === "number") &&
       (call.budgetMin === null || typeof call.budgetMin === "number") &&
       (call.budgetMax === null || typeof call.budgetMax === "number") &&
       typeof call.currency === "string" &&
@@ -95,6 +96,7 @@ function mapFundingCallListItem(call: FundingCallListItemDto): FundingCallListIt
     status: mapCallStatus(call.status),
     recurringCall: call.recurring,
     deadline: call.deadline ?? undefined,
+    score: call.score ?? undefined,
     amountMin: call.budgetMin ?? undefined,
     amountMax: call.budgetMax ?? undefined,
     currency: call.currency,
@@ -189,6 +191,7 @@ function isFundingCallDetail(value: unknown): value is FundingCallDetailDto {
     ["upcoming", "open", "closed", "unknown"].includes(call.status as string) &&
     typeof call.recurring === "boolean" &&
     (call.deadline === null || typeof call.deadline === "string") &&
+      (call.score === null || typeof call.score === "number") &&
     (call.budgetMin === null || typeof call.budgetMin === "number") &&
     (call.budgetMax === null || typeof call.budgetMax === "number") &&
     typeof call.currency === "string" &&
@@ -249,6 +252,7 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
     amountMin: call.budgetMin ?? undefined,
     amountMax: call.budgetMax ?? undefined,
     currency: call.currency,
+    score: call.score ?? undefined,
     eligibility: toOptionalText(call.eligibility) ?? "—",
     ngoEligible: call.ngoEligible,
     status: mapCallStatus(call.status),

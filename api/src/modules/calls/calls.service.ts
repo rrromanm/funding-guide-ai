@@ -50,6 +50,18 @@ function nextDeadline(eb: ExpressionBuilder<DB, Queried>) {
     .as("deadline");
 }
 
+function matchScore(eb: ExpressionBuilder<DB, Queried>) {
+  return eb
+    .selectFrom("match_result")
+    .select(
+      sql<
+        number | null
+      >`coalesce(match_result.manual_score, match_result.score)`.as("score"),
+    )
+    .whereRef("match_result.call_id", "=", "funding_call.id")
+    .as("score");
+}
+
 function filters(
   eb: ExpressionBuilder<DB, Queried>,
   { q, status, level }: ListCallsQuery,
@@ -88,7 +100,7 @@ export async function findCalls(
         "funding_source.id",
         "funding_call.funding_source_id",
       )
-      .select((eb) => [...LIST_COLUMNS, nextDeadline(eb)])
+      .select((eb) => [...LIST_COLUMNS, nextDeadline(eb), matchScore(eb)])
       .where((eb) => filters(eb, query))
       .orderBy(sql`deadline asc nulls last`)
       .orderBy("funding_call.id")
@@ -123,7 +135,7 @@ export async function findCallById(id: number): Promise<CallDetail> {
       "funding_source.id",
       "funding_call.funding_source_id",
     )
-    .select((eb) => [...DETAIL_COLUMNS, nextDeadline(eb)])
+    .select((eb) => [...DETAIL_COLUMNS, nextDeadline(eb), matchScore(eb)])
     .where("funding_call.id", "=", id)
     .executeTakeFirst();
 
@@ -188,6 +200,7 @@ type ListRow = {
   currency: string;
   updated_at: Date;
   deadline: string | null;
+  score: number | null;
 };
 
 function toListItem(row: ListRow): CallListItem {
@@ -201,6 +214,7 @@ function toListItem(row: ListRow): CallListItem {
     status: oneOf(CALL_STATUSES, row.status) ?? "unknown",
     recurring: row.recurring,
     deadline: row.deadline,
+    score: row.score,
     budgetMin: row.budget_min,
     budgetMax: row.budget_max,
     currency: row.currency,
