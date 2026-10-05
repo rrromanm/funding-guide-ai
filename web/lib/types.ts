@@ -27,6 +27,27 @@ export interface FundingCallListResponseDto {
   offset: number;
 }
 
+export interface FundingRoundDto {
+  roundNo: number | null;
+  openDate: string | null;
+  deadlineDate: string | null;
+  decisionDate: string | null;
+  expectedNextOpenDate: string | null;
+}
+
+export interface FundingCallDetailDto extends FundingCallListItemDto {
+  description: string | null;
+  eligibility: string | null;
+  ngoEligible: boolean | null;
+  funderType: string | null;
+  themes: string[];
+  sourceUrl: string | null;
+  externalId: string | null;
+  lastChecked: string | null;
+  createdAt: string;
+  rounds: FundingRoundDto[];
+}
+
 export interface FundingCallListItem {
   id: string;
   title: string;
@@ -42,6 +63,29 @@ export interface FundingCallListItem {
   currency: string;
   themes?: Tag[];
   relevantRegions?: string[];
+}
+
+export interface FundingCallDetails {
+  id: string;
+  title: string;
+  summary: string;
+  description: string;
+  fundingBody: string;
+  fundingLevel: string;
+  funderType?: string;
+  amountMin?: number;
+  amountMax?: number;
+  currency: string;
+  eligibility: string;
+  ngoEligible: boolean | null;
+  status: CallStatus;
+  recurringCall: boolean;
+  expectedReopeningDate?: string;
+  sourceUrl?: string;
+  themes: Tag[];
+  targetGroups?: Tag[];
+  fundingRounds: FundingRound[];
+  matchResult?: MatchResult;
 }
 
 export interface FundingSource {
