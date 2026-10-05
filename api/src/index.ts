@@ -10,7 +10,6 @@ if (!env.DATABASE_URL) {
 const app = createApp();
 export default app;
 
-// ponytail: on Vercel the exported app is invoked per request; listen + shutdown only for local
 if (!process.env.VERCEL) {
   const port = env.PORT;
 
@@ -23,7 +22,6 @@ if (!process.env.VERCEL) {
     server.close(() => void db.destroy().then(() => process.exit(0)));
     server.closeIdleConnections();
 
-    // ponytail: 5s ceiling so a stuck request can't outlast the orchestrator's kill window
     setTimeout(() => {
       console.error("Shutdown timed out, forcing exit");
       process.exit(1);
