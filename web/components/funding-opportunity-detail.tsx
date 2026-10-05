@@ -1,10 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ConfirmationModal, PageHeader, StatusBadge } from "@/components/common";
-import { dismissRecommendation, overrideRecommendation } from "@/lib/services";
-import type { FitLabel, FundingCall } from "@/lib/types";
+import { PageHeader, StatusBadge } from "@/components/common";
+import type { FundingCallDetails } from "@/lib/types";
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -23,52 +21,20 @@ const formatDate = (value?: string) => {
   });
 };
 
-const formatAmount = (value?: number) => {
+const formatAmount = (value: number | undefined, currency: string) => {
   if (value === undefined || value === null) {
     return "—";
   }
 
   return new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: "EUR",
+    currency,
     maximumFractionDigits: 0,
   }).format(value);
 };
 
-export default function FundingOpportunityDetail({ initialCall }: { initialCall: FundingCall }) {
-  const [call, setCall] = useState(initialCall);
-  const [overrideOpen, setOverrideOpen] = useState(false);
-  const [dismissConfirmOpen, setDismissConfirmOpen] = useState(false);
-  const [selectedFitLabel, setSelectedFitLabel] = useState<FitLabel>(call.matchResult.fitLabel);
-  const [manualScore, setManualScore] = useState(String(call.matchResult.manualScore ?? call.matchResult.overallScore));
-  const [overrideReason, setOverrideReason] = useState("");
-
-  const handleOverrideSave = () => {
-    const parsedScore = manualScore.trim() ? Number(manualScore) : undefined;
-    const updated = overrideRecommendation(
-      call.id,
-      selectedFitLabel,
-      parsedScore !== undefined && Number.isFinite(parsedScore) ? parsedScore : undefined,
-      overrideReason || undefined,
-    );
-    if (updated) {
-      setCall(updated);
-      setSelectedFitLabel(updated.matchResult.fitLabel);
-      setManualScore(String(updated.matchResult.manualScore ?? updated.matchResult.overallScore));
-    }
-    setOverrideOpen(false);
-    setOverrideReason("");
-  };
-
-  const handleDismiss = () => {
-    const updated = dismissRecommendation(call.id);
-    if (updated) {
-      setCall(updated);
-    }
-    setDismissConfirmOpen(false);
-  };
-
-  const currentReviewStatus = call.matchResult.reviewStatus;
+export default function FundingOpportunityDetail({ initialCall }: { initialCall: FundingCallDetails }) {
+  const call = initialCall;
 
   return (
     <div className="p-8">
@@ -120,7 +86,7 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
               <div>
                 <h3 className="field-label">Funding amount</h3>
                 <p>
-                  {formatAmount(call.amountMin)} – {formatAmount(call.amountMax)}
+                  {formatAmount(call.amountMin, call.currency)} – {formatAmount(call.amountMax, call.currency)}
                 </p>
               </div>
               <div>
@@ -129,7 +95,7 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
               </div>
               <div>
                 <h3 className="field-label">NGO eligible</h3>
-                <p>{call.ngoEligible ? "Yes" : "No"}</p>
+                <p>{call.ngoEligible === null ? "—" : call.ngoEligible ? "Yes" : "No"}</p>
               </div>
             </div>
 
@@ -152,18 +118,18 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
             <div>
               <h3 className="field-label">Themes</h3>
               <div className="flex flex-wrap gap-2">
-                {call.themes.map((tag) => (
+                {call.themes.length > 0 ? call.themes.map((tag) => (
                   <span key={tag.id} className="chip-neutral">{tag.value}</span>
-                ))}
+                )) : <span>—</span>}
               </div>
             </div>
 
             <div>
               <h3 className="field-label">Target groups</h3>
               <div className="flex flex-wrap gap-2">
-                {call.targetGroups.map((tag) => (
+                {call.targetGroups?.length ? call.targetGroups.map((tag) => (
                   <span key={tag.id} className="chip-neutral">{tag.value}</span>
-                ))}
+                )) : <span>—</span>}
               </div>
             </div>
 
@@ -181,53 +147,35 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         <aside className="space-y-6">
           <div className="card">
             <p className="eyebrow mb-3">AI Recommendation</p>
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
-                <div className="font-display text-[28px] font-bold tracking-[-.04em] text-ink-900">
-                  {call.matchResult.overallScore}/100
+            {!call.matchResult ? <p className="text-[15px] text-muted">Recommendation not available.</p> : <>
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <div className="font-display text-[28px] font-bold tracking-[-.04em] text-ink-900">
+                    {call.matchResult.overallScore}/100
+                  </div>
+                  <div className="text-[14px] text-muted">Fit score</div>
                 </div>
-                <div className="text-[14px] text-muted">Fit score</div>
+                <span className="chip chip-possible">{call.matchResult.fitLabel}</span>
               </div>
-              <span className="chip chip-possible">{call.matchResult.fitLabel}</span>
-            </div>
 
-            <p className="mb-4 text-[15px] text-ink-600">{call.matchResult.explanation}</p>
+              <p className="mb-4 text-[15px] text-ink-600">{call.matchResult.explanation}</p>
 
-            <div className="mb-4">
-              <div className="meter">
-                <div className="meter-fill-violet" style={{ width: `${call.matchResult.overallScore}%` }} />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              {call.matchResult.reasons.map((reason) => (
-                <div key={reason.id} className="rounded-[16px] border border-hairline bg-canvas p-3">
-                  <div className="font-bold text-ink-900">{reason.title}</div>
-                  <p className="mt-1 text-[14px] leading-relaxed text-ink-600">{reason.description}</p>
+              <div className="mb-4">
+                <div className="meter">
+                  <div className="meter-fill-violet" style={{ width: `${call.matchResult.overallScore}%` }} />
                 </div>
-              ))}
-            </div>
-
-            {currentReviewStatus === "OVERRIDDEN" ? (
-              <div className="mt-4 rounded-[16px] border border-violet-200 bg-violet-50 p-3 text-[14px] font-semibold text-violet-800">
-                Recommendation manually overridden.
               </div>
-            ) : null}
 
-            {currentReviewStatus === "DISMISSED" ? (
-              <div className="mt-4 rounded-[16px] border border-red-200 bg-red-50 p-3 text-[14px] font-semibold text-red-600">
-                Recommendation dismissed.
+              <div className="space-y-3">
+                {call.matchResult.reasons.map((reason) => (
+                  <div key={reason.id} className="rounded-[16px] border border-hairline bg-canvas p-3">
+                    <div className="font-bold text-ink-900">{reason.title}</div>
+                    <p className="mt-1 text-[14px] leading-relaxed text-ink-600">{reason.description}</p>
+                  </div>
+                ))}
               </div>
-            ) : null}
 
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button type="button" className="btn btn-secondary" onClick={() => setOverrideOpen(true)}>
-                Override recommendation
-              </button>
-              <button type="button" className="btn btn-tertiary text-red-600 hover:text-red-700" onClick={() => setDismissConfirmOpen(true)}>
-                Dismiss recommendation
-              </button>
-            </div>
+            </>}
           </div>
 
           <div className="card">
@@ -251,72 +199,6 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         </aside>
       </div>
 
-      <ConfirmationModal
-        open={dismissConfirmOpen}
-        title="Dismiss recommendation?"
-        description="This will dismiss the current AI recommendation and keep the opportunity visible for review."
-        confirmLabel="Dismiss"
-        confirmVariant="destructive"
-        onCancel={() => setDismissConfirmOpen(false)}
-        onConfirm={handleDismiss}
-      />
-
-      {overrideOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink-900/40 p-4">
-          <div className="w-full max-w-lg rounded-[24px] bg-white p-6 shadow-card">
-            <h2 className="font-display text-[24px] font-bold tracking-[-.04em] text-ink-900">Override recommendation</h2>
-            <p className="mt-2 text-[15px] text-ink-600">Current recommendation: {call.matchResult.fitLabel}</p>
-
-            <div className="mt-5">
-              <label htmlFor="override-fit-label" className="field-label">New recommendation</label>
-              <select
-                id="override-fit-label"
-                value={selectedFitLabel}
-                onChange={(event) => setSelectedFitLabel(event.target.value as FitLabel)}
-                className="input"
-              >
-                <option value="Strong fit">Strong fit</option>
-                <option value="Good fit">Good fit</option>
-                <option value="Possible fit">Possible fit</option>
-                <option value="Limited fit">Limited fit</option>
-              </select>
-            </div>
-
-            <div className="mt-5">
-              <label htmlFor="manual-fit-score" className="field-label">Manual fit score</label>
-              <input
-                id="manual-fit-score"
-                type="number"
-                min="0"
-                max="100"
-                value={manualScore}
-                onChange={(event) => setManualScore(event.target.value)}
-                className="input"
-              />
-            </div>
-
-            <div className="mt-5">
-              <label htmlFor="override-reason" className="field-label">Optional reason</label>
-              <textarea
-                id="override-reason"
-                value={overrideReason}
-                onChange={(event) => setOverrideReason(event.target.value)}
-                rows={4}
-                className="input min-h-[100px] rounded-[24px]"
-              />
-            </div>
-
-            <div className="mt-6 flex justify-end gap-3">
-              <button type="button" className="btn btn-secondary" onClick={() => setOverrideOpen(false)}>
-                Cancel
-              </button>
-              <button type="button" className="btn btn-primary" onClick={handleOverrideSave}>
-                Save Override
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
