@@ -1,3 +1,5 @@
+import re
+
 BASE_URL = "https://slks.dk"
 LIST_URL = f"{BASE_URL}/tilskud/soeg-puljer"
 LIST_PARAMS = {"tx_lftilskudsbase_pi7[order]": "application_deadline asc"}
@@ -9,3 +11,6 @@ DEFAULTS = {
     "funder_type": "public_pool",
     "application_language": "da",
 }
+
+NOT_A_GRANT = re.compile(
+    r"tilladelse|registrering|refusion|optagelse|kselekt|bibliotekspenge", re.IGNORECASE)

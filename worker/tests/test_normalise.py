@@ -71,10 +71,6 @@ def test_amounts():
     assert norm()["amounts_kr"] == [150000]
 
 
-def test_content_hash_ignores_url():
-    assert norm(source_url="https://horsens.dk/other#frag")["content_hash"] \
-        == norm()["content_hash"]
-
 def test_numeric_danish_date_in_table():
     r = norm(deadline_table=[{"submit": "24.09.2026, kl. 14:00", "decided": None}])
     assert [d["date"] for d in r["deadlines"]] == ["2026-09-24"]

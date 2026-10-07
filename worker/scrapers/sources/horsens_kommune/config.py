@@ -1,3 +1,5 @@
+import re
+
 SITEMAP_URL = "https://horsens.dk/sitemap.xml"
 
 PATH_PREFIXES = (
@@ -10,3 +12,5 @@ DEFAULTS = {
     "funder_type": "public_pool",
     "application_language": "da",
 }
+
+NOT_A_GRANT = re.compile(r"frøpuljen|bygningsforbedringsfond", re.IGNORECASE)
