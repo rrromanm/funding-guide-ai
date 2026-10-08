@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import re
 from datetime import date
 
@@ -124,9 +123,6 @@ def normalise(records: list[dict], today: date | None = None) -> list[dict]:
                          else "closed" if rec["past_deadlines"] else "unknown")
 
         rec["amounts_kr"] = _amounts(desc)
-
-        content = re.sub(r"\s+", " ", f"{rec.get('title') or ''}\n{desc}").strip()
-        rec["content_hash"] = hashlib.sha256(content.encode()).hexdigest()
 
         out.append(rec)
     return out

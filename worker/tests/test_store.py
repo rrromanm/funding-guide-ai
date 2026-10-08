@@ -54,3 +54,20 @@ def test_columns_exist_in_the_schema():
     assert set(CALL_COLS) <= columns("funding_call")
     assert set(ROUND_COLS) <= columns("funding_round")
     assert {"name", "source_type", "last_checked"} <= columns("funding_source")
+
+
+def test_same_pool_on_two_pages_is_one_record():
+    pages = [{**SEEN, "title": t, "source_url": u, "description": BODY + d}
+             for t, u, d in [("Tilgængelighedspuljen", "https://horsens.dk/x#a", " v1"),
+                             ("Tilgængelighedspulje", "https://horsens.dk/y", " v2")]]
+    [rec] = dedupe(normalise(pages, today=date(2026, 1, 1)))
+    assert [s["source_url"] for s in rec["call_sources"]] == ["https://horsens.dk/x#a", "https://horsens.dk/y"]
+    assert rec["source_url"] == "https://horsens.dk/x#a"  # equal length: first kept
+
+    pages[1]["description"] += " longer"
+    [rec] = dedupe(normalise(pages, today=date(2026, 1, 1)))
+    assert rec["source_url"] == "https://horsens.dk/y"  # fuller description wins
+    assert len(rec["call_sources"]) == 2
+
+    pages[1]["source"] = "slks"
+    assert len(dedupe(normalise(pages, today=date(2026, 1, 1)))) == 2  # never across sources

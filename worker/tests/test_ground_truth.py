@@ -64,3 +64,13 @@ def test_unknown_gate_caps_confidence():
     for r in RESULTS.values():
         if any(x["kind"] == "barrier" for x in r["reasons"]):
             assert r["confidence"] == "low", r["title"]
+
+
+def test_professional_only_pool_blocked():
+    pro = {"id": 999, "title": "Musikerpuljen",
+           "description": "Puljen støtter professionelle musikere og bands med "
+                          "turné og indspilning for unge publikummer."}
+    r = run([pro], PROFILE)[0]
+    assert r["has_blocking_barrier"] and r["fit_label"] == "not_recommended"
+    mixed = {**pro, "description": "Foreninger og professionelle aktører kan søge."}
+    assert not run([mixed], PROFILE)[0]["has_blocking_barrier"]

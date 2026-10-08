@@ -1,6 +1,7 @@
 # for each source: discover() -> fetch() -> parse() -> normalise() -> dedupe() -> store()
 from __future__ import annotations
 
+import re
 import time
 from datetime import datetime, timezone
 
@@ -35,7 +36,8 @@ def collect(source) -> list[dict]:
         if html is None:
             continue
         try:
-            records.extend(source.parse(url, html))
+            records.extend(r for r in source.parse(url, html)
+                           if not source.NOT_A_GRANT.search(r["title"]))
         except Exception as exc:
             print(f"    ! parse failed: {url} ({exc.__class__.__name__}: {exc})")
 
@@ -45,18 +47,29 @@ def collect(source) -> list[dict]:
     return records
 
 
+def _title_key(title: str) -> str:
+    key = re.sub(r"\W+", "", title.lower())
+    # ponytail: drops any trailing "n" to fold the Danish definite article ("puljen" -> "pulje");
+    # swap for a real stemmer if unrelated titles start colliding.
+    return key[:-1] if key.endswith("n") else key
+
+
 def dedupe(records: list[dict]) -> list[dict]:
-    # One record per content_hash, keeping every URL it was sighted at.
-    # Merging on content_hash (title + description, URL deliberately excluded) rather
-    # than on URL is what makes both cases collapse to a single record. 
-    merged: dict[str, dict] = {}
+    # One record per (source, title); the fullest description wins, every URL is kept.
+    merged: dict[tuple[str, str], dict] = {}
     for record in records:
         sighting = {k: record[k] for k in ("source", "source_url", "last_checked")}
-        kept = merged.get(record["content_hash"])
+        key = (record["source"], _title_key(record["title"]))
+        kept = merged.get(key)
         if kept is None:
             record["call_sources"] = [sighting]
-            merged[record["content_hash"]] = record
-        elif sighting not in kept["call_sources"]:
+            merged[key] = record
+        elif sighting in kept["call_sources"]:
+            continue
+        elif len(record.get("description") or "") > len(kept.get("description") or ""):
+            record["call_sources"] = kept["call_sources"] + [sighting]
+            merged[key] = record
+        else:
             kept["call_sources"].append(sighting)
     return list(merged.values())
 
@@ -80,7 +93,6 @@ def run() -> tuple[list[dict], list[dict]]:
                        "source_type": source.DEFAULTS.get("level"),
                        "last_checked": stamp if got else None})
 
-    # Normalise before dedupe, because dedupe needs the content_hash
     return dedupe(normalise(records)), health
 
 

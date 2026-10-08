@@ -14,7 +14,9 @@ FACILITY = re.compile(
     r"facilitet|fysiske rammer|anlægssum|klubhus|klublokale|bygningsforbedring"
     r"|nedrivning|ejerskab til", re.IGNORECASE)
 ACTIVITY = re.compile(r"arrangement|aktivitet|projekt|event|initiativ", re.IGNORECASE)
-PURPOSE_EXCLUDED = re.compile(r"politisk|religiøs|kommerciel", re.IGNORECASE)
+PROFESSIONAL = re.compile(
+    r"professionel|erhvervsaktiv|virksomhed|cvr", re.IGNORECASE)
+PURPOSE_EXCLUDED =re.compile(r"politisk|religiøs|kommerciel", re.IGNORECASE)
 
 
 LEAD_CHARS = 300
@@ -38,11 +40,15 @@ def applicant_type(call, profile, config):
         return [Reason("blocker", "applicant_type_mismatch",
                        "Pool targets private individuals/property owners, not associations",
                        -100)]
+    if PROFESSIONAL.search(_lead(call)) and not _is_association(_lead(call)):
+        return [Reason("blocker", "applicant_type_professional",
+                       "Pool targets professionals/businesses, not volunteer associations",
+                       -100)]
     if _is_association(text):
         return [Reason("info", "applicant_type_ok",
                        "Pool is open to associations/institutions")]
     return [Reason("barrier", "applicant_type_unknown",
-                   "Eligible applicant type is not stated in the call text")]
+                   "Eligible applicant type is not stated in the call text", -5)]
 
 
 def facility_only(call, profile, config):
