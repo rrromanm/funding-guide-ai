@@ -70,6 +70,17 @@ function filters(
     status
       ? eb("funding_call.status", "=", status)
       : eb("funding_call.status", "!=", "closed"),
+    eb.not(
+      eb.exists(
+        eb
+          .selectFrom("match_result")
+          .select("match_result.id")
+          .whereRef("match_result.call_id", "=", "funding_call.id")
+          .where(
+            sql<boolean>`coalesce(match_result.manual_score, match_result.score) = 0`,
+          ),
+      ),
+    ),
   ];
 
   if (level) conditions.push(eb("funding_call.level", "=", level));
@@ -102,6 +113,8 @@ export async function findCalls(
       )
       .select((eb) => [...LIST_COLUMNS, nextDeadline(eb), matchScore(eb)])
       .where((eb) => filters(eb, query))
+      // best match first (a manual score wins), unscored last; ties by nearest deadline
+      .orderBy(sql`score desc nulls last`)
       .orderBy(sql`deadline asc nulls last`)
       .orderBy("funding_call.id")
       .limit(query.limit)

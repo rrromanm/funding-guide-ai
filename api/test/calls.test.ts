@@ -53,20 +53,29 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
     expect(typeof first.currency).toBe("string");
   });
 
-  it("orders by the nearest upcoming deadline, undated calls last", async () => {
+  it("orders by score, highest first and unscored calls last", async () => {
     const res = await request(app).get("/api/calls?limit=100");
-    const deadlines = res.body.items.map(
-      (item: { deadline: string | null }) => item.deadline,
-    );
+    const items: { score: number | null; deadline: string | null }[] =
+      res.body.items;
 
-    for (const deadline of deadlines) {
+    for (const { deadline } of items) {
       if (deadline !== null) expect(deadline).toMatch(ISO_DATE);
     }
 
-    const dated = deadlines.filter((deadline: string | null) => deadline);
-    expect(dated).toEqual([...dated].sort());
-    for (const deadline of deadlines.slice(dated.length))
-      expect(deadline).toBeNull();
+    const scores = items.map((item) => item.score);
+    const scored = scores.filter((score) => score !== null);
+    expect(scored).toEqual([...scored].sort((a, b) => b - a));
+    for (const score of scores.slice(scored.length)) expect(score).toBeNull();
+  });
+
+  it("never lists a call scored 0, in any status", async () => {
+    for (const status of ["", "&status=closed"]) {
+      const res = await request(app).get(`/api/calls?limit=100${status}`);
+      const scores = res.body.items.map(
+        (item: { score: number | null }) => item.score,
+      );
+      expect(scores).not.toContain(0);
+    }
   });
 
   it("includes the match score, manual override first", async () => {

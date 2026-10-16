@@ -1,5 +1,8 @@
+import re
 from datetime import date
+from types import SimpleNamespace
 
+from scrapers.pipeline import run
 from scrapers.pipeline.normalise import normalise
 from scrapers.pipeline.run import dedupe
 from scrapers.pipeline.store import CALL_COLS, ROUND_COLS, to_call, to_rounds
@@ -53,7 +56,7 @@ def test_rounds_carry_both_dates_and_unique_numbers():
 def test_columns_exist_in_the_schema():
     assert set(CALL_COLS) <= columns("funding_call")
     assert set(ROUND_COLS) <= columns("funding_round")
-    assert {"name", "source_type", "last_checked"} <= columns("funding_source")
+    assert {"name", "source_type", "base_url", "last_checked"} <= columns("funding_source")
 
 
 def test_same_pool_on_two_pages_is_one_record():
@@ -71,3 +74,14 @@ def test_same_pool_on_two_pages_is_one_record():
 
     pages[1]["source"] = "slks"
     assert len(dedupe(normalise(pages, today=date(2026, 1, 1)))) == 2  # never across sources
+
+
+def test_a_trailing_slash_is_the_same_page(monkeypatch):
+    pages = [{"title": "A", "source_url": "https://slks.dk/tilskud/a/"},
+             {"title": "B", "source_url": "https://horsens.dk/b/#pulje"},
+             {"title": "C", "source_url": "https://horsens.dk/"}]
+    source = SimpleNamespace(__name__="scrapers.sources.test", DEFAULTS={}, NOT_A_GRANT=re.compile("^$"),
+                             discover=lambda: ["page"], parse=lambda url, html: [dict(p) for p in pages])
+    monkeypatch.setattr(run, "fetch", lambda url: "<html>")
+    assert [r["source_url"] for r in run.collect(source)] == [
+        "https://slks.dk/tilskud/a", "https://horsens.dk/b#pulje", "https://horsens.dk/"]

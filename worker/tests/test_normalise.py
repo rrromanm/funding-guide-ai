@@ -58,6 +58,13 @@ def test_status_distinguishes_expired_from_open():
                 )["status"] == "unknown"
 
 
+def test_deadline_table_outranks_rolling_prose():
+    r = norm(description="Søg støtte. Der afholdes løbende arrangementer. " + "x" * 500,
+             deadline_table=[{"submit": "1. april 2025"}])
+    assert (r["deadline_type"], r["status"]) == ("fixed", "closed")
+    assert norm(deadline_table=[{"submit": "Løbende"}])["status"] == "open"
+
+
 def test_multi_language_dates():
     for desc in ("Apply for funding. Deadline 1 April 2026. ",
                  "Call for proposals. Deadline April 1, 2026. ",
