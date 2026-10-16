@@ -12,6 +12,18 @@ export type Generated<T> =
     ? ColumnType<S, I | undefined, U>
     : ColumnType<T, T | undefined, T>;
 
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
 export type Numeric = ColumnType<number, number | string, number | string>;
 
 export type ReviewStatus = "dismissed" | "generated" | "overridden";
@@ -19,11 +31,6 @@ export type ReviewStatus = "dismissed" | "generated" | "overridden";
 export type TagType = "country" | "other" | "sector" | "target_group" | "theme";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
-
-export interface Api {
-  created_at: Generated<Timestamp>;
-  id: Generated<number>;
-}
 
 export interface FundingCall {
   budget_max: Numeric | null;
@@ -74,22 +81,27 @@ export interface FundingSource {
 export interface MatchReason {
   id: Generated<number>;
   kind: string;
+  label: string | null;
   match_id: number;
   message: string;
-  weight: Generated<number>;
 }
 
 export interface MatchResult {
   admin_note: string | null;
+  blocking_reason: string | null;
   call_id: number;
-  created_at: Generated<Timestamp>;
+  confidence: string;
   fit_label: string;
   id: Generated<number>;
+  input_hash: string;
   manual_score: number | null;
+  model: string;
   org_profile_id: Generated<number>;
+  prompt_version: string;
+  raw_response: Json;
   review_status: Generated<ReviewStatus>;
   score: number;
-  updated_at: Generated<Timestamp>;
+  scored_at: Generated<Timestamp>;
 }
 
 export interface Notification {
@@ -104,6 +116,7 @@ export interface OrgProfile {
   admin_capacity: string | null;
   city: string;
   country: string;
+  founded_year: number | null;
   id: number;
   legal_status: string;
   name: string;
@@ -122,7 +135,6 @@ export interface Tag {
 }
 
 export interface DB {
-  api: Api;
   funding_call: FundingCall;
   funding_call_tag: FundingCallTag;
   funding_round: FundingRound;
