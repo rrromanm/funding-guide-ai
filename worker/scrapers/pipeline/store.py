@@ -11,7 +11,7 @@ ENV_FILE = Path(__file__).resolve().parent.parent.parent / ".env"
 
 CALL_COLS = (
     "funding_source_id source_url title summary description funding_body level funder_type "
-    "status eligibility ngo_eligible recurring budget_min budget_max updated_at"
+    "status eligibility ngo_eligible recurring budget_min budget_max external_id updated_at"
 ).split()
 
 ROUND_COLS = ("call_id", "round_no", "deadline_date", "decision_date")
@@ -30,10 +30,11 @@ ROUND_SQL = (
 )
 
 SOURCE_SQL = """
-insert into funding_source (name, source_type, last_checked)
-values (%s, %s, %s)
+insert into funding_source (name, source_type, base_url, last_checked)
+values (%s, %s, %s, %s)
 on conflict (name) do update set
   source_type = excluded.source_type,
+  base_url = coalesce(excluded.base_url, funding_source.base_url),
   last_checked = coalesce(excluded.last_checked, funding_source.last_checked)
 returning id
 """
@@ -59,7 +60,7 @@ def to_call(rec: dict, source_id: int | None = None) -> dict:
     amounts = rec.get("amounts_kr") or []
     row["budget_min"] = min(amounts) if amounts else None
     row["budget_max"] = max(amounts) if amounts else None
-    row["recurring"] = rec.get("deadline_type") == "multi_round"
+    row["recurring"] = bool(rec.get("recurring")) or rec.get("deadline_type") == "multi_round"
     row["updated_at"] = rec["last_checked"]
     return row
 
@@ -88,7 +89,8 @@ def store(records: list[dict], sources: list[dict] = ()) -> tuple[int, int]:
     with psycopg.connect(dsn()) as conn, conn.cursor() as cur:
         source_ids = {}
         for s in source_rows:
-            cur.execute(SOURCE_SQL, [s["name"], s["source_type"], s["last_checked"]])
+            cur.execute(SOURCE_SQL, [s["name"], s["source_type"], s.get("base_url"),
+                                     s["last_checked"]])
             source_ids[s["key"]] = cur.fetchone()[0]
 
         if not records:

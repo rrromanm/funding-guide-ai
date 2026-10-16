@@ -4,15 +4,36 @@ from __future__ import annotations
 import re
 import time
 from datetime import datetime, timezone
+from functools import cache
+from urllib.parse import urlsplit, urlunsplit
+from urllib.robotparser import RobotFileParser
 
 import requests
 
-from scrapers.config import REQUEST_TIMEOUT, USER_AGENT
+from scrapers.config import FETCH_DELAY, REQUEST_TIMEOUT, USER_AGENT
 from scrapers.pipeline.normalise import normalise
 from scrapers.pipeline.store import store
 from scrapers.sources import SOURCES
 
+
+@cache
+def _robots(site: str) -> RobotFileParser:
+    rules = RobotFileParser()
+    try:
+        response = requests.get(f"{site}/robots.txt", headers={"User-Agent": USER_AGENT},
+                                timeout=REQUEST_TIMEOUT)
+        rules.parse(response.text.splitlines() if response.ok else [])
+    except requests.RequestException:
+        rules.parse([])
+    return rules
+
+
 def fetch(url: str) -> str | None:
+    parts = urlsplit(url)
+    if not _robots(f"{parts.scheme}://{parts.netloc}").can_fetch(USER_AGENT, url):
+        print(f"robots.txt disallows: {url}")
+        return None
+    time.sleep(FETCH_DELAY)
     try:
         response = requests.get(
             url, headers={"User-Agent": USER_AGENT}, timeout=REQUEST_TIMEOUT
@@ -29,33 +50,38 @@ def fetch(url: str) -> str | None:
 def collect(source) -> list[dict]:
     name = source.__name__.rsplit(".", 1)[-1]
 
-    records = []
-    for url in source.discover():
-        html = fetch(url)
-        time.sleep(1)
-        if html is None:
-            continue
-        try:
-            records.extend(r for r in source.parse(url, html)
-                           if not source.NOT_A_GRANT.search(r["title"]))
-        except Exception as exc:
-            print(f"    ! parse failed: {url} ({exc.__class__.__name__}: {exc})")
+    if hasattr(source, "collect"):
+        records = source.collect(fetch)
+    else:
+        records = []
+        for url in source.discover():
+            html = fetch(url)
+            if html is None:
+                continue
+            try:
+                records.extend(r for r in source.parse(url, html)
+                               if not source.NOT_A_GRANT.search(r["title"]))
+            except Exception as exc:
+                print(f"    ! parse failed: {url} ({exc.__class__.__name__}: {exc})")
 
     stamp = datetime.now(timezone.utc).isoformat()
     for record in records:
-        record.update({**source.DEFAULTS, **record}, source=name, last_checked=stamp)
+        record.update({**source.DEFAULTS, **record}, source=name, last_checked=stamp,
+                      source_url=_canonical(record["source_url"]))
     return records
+
+
+def _canonical(url: str) -> str:
+    parts = urlsplit(url)
+    return urlunsplit(parts._replace(path=parts.path.rstrip("/") or "/"))
 
 
 def _title_key(title: str) -> str:
     key = re.sub(r"\W+", "", title.lower())
-    # ponytail: drops any trailing "n" to fold the Danish definite article ("puljen" -> "pulje");
-    # swap for a real stemmer if unrelated titles start colliding.
     return key[:-1] if key.endswith("n") else key
 
 
 def dedupe(records: list[dict]) -> list[dict]:
-    # One record per (source, title); the fullest description wins, every URL is kept.
     merged: dict[tuple[str, str], dict] = {}
     for record in records:
         sighting = {k: record[k] for k in ("source", "source_url", "last_checked")}
@@ -89,8 +115,9 @@ def run() -> tuple[list[dict], list[dict]]:
             print(f"    {len(got)} raw records")
         records.extend(got)
         health.append({"key": name,
-                       "name": source.DEFAULTS.get("funding_body", name),
+                       "name": getattr(source, "NAME", source.DEFAULTS.get("funding_body", name)),
                        "source_type": source.DEFAULTS.get("level"),
+                       "base_url": getattr(source, "BASE_URL", None),
                        "last_checked": stamp if got else None})
 
     return dedupe(normalise(records)), health

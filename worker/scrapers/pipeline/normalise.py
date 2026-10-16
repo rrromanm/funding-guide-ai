@@ -107,8 +107,9 @@ def normalise(records: list[dict], today: date | None = None) -> list[dict]:
         rec["deadlines"] = [d for d in rounds if d["date"] >= cutoff]
         rec["past_deadlines"] = [d for d in rounds if d["date"] < cutoff]
 
-        # Application cycle
-        rolling = bool(ROLLING_RE.search(desc))
+        # Application cycle.
+        cycle = " ".join(row.get("submit") or "" for row in table) if table else desc
+        rolling = bool(ROLLING_RE.search(cycle))
         if rolling and not rec["deadlines"]:
             rec["deadline_type"] = "rolling" 
         elif len(rounds) > 1:

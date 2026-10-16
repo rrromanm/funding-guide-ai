@@ -94,7 +94,8 @@ export const openapi = {
       get: {
         summary: "List funding calls",
         description:
-          "Ordered by the nearest upcoming deadline, calls without one last. " +
+          "Ordered by score (highest first, unscored last), then by the nearest upcoming deadline. " +
+          "Calls scored 0 are never listed. " +
           "Closed calls are excluded unless `status=closed` is given.",
         tags: ["calls"],
         parameters: queryParameters(listCallsQuery),
