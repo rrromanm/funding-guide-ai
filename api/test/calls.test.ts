@@ -91,6 +91,15 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
     expect(res.body.score).toBe(match.manual_score ?? match.score);
   });
 
+  it("labels every scored call, and only those", async () => {
+    const res = await request(app).get("/api/calls?limit=100");
+
+    for (const item of res.body.items) {
+      expect(item.fitLabel === null).toBe(item.score === null);
+      if (item.score >= 75) expect(item.fitLabel).toBe("strong_fit");
+    }
+  });
+
   it("paginates with offset", async () => {
     const page = await request(app).get("/api/calls?limit=2");
     const next = await request(app).get("/api/calls?limit=2&offset=2");
@@ -156,6 +165,31 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
       if (round.deadlineDate !== null)
         expect(round.deadlineDate).toMatch(ISO_DATE);
     }
+  });
+
+  it("explains the AI recommendation", async () => {
+    const reason = await db
+      .selectFrom("match_reason")
+      .innerJoin("match_result", "match_result.id", "match_reason.match_id")
+      .select([
+        "match_result.call_id",
+        "match_result.confidence",
+        "match_result.blocking_reason",
+      ])
+      .executeTakeFirst();
+    if (!reason) return;
+
+    const res = await request(app).get(`/api/calls/${reason.call_id}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.confidence).toBe(reason.confidence);
+    expect(res.body.blockingReason).toBe(reason.blocking_reason);
+    expect(res.body.reasons.length).toBeGreaterThan(0);
+    expect(res.body.reasons[0]).toEqual({
+      kind: expect.any(String),
+      about: expect.any(String),
+      message: expect.any(String),
+    });
   });
 
   it("returns a 404 for an id that does not exist", async () => {
