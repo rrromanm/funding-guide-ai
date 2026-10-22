@@ -1,4 +1,4 @@
-# for each source: discover() -> fetch() -> parse() -> normalise() -> dedupe() -> store()
+# for each source: discover() -> fetch() -> parse(); then dedupe() -> enrich() (LLM) -> normalise() -> store()
 from __future__ import annotations
 
 import re
@@ -11,6 +11,7 @@ from urllib.robotparser import RobotFileParser
 import requests
 
 from scrapers.config import FETCH_DELAY, REQUEST_TIMEOUT, USER_AGENT
+from scrapers.pipeline.extract import enrich
 from scrapers.pipeline.normalise import normalise
 from scrapers.pipeline.store import store
 from scrapers.sources import SOURCES
@@ -120,7 +121,7 @@ def run() -> tuple[list[dict], list[dict]]:
                        "base_url": getattr(source, "BASE_URL", None),
                        "last_checked": stamp if got else None})
 
-    return dedupe(normalise(records)), health
+    return normalise(enrich(dedupe(records))), health
 
 
 if __name__ == "__main__":
