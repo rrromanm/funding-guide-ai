@@ -24,15 +24,12 @@ DATE_PATTERNS = (
     (re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"), (3, 2, 1)),
 )
 
-# DKK amounts. "150.000 kr" and "kr. 150.000".
-KR_RE = re.compile(r"(?:kr\.?\s*)?(\d{1,3}(?:\.\d{3})+|\d+)\s*kr\b|kr\.?\s*(\d{1,3}(?:\.\d{3})+|\d+)", re.IGNORECASE)
-
 # Test that separates a real call from a general information page.
 APPLY_RE = re.compile(
     r"\bansøg|\bsøg|\btilskud|\bstøtte"
     r"|\bapply\b|\bapplication|\bgrant|\bfunding|\bcall for proposals", re.IGNORECASE)
 
-# Distinguishes a rolling pool from one with rounds.
+# A deadline-table cell that marks a rolling pool ("Løbende").
 ROLLING_RE = re.compile(r"løbende|hele året|\brolling\b|year-round|\bongoing\b", re.IGNORECASE)
 
 # A page that invites applications but carries almost no text is a stub
@@ -66,19 +63,12 @@ def _parse_dates(text: str) -> list[dict]:
     return [entry for _, entry in sorted(found.values(), key=lambda t: t[0])]
 
 
-def _amounts(text: str) -> list[int]:
-    """Every distinct DKK figure, in order. "150.000 kr" -> 150000.
-
-    Either alternative of KR_RE fires, never both, so group(1) or group(2) holds
-    the digits. Stripping "." removes the Danish thousands separator.
-    """
-    seen, out = set(), []
-    for m in KR_RE.finditer(text or ""):
-        value = int((m.group(1) or m.group(2)).replace(".", ""))
-        if value not in seen:
-            seen.add(value)
-            out.append(value)
-    return out
+def record_kind(description: str | None) -> str:
+    """What kind of page this is. Not stored -- store() drops info pages."""
+    desc = description or ""
+    if not APPLY_RE.search(desc):
+        return "info_page"
+    return "stub" if len(desc) < STUB_MAX_CHARS else "call"
 
 
 # 3. THE NORMALISER
@@ -87,43 +77,29 @@ def normalise(records: list[dict], today: date | None = None) -> list[dict]:
     out = []
     for raw in records:
         rec = dict(raw)
-        desc = rec.get("description") or ""
+        rec["record_kind"] = record_kind(rec.get("description"))
 
-        # What kind of page is this? Not stored -- store() drops info pages.
-        if not APPLY_RE.search(desc):
-            rec["record_kind"] = "info_page"
-        elif len(desc) < STUB_MAX_CHARS:
-            rec["record_kind"] = "stub"
-        else:
-            rec["record_kind"] = "call"
-
-        # Deadlines
+        # Rounds come only from a deadline table: the scraper's, or the one enrich() builds from free text.
         table = rec.get("deadline_table") or []
-        if table:
-            rounds = [d for row in table for d in _parse_dates(row.get("submit", ""))]
-        else:
-            rounds = [d for d in _parse_dates(desc) if d["date"] >= cutoff]
-
+        rounds = [d for row in table for d in _parse_dates(row.get("submit") or "")]
         rec["deadlines"] = [d for d in rounds if d["date"] >= cutoff]
         rec["past_deadlines"] = [d for d in rounds if d["date"] < cutoff]
 
         # Application cycle.
-        cycle = " ".join(row.get("submit") or "" for row in table) if table else desc
-        rolling = bool(ROLLING_RE.search(cycle))
+        rolling = bool(rec.get("rolling")) or bool(
+            ROLLING_RE.search(" ".join(row.get("submit") or "" for row in table)))
         if rolling and not rec["deadlines"]:
-            rec["deadline_type"] = "rolling" 
+            rec["deadline_type"] = "rolling"
         elif len(rounds) > 1:
             rec["deadline_type"] = "multi_round"
         elif len(rounds) == 1 and not rolling:
-            rec["deadline_type"] = "fixed"           
+            rec["deadline_type"] = "fixed"
         else:
             rec["deadline_type"] = "unknown"
 
         # Status (Open/Closed)
         rec["status"] = ("open" if rec["deadlines"] or rec["deadline_type"] == "rolling"
                          else "closed" if rec["past_deadlines"] else "unknown")
-
-        rec["amounts_kr"] = _amounts(desc)
 
         out.append(rec)
     return out

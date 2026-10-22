@@ -11,10 +11,10 @@ ENV_FILE = Path(__file__).resolve().parent.parent.parent / ".env"
 
 CALL_COLS = (
     "funding_source_id source_url title summary description funding_body level funder_type "
-    "status eligibility ngo_eligible recurring budget_min budget_max external_id updated_at"
+    "status eligibility ngo_eligible recurring budget_min budget_max currency external_id updated_at"
 ).split()
 
-ROUND_COLS = ("call_id", "round_no", "deadline_date", "decision_date")
+ROUND_COLS = ("call_id", "round_no", "open_date", "deadline_date", "decision_date")
 
 CALL_SQL = (
     f"insert into funding_call ({', '.join(CALL_COLS)}) "
@@ -39,6 +39,23 @@ on conflict (name) do update set
 returning id
 """
 
+TAG_SQL = ("insert into funding_call_tag (call_id, tag_id) "
+           "select %s, id from tag where type = %s::tag_type and label = any(%s)")
+
+# What enrich() reuses when a call's description hasn't changed since the last run.
+STORED_SQL = """
+select c.source_url, c.description, c.status, c.eligibility, c.ngo_eligible,
+       c.budget_min, c.budget_max, c.currency,
+       array(select t.label from funding_call_tag ct join tag t on t.id = ct.tag_id
+             where ct.call_id = c.id and t.type = 'theme'),
+       array(select t.label from funding_call_tag ct join tag t on t.id = ct.tag_id
+             where ct.call_id = c.id and t.type = 'target_group'),
+       array(select json_build_object('submit', r.deadline_date, 'decided', r.decision_date,
+                                      'opens', r.open_date)
+             from funding_round r where r.call_id = c.id order by r.round_no)
+from funding_call c where c.source_url = any(%s)
+"""
+
 
 def dsn() -> str:
     if "DATABASE_URL" not in os.environ and ENV_FILE.exists():
@@ -49,6 +66,26 @@ def dsn() -> str:
     return os.environ["DATABASE_URL"]
 
 
+def vocabulary() -> tuple[list[str], list[str]]:
+    """(themes, target groups): the tag labels a call may be tagged with."""
+    with psycopg.connect(dsn()) as conn:
+        tags = dict(conn.execute(
+            "select type::text, array_agg(label order by label) from tag group by type").fetchall())
+    return tags.get("theme", []), tags.get("target_group", [])
+
+
+def stored_calls(urls: list[str]) -> dict[str, dict]:
+    with psycopg.connect(dsn()) as conn:
+        rows = conn.execute(STORED_SQL, [urls]).fetchall()
+    return {url: {"description": desc, "eligibility": eligibility,
+                  "fields": {"eligibility": eligibility, "ngo_eligible": ngo, "budget_min": low,
+                             "budget_max": high, "currency": currency, "themes": themes,
+                             "target_groups": groups},
+                  # rolling isn't stored; an open call without rounds can only be one
+                  "rounds": rounds, "rolling": status == "open" and not rounds}
+            for url, desc, status, eligibility, ngo, low, high, currency, themes, groups, rounds in rows}
+
+
 def to_source(rec: dict) -> dict:
     return {"key": rec["source"], "name": rec.get("funding_body") or rec["source"],
             "source_type": rec.get("level"), "last_checked": rec.get("last_checked")}
@@ -57,9 +94,7 @@ def to_source(rec: dict) -> dict:
 def to_call(rec: dict, source_id: int | None = None) -> dict:
     row = {f: rec.get(f) for f in CALL_COLS}
     row["funding_source_id"] = source_id
-    amounts = rec.get("amounts_kr") or []
-    row["budget_min"] = min(amounts) if amounts else None
-    row["budget_max"] = max(amounts) if amounts else None
+    row["currency"] = rec.get("currency") or "DKK"
     row["recurring"] = bool(rec.get("recurring")) or rec.get("deadline_type") == "multi_round"
     row["updated_at"] = rec["last_checked"]
     return row
@@ -70,14 +105,11 @@ def to_rounds(rec: dict, call_id: int) -> list[dict]:
         hits = _parse_dates(cell or "")
         return hits[0]["date"] if hits else None
 
-    table = rec.get("deadline_table") or []
-    if table:
-        return [{"call_id": call_id, "round_no": n,
-                 "deadline_date": one(row.get("submit")),
-                 "decision_date": one(row.get("decided"))}
-                for n, row in enumerate(table, 1)]
-    return [{"call_id": call_id, "round_no": n, "deadline_date": d["date"], "decision_date": None}
-            for n, d in enumerate(rec["past_deadlines"] + rec["deadlines"], 1)]
+    return [{"call_id": call_id, "round_no": n,
+             "open_date": one(row.get("opens")),
+             "deadline_date": one(row.get("submit")),
+             "decision_date": one(row.get("decided"))}
+            for n, row in enumerate(rec.get("deadline_table") or [], 1)]
 
 
 def store(records: list[dict], sources: list[dict] = ()) -> tuple[int, int]:
@@ -109,5 +141,10 @@ def store(records: list[dict], sources: list[dict] = ()) -> tuple[int, int]:
 
         cur.execute("delete from funding_round where call_id = any(%s)", [list(by_url.values())])
         cur.executemany(ROUND_SQL, [[r[k] for k in ROUND_COLS] for r in rounds])
+
+        cur.execute("delete from funding_call_tag where call_id = any(%s)", [list(by_url.values())])
+        cur.executemany(TAG_SQL, [[by_url[(source_ids[rec["source"]], rec["source_url"])], kind, rec.get(field) or []]
+                                  for rec in records
+                                  for kind, field in (("theme", "themes"), ("target_group", "target_groups"))])
 
     return len(calls), len(rounds)

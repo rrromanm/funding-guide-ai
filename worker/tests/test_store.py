@@ -12,7 +12,10 @@ BODY = "Du kan søge op til 150.000 kr. " + "x" * 500
 SEEN = {"source": "horsens", "last_checked": "2026-01-01T00:00:00+00:00"}
 RAW = [
     {**SEEN, "title": "Prosepuljen", "source_url": "https://horsens.dk/a",
-     "description": BODY + " Ansøgningsfrist er 1. april 2026 og 1. september 2026."},
+     "description": BODY + " Ansøgningsfrist er 1. april 2026 og 1. september 2026.",
+     "budget_min": None, "budget_max": 150000, "currency": "DKK",
+     "deadline_table": [{"submit": "2026-04-01", "decided": None, "opens": "2026-01-15"},
+                        {"submit": "2026-09-01", "decided": None, "opens": None}]},
     {**SEEN, "title": "Tabelpuljen", "source_url": "https://horsens.dk/b",
      "description": BODY,
      "deadline_table": [{"submit": "1. april 2025", "decided": "1. juni 2025"},
@@ -33,9 +36,10 @@ def test_every_record_maps_to_a_call_row():
         assert row["funder_type"] in (None, "public_pool", "foundation", "eu_programme", "other")
 
 
-def test_amounts_become_a_budget_range():
-    row = to_call(RECORDS[0], source_id=1)
-    assert (row["budget_min"], row["budget_max"]) == (150000, 150000)
+def test_budget_and_currency():
+    rows = {r["title"]: to_call(r, source_id=1) for r in RECORDS}
+    assert (rows["Prosepuljen"]["budget_max"], rows["Prosepuljen"]["currency"]) == (150000, "DKK")
+    assert (rows["Tabelpuljen"]["budget_max"], rows["Tabelpuljen"]["currency"]) == (None, "DKK")
 
 
 def test_a_cycle_of_rounds_is_recurring():
@@ -51,6 +55,7 @@ def test_rounds_carry_both_dates_and_unique_numbers():
         nos = [r["round_no"] for r in to_rounds(rec, 1)]
         assert len(nos) == len(set(nos))
     assert any(r["decision_date"] for r in rows)
+    assert any(r["open_date"] == "2026-01-15" for r in rows)
 
 
 def test_columns_exist_in_the_schema():

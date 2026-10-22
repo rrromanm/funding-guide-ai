@@ -1,14 +1,14 @@
 from datetime import date
 
-from scrapers.pipeline.normalise import normalise
+from scrapers.pipeline.normalise import _parse_dates, normalise
 
 TODAY = date(2026, 1, 1)
+BODY = "Søg støtte til jeres projekt. " + "x" * 500
 
 SAMPLE = {
     "title": "Testpuljen",
     "summary": "Søg støtte.",
-    "description": "Du kan søge op til 150.000 kr. Ansøgningsfrist er 1. april 2026. "
-                   "Nye retningslinjer fra 1. maj 2024. " + "x" * 500,
+    "description": BODY,
     "deadline_table": [],
     "source_url": "https://horsens.dk/test",
 }
@@ -26,11 +26,9 @@ def test_record_kind():
                 )["record_kind"] == "info_page"
 
 
-def test_prose_drops_past_reference_dates():
-    r = norm()
-    assert r["deadlines"] == [{"raw": "1. april 2026", "date": "2026-04-01"}]
-    assert r["past_deadlines"] == []
-    assert r["deadline_type"] == "fixed"
+def test_free_text_dates_are_not_read_here():
+    r = norm(description=BODY + " Ansøgningsfrist er 1. april 2026. Søg løbende hele året.")
+    assert (r["deadlines"], r["deadline_type"], r["status"]) == ([], "unknown", "unknown")
 
 
 def test_deadline_table_keeps_past_rounds():
@@ -41,44 +39,29 @@ def test_deadline_table_keeps_past_rounds():
     assert norm(deadline_table=[{"submit": "1. april 2026"}])["deadline_type"] == "fixed"
 
 
-def test_cycle_detection():
-    assert norm(description=SAMPLE["description"] + " og 1. september 2026.",
-                )["deadline_type"] == "multi_round"
-    assert norm(description="Søg løbende hele året. " + "x" * 500,
-                )["deadline_type"] == "rolling"
-    assert norm(description="Søg løbende. Frist 1. april 2026. " + "x" * 500,
-                )["deadline_type"] == "unknown"
+def test_rounds_built_from_free_text():
+    r = norm(deadline_table=[{"submit": "2025-08-10", "decided": "2025-10-09"},
+                             {"submit": "2026-08-14", "decided": "2026-10-05"}])
+    assert (r["deadline_type"], r["status"]) == ("multi_round", "open")
 
 
-def test_status_distinguishes_expired_from_open():
-    assert norm()["status"] == "open"
-    assert norm(description="Søg løbende hele året. " + "x" * 500)["status"] == "open"
-    assert norm(deadline_table=[{"submit": "1. april 2025"}])["status"] == "closed"
-    assert norm(description="Søg støtte. Fristen var 1. april 2020. " + "x" * 500,
-                )["status"] == "unknown"
-
-
-def test_deadline_table_outranks_rolling_prose():
+def test_rolling():
+    assert (norm(rolling=True)["deadline_type"], norm(rolling=True)["status"]) == ("rolling", "open")
+    assert norm(deadline_table=[{"submit": "Løbende"}])["status"] == "open"
     r = norm(description="Søg støtte. Der afholdes løbende arrangementer. " + "x" * 500,
              deadline_table=[{"submit": "1. april 2025"}])
     assert (r["deadline_type"], r["status"]) == ("fixed", "closed")
-    assert norm(deadline_table=[{"submit": "Løbende"}])["status"] == "open"
 
 
-def test_multi_language_dates():
-    for desc in ("Apply for funding. Deadline 1 April 2026. ",
-                 "Call for proposals. Deadline April 1, 2026. ",
-                 "Apply for a grant by 2026-04-01. "):
-        r = norm(description=desc + "x" * 500)
-        assert r["record_kind"] == "call", desc
-        assert [d["date"] for d in r["deadlines"]] == ["2026-04-01"], desc
+def test_status_distinguishes_expired_from_open():
+    assert norm(deadline_table=[{"submit": "1. april 2026"}])["status"] == "open"
+    assert norm(deadline_table=[{"submit": "1. april 2025"}])["status"] == "closed"
+    assert norm()["status"] == "unknown"
 
 
-def test_amounts():
-    assert norm()["amounts_kr"] == [150000]
-
-
-def test_numeric_danish_date_in_table():
-    r = norm(deadline_table=[{"submit": "24.09.2026, kl. 14:00", "decided": None}])
-    assert [d["date"] for d in r["deadlines"]] == ["2026-09-24"]
-    assert r["deadline_type"] == "fixed"
+def test_date_formats():
+    for text in ("Deadline 1 April 2026", "Deadline April 1, 2026", "by 2026-04-01",
+                 "Ansøgningsfrist: 1. april 2026 kl. 12.00", "24.09.2026, kl. 14:00"):
+        assert len(_parse_dates(text)) == 1, text
+    assert _parse_dates("1. april 2026 til behandling i udvalget 14. april 2026") == [
+        {"raw": "1. april 2026", "date": "2026-04-01"}, {"raw": "14. april 2026", "date": "2026-04-14"}]
