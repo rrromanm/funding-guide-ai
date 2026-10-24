@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  CONFIDENCES,
+  FIT_LABELS,
+  KEY_POINT_KINDS,
+} from "../matches/matches.schema.ts";
 
 export const CALL_STATUSES = ["upcoming", "open", "closed", "unknown"] as const;
 export const CALL_LEVELS = [
@@ -55,8 +60,12 @@ export const callListItem = z.object({
     .number()
     .nullable()
     .describe(
-      "Match score 0-100 (manual override wins). Null until the worker scores the call.",
+      "Match score 0-100 (manual override wins). Null until the scoring job reaches the call.",
     ),
+  fitLabel: z
+    .enum(FIT_LABELS)
+    .nullable()
+    .describe("The AI recommendation, from `score`. Null when unscored."),
   budgetMin: z.number().nullable(),
   budgetMax: z.number().nullable(),
   currency: z.string(),
@@ -95,6 +104,28 @@ export const callDetail = callListItem.extend({
     .describe("When a scraper run last visited this call's source."),
   createdAt: z.string(),
   rounds: z.array(callRound),
+  confidence: z
+    .enum(CONFIDENCES)
+    .nullable()
+    .describe(
+      "How sure the AI is: lower when call data or eligibility is unclear.",
+    ),
+  blockingReason: z
+    .string()
+    .nullable()
+    .describe("The eligibility requirement that rules PYN out, if any."),
+  reasons: z
+    .array(
+      z.object({
+        kind: z.enum(KEY_POINT_KINDS),
+        about: z
+          .string()
+          .nullable()
+          .describe("The criterion the reason is about, or eligibility."),
+        message: z.string(),
+      }),
+    )
+    .describe("The recommendation's explanation, most important first."),
 });
 
 export type CallListItem = z.infer<typeof callListItem>;

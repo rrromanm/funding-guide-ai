@@ -2,6 +2,8 @@ import { sql, type ExpressionBuilder } from "kysely";
 import { NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
 import type { DB } from "../../lib/db-types.ts";
+import { CONFIDENCES, KEY_POINT_KINDS } from "../matches/matches.schema.ts";
+import { labelFor } from "../matches/matches.scoring.ts";
 import {
   CALL_LEVELS,
   CALL_STATUSES,
@@ -113,7 +115,6 @@ export async function findCalls(
       )
       .select((eb) => [...LIST_COLUMNS, nextDeadline(eb), matchScore(eb)])
       .where((eb) => filters(eb, query))
-      // best match first (a manual score wins), unscored last; ties by nearest deadline
       .orderBy(sql`score desc nulls last`)
       .orderBy(sql`deadline asc nulls last`)
       .orderBy("funding_call.id")
@@ -154,7 +155,7 @@ export async function findCallById(id: number): Promise<CallDetail> {
 
   if (!row) throw new NotFoundError("Call not found");
 
-  const [themes, rounds] = await Promise.all([
+  const [themes, rounds, match, reasons] = await Promise.all([
     db
       .selectFrom("funding_call_tag")
       .innerJoin("tag", "tag.id", "funding_call_tag.tag_id")
@@ -176,6 +177,22 @@ export async function findCallById(id: number): Promise<CallDetail> {
       .orderBy("round_no")
       .orderBy("deadline_date")
       .execute(),
+    db
+      .selectFrom("match_result")
+      .select(["confidence", "blocking_reason"])
+      .where("call_id", "=", id)
+      .executeTakeFirst(),
+    db
+      .selectFrom("match_reason")
+      .innerJoin("match_result", "match_result.id", "match_reason.match_id")
+      .select([
+        "match_reason.kind",
+        "match_reason.label",
+        "match_reason.message",
+      ])
+      .where("match_result.call_id", "=", id)
+      .orderBy("match_reason.id")
+      .execute(),
   ]);
 
   return {
@@ -195,6 +212,13 @@ export async function findCallById(id: number): Promise<CallDetail> {
       deadlineDate: round.deadline_date,
       decisionDate: round.decision_date,
       expectedNextOpenDate: round.expected_next_open_date,
+    })),
+    confidence: oneOf(CONFIDENCES, match?.confidence ?? null),
+    blockingReason: match?.blocking_reason ?? null,
+    reasons: reasons.map((reason) => ({
+      kind: reason.kind as (typeof KEY_POINT_KINDS)[number], // match_reason_kind_check
+      about: reason.label,
+      message: reason.message,
     })),
   };
 }
@@ -228,6 +252,7 @@ function toListItem(row: ListRow): CallListItem {
     recurring: row.recurring,
     deadline: row.deadline,
     score: row.score,
+    fitLabel: row.score === null ? null : labelFor(row.score),
     budgetMin: row.budget_min,
     budgetMax: row.budget_max,
     currency: row.currency,
