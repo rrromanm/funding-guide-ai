@@ -5,7 +5,10 @@ import {
   listCallsQuery,
 } from "./modules/calls/calls.schema.ts";
 import { notificationListResponse } from "./modules/notifications/notifications.schema.ts";
-import { profileResponse } from "./modules/profile/profile.schema.ts";
+import {
+  profileResponse,
+  updateProfileBody,
+} from "./modules/profile/profile.schema.ts";
 import { sourceListResponse } from "./modules/sources/sources.schema.ts";
 
 function jsonSchema(schema: z.ZodType, io: "input" | "output" = "output") {
@@ -127,6 +130,26 @@ export const openapi = {
         responses: {
           "200": jsonResponse("The profile", profileResponse),
           "404": errorResponse,
+        },
+      },
+      patch: {
+        summary: "Edit PYN's organisational profile",
+        description:
+          "Every field is optional; an absent field is left alone. Name, " +
+          "legal status, city, country and founded year are not editable. `themes` and " +
+          "`targetGroups` replace the whole list. Unknown fields are a 400.",
+        tags: ["profile"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(updateProfileBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "200": jsonResponse("The updated profile", profileResponse),
+          "400": errorResponse,
         },
       },
     },

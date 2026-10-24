@@ -1,4 +1,6 @@
 import { Router } from "express";
-import { getProfile } from "./profile.controller.ts";
+import { getProfile, patchProfile } from "./profile.controller.ts";
 
-export const profileRouter = Router().get("/", getProfile);
+export const profileRouter = Router()
+  .get("/", getProfile)
+  .patch("/", patchProfile);
