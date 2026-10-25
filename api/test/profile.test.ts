@@ -19,6 +19,54 @@ describe("GET /api/profile", () => {
   });
 });
 
+describe("PATCH /api/profile", () => {
+  it.each([
+    ["a fixed field", { name: "Someone else" }],
+    ["the founded year", { foundedYear: 2000 }],
+    ["an unknown field", { staff: 3 }],
+    ["a negative staff count", { staffCount: -1 }],
+    ["an empty tag", { themes: [" "] }],
+  ])("400s on %s", async (_case, body) => {
+    const res = await request(app).patch("/api/profile").send(body);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
+});
+
+describe.skipIf(!process.env.DATABASE_URL)(
+  "PATCH /api/profile (database)",
+  () => {
+    it("updates the given fields, replaces tags and leaves the rest alone", async () => {
+      const { body: original } = await request(app).get("/api/profile");
+      const { name, legalStatus, city, country, foundedYear, id, ...editable } =
+        original;
+
+      const res = await request(app)
+        .patch("/api/profile")
+        .send({
+          staffCount: original.staffCount + 1,
+          adminCapacity: "  ",
+          themes: original.themes.slice(0, 1),
+        });
+
+      const restored = await request(app).patch("/api/profile").send(editable);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toMatchObject({
+        name,
+        city,
+        staffCount: original.staffCount + 1,
+        adminCapacity: null,
+        themes: original.themes.slice(0, 1),
+        targetGroups: original.targetGroups,
+        foundedYear,
+      });
+      expect(restored.body).toEqual(original);
+    });
+  },
+);
+
 describe.skipIf(!process.env.DATABASE_URL)(
   "GET /api/profile (database)",
   () => {
