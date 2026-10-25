@@ -64,6 +64,10 @@ def test_columns_exist_in_the_schema():
     assert {"name", "source_type", "base_url", "last_checked"} <= columns("funding_source")
 
 
+def test_the_upsert_leaves_a_deleted_call_deleted():
+    assert "deleted_at" in columns("funding_call") and "deleted_at" not in CALL_COLS
+
+
 def test_same_pool_on_two_pages_is_one_record():
     pages = [{**SEEN, "title": t, "source_url": u, "description": BODY + d}
              for t, u, d in [("Tilgængelighedspuljen", "https://horsens.dk/x#a", " v1"),

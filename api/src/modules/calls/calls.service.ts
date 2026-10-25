@@ -69,6 +69,7 @@ function filters(
   { q, status, level }: ListCallsQuery,
 ) {
   const conditions = [
+    eb("funding_call.deleted_at", "is", null),
     status
       ? eb("funding_call.status", "=", status)
       : eb("funding_call.status", "!=", "closed"),
@@ -151,6 +152,7 @@ export async function findCallById(id: number): Promise<CallDetail> {
     )
     .select((eb) => [...DETAIL_COLUMNS, nextDeadline(eb), matchScore(eb)])
     .where("funding_call.id", "=", id)
+    .where("funding_call.deleted_at", "is", null)
     .executeTakeFirst();
 
   if (!row) throw new NotFoundError("Call not found");
@@ -221,6 +223,18 @@ export async function findCallById(id: number): Promise<CallDetail> {
       message: reason.message,
     })),
   };
+}
+
+export async function deleteCall(id: number): Promise<void> {
+  const row = await db
+    .updateTable("funding_call")
+    .set({ deleted_at: sql`now()` })
+    .where("id", "=", id)
+    .where("deleted_at", "is", null)
+    .returning("id")
+    .executeTakeFirst();
+
+  if (!row) throw new NotFoundError("Call not found");
 }
 
 type ListRow = {

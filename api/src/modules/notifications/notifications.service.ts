@@ -15,6 +15,7 @@ export async function findNotifications(): Promise<NotificationListResponse> {
       "notification.created_at",
     ])
     .where("match_result.review_status", "!=", "dismissed")
+    .where("funding_call.deleted_at", "is", null)
     .orderBy("notification.created_at", "desc")
     .orderBy("notification.id", "desc")
     .execute();

@@ -184,6 +184,26 @@ export const openapi = {
           "404": errorResponse,
         },
       },
+      delete: {
+        summary: "Delete a funding call",
+        description:
+          "A soft delete: the call disappears from every endpoint and the scoring job, " +
+          "and the next scraper run does not bring it back. Deleting it again is a 404.",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          "204": { description: "Deleted" },
+          "400": errorResponse,
+          "404": errorResponse,
+        },
+      },
     },
   },
 };

@@ -79,6 +79,7 @@ export async function loadCalls(callId?: number): Promise<CallInput[]> {
       "budget_max",
       "currency",
     ])
+    .where("deleted_at", "is", null)
     .orderBy("id");
   if (callId !== undefined) query = query.where("id", "=", callId);
 

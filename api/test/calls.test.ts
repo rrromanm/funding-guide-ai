@@ -35,6 +35,13 @@ describe("GET /api/calls (validation)", () => {
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
+
+  it("rejects a non-numeric id on delete", async () => {
+    const res = await request(app).delete("/api/calls/abc");
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
 });
 
 describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
@@ -198,5 +205,57 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");
     expect(res.body.error.message).toBe("Call not found");
+  });
+});
+
+describe.skipIf(!process.env.DATABASE_URL)("DELETE /api/calls/:id", () => {
+  it("hides the call, and the scraper's upsert does not bring it back", async () => {
+    const source = await db
+      .selectFrom("funding_source")
+      .select("id")
+      .executeTakeFirstOrThrow();
+    const sourceUrl = `https://example.test/delete-${Date.now()}`;
+    const { id } = await db
+      .insertInto("funding_call")
+      .values({
+        funding_source_id: source.id,
+        source_url: sourceUrl,
+        title: "Test call",
+      })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+
+    const deleted = await request(app).delete(`/api/calls/${id}`);
+    const fetched = await request(app).get(`/api/calls/${id}`);
+    const again = await request(app).delete(`/api/calls/${id}`);
+    
+    await db
+      .insertInto("funding_call")
+      .values({
+        funding_source_id: source.id,
+        source_url: sourceUrl,
+        title: "Test call",
+      })
+      .onConflict((oc) =>
+        oc
+          .columns(["funding_source_id", "source_url"])
+          .doUpdateSet((eb) => ({ title: eb.ref("excluded.title") })),
+      )
+      .execute();
+    const rescraped = await request(app).get(`/api/calls/${id}`);
+
+    await db.deleteFrom("funding_call").where("id", "=", id).execute();
+
+    expect(deleted.status).toBe(204);
+    expect(fetched.status).toBe(404);
+    expect(again.status).toBe(404);
+    expect(rescraped.status).toBe(404);
+  });
+
+  it("returns a 404 for an id that does not exist", async () => {
+    const res = await request(app).delete("/api/calls/999999999");
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe("NOT_FOUND");
   });
 });
