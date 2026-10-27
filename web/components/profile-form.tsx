@@ -89,10 +89,12 @@ function EditableTagGroup({
   );
 }
 
-export default function ProfileForm({ initialProfile, onSave }: { initialProfile: OrgProfile; onSave: (profile: OrgProfile) => void }) {
+export default function ProfileForm({ initialProfile, onSave }: { initialProfile: OrgProfile; onSave: (profile: OrgProfile) => Promise<OrgProfile> }) {
   const [profile, setProfile] = useState(initialProfile);
   const [editing, setEditing] = useState(false);
   const [savedMessage, setSavedMessage] = useState("");
+  const [saveError, setSaveError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const handleChange = <K extends keyof OrgProfile>(key: K, value: OrgProfile[K]) => {
     setProfile((current) => ({ ...current, [key]: value }));
@@ -103,6 +105,11 @@ export default function ProfileForm({ initialProfile, onSave }: { initialProfile
       {savedMessage && (
         <div className="rounded-[20px] border border-green-200 bg-green-50 px-4 py-3 text-[14px] font-bold text-green-800">
           {savedMessage}
+        </div>
+      )}
+      {saveError && (
+        <div role="alert" className="rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-bold text-red-600">
+          {saveError}
         </div>
       )}
 
@@ -176,22 +183,39 @@ export default function ProfileForm({ initialProfile, onSave }: { initialProfile
           </button>
         ) : (
           <>
-            <button type="button" className="btn btn-secondary" onClick={() => {
-              setProfile(initialProfile);
-              setEditing(false);
-            }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              disabled={saving}
+              onClick={() => {
+                setProfile(initialProfile);
+                setEditing(false);
+                setSaveError("");
+              }}
+            >
               Cancel
             </button>
             <button
               type="button"
               className="btn btn-primary"
-              onClick={() => {
-                onSave(profile);
-                setEditing(false);
-                setSavedMessage("Organization profile saved successfully.");
+              disabled={saving}
+              onClick={async () => {
+                setSaving(true);
+                setSaveError("");
+                setSavedMessage("");
+                try {
+                  const savedProfile = await onSave(profile);
+                  setProfile(savedProfile);
+                  setEditing(false);
+                  setSavedMessage("Organization profile saved successfully.");
+                } catch (error) {
+                  setSaveError(error instanceof Error ? error.message : "Organization profile could not be saved.");
+                } finally {
+                  setSaving(false);
+                }
               }}
             >
-              Save Changes
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </>
         )}
