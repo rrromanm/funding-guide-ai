@@ -185,6 +185,19 @@ export interface OrgProfile {
   targetGroups: Tag[];
 }
 
+export interface OrgProfileDto {
+  id: number;
+  name: string;
+  legalStatus: string;
+  city: string;
+  country: string;
+  foundedYear: number | null;
+  staffCount: number;
+  adminCapacity: string | null;
+  themes: string[];
+  targetGroups: string[];
+}
+
 export interface Notification {
   id: string;
   fundingCallId: string;
