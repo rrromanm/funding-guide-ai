@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/common";
 import { FundingOpportunityForm, type FundingOpportunityFormValues } from "@/components/funding-opportunity-form";
 import { createFundingCall } from "@/lib/services";
-import type { FundingCall } from "@/lib/types";
+import type { ApiCallStatus } from "@/lib/types";
 
 const defaultValues: FundingOpportunityFormValues = {
   title: "",
@@ -20,7 +20,6 @@ const defaultValues: FundingOpportunityFormValues = {
   ngoEligible: true,
   status: "OPEN",
   recurringCall: false,
-  expectedReopeningDate: "",
   themes: "",
   targetGroups: "",
   fundingRounds: [
@@ -38,35 +37,35 @@ const defaultValues: FundingOpportunityFormValues = {
 export default function NewOpportunityPage() {
   const router = useRouter();
 
-  const handleSubmit = (values: FundingOpportunityFormValues) => {
-    const nextCall: Omit<FundingCall, "id" | "matchResult"> & { id?: string } = {
-      title: values.title,
-      summary: values.summary,
-      description: values.description,
-      fundingBody: values.fundingBody,
-      fundingLevel: values.fundingLevel,
-      funderType: values.funderType,
-      amountMin: values.amountMin ? Number(values.amountMin) : undefined,
-      amountMax: values.amountMax ? Number(values.amountMax) : undefined,
-      eligibility: values.eligibility,
-      ngoEligible: values.ngoEligible,
-      status: values.status,
-      recurringCall: values.recurringCall,
-      expectedReopeningDate: values.expectedReopeningDate || undefined,
-      sourceUrl: values.sourceUrl || undefined,
-      themes: values.themes
-        .split(",")
-        .map((tag, index) => ({ id: `theme-${index}-${tag.trim()}`, value: tag.trim(), type: "Theme" as const }))
-        .filter((tag) => tag.value),
-      targetGroups: values.targetGroups
-        .split(",")
-        .map((tag, index) => ({ id: `group-${index}-${tag.trim()}`, value: tag.trim(), type: "TargetGroup" as const }))
-        .filter((tag) => tag.value),
-      fundingRounds: values.fundingRounds,
-      relevantRegions: ["Denmark"],
-    };
+  const handleSubmit = async (values: FundingOpportunityFormValues) => {
+    const text = (value: string) => value.trim() || undefined;
+    const tags = (value: string) => value.split(",").map((tag) => tag.trim()).filter(Boolean);
 
-    const created = createFundingCall(nextCall);
+    const created = await createFundingCall({
+      title: values.title.trim(),
+      description: values.description.trim(),
+      summary: text(values.summary),
+      eligibility: text(values.eligibility),
+      fundingBody: text(values.fundingBody),
+      sourceUrl: text(values.sourceUrl),
+      level: text(values.fundingLevel),
+      funderType: text(values.funderType),
+      status: values.status.toLowerCase() as ApiCallStatus,
+      recurring: values.recurringCall,
+      ngoEligible: values.ngoEligible,
+      budgetMin: values.amountMin ? Number(values.amountMin) : undefined,
+      budgetMax: values.amountMax ? Number(values.amountMax) : undefined,
+      rounds: values.fundingRounds
+        .filter((round) => round.openDate || round.deadline || round.decisionDate || round.expectedNextOpenDate)
+        .map((round) => ({
+          openDate: round.openDate || null,
+          deadlineDate: round.deadline || null,
+          decisionDate: round.decisionDate || null,
+          expectedNextOpenDate: round.expectedNextOpenDate || null,
+        })),
+      themes: tags(values.themes),
+      targetGroups: tags(values.targetGroups),
+    });
     router.push(`/opportunities/${created.id}`);
   };
 
@@ -86,7 +85,7 @@ export default function NewOpportunityPage() {
         initialValues={defaultValues}
         onSubmit={handleSubmit}
         onCancel={() => router.push("/")}
-        submitLabel="Save Opportunity"
+        submitLabel="Save and score"
       />
     </div>
   );

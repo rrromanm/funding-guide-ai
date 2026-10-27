@@ -3,6 +3,22 @@
 import { useState } from "react";
 import type { CallStatus, FundingRound } from "@/lib/types";
 
+const MIN_DESCRIPTION_CHARS = 500;
+const LEVELS = [
+  ["local", "Local"],
+  ["municipal", "Municipal"],
+  ["regional", "Regional"],
+  ["national", "National"],
+  ["nordic", "Nordic"],
+  ["eu", "EU"],
+];
+const FUNDER_TYPES = [
+  ["public_pool", "Public pool"],
+  ["foundation", "Foundation"],
+  ["eu_programme", "EU programme"],
+  ["other", "Other"],
+];
+
 export interface FundingOpportunityFormValues {
   id?: string;
   title: string;
@@ -18,7 +34,6 @@ export interface FundingOpportunityFormValues {
   ngoEligible: boolean;
   status: CallStatus;
   recurringCall: boolean;
-  expectedReopeningDate: string;
   themes: string;
   targetGroups: string;
   fundingRounds: FundingRound[];
@@ -31,11 +46,13 @@ export function FundingOpportunityForm({
   submitLabel,
 }: {
   initialValues: FundingOpportunityFormValues;
-  onSubmit: (values: FundingOpportunityFormValues) => void;
+  onSubmit: (values: FundingOpportunityFormValues) => Promise<void> | void;
   onCancel: () => void;
   submitLabel: string;
 }) {
   const [formValues, setFormValues] = useState<FundingOpportunityFormValues>(initialValues);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string>();
 
   const updateField = <K extends keyof FundingOpportunityFormValues>(key: K, value: FundingOpportunityFormValues[K]) => {
     setFormValues((current) => ({ ...current, [key]: value }));
@@ -74,9 +91,23 @@ export function FundingOpportunityForm({
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(formValues);
+    // Without a deadline the AI cannot rate deadline readiness.
+    if (!formValues.recurringCall && !formValues.fundingRounds.some((round) => round.deadline)) {
+      setError("Add a deadline to a funding round, or tick Recurring call.");
+      return;
+    }
+
+    setError(undefined);
+    setSubmitting(true);
+    try {
+      await onSubmit(formValues);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Saving failed.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -110,11 +141,18 @@ export function FundingOpportunityForm({
           <textarea
             id="opportunity-description"
             required
+            minLength={MIN_DESCRIPTION_CHARS}
+            aria-describedby="opportunity-description-hint"
             value={formValues.description}
             onChange={(event) => updateField("description", event.target.value)}
-            rows={5}
-            className="input min-h-[140px] rounded-[24px]"
+            rows={8}
+            className="input min-h-[200px] rounded-[24px]"
           />
+          <p id="opportunity-description-hint" className="mt-1 text-[14px] text-muted">
+            The AI scores the call from this text, so paste the full call: purpose, who can apply, what is
+            funded and how to apply. {formValues.description.trim().length} / {MIN_DESCRIPTION_CHARS} characters
+            minimum.
+          </p>
         </div>
 
         <div>
@@ -130,23 +168,33 @@ export function FundingOpportunityForm({
 
         <div>
           <label htmlFor="funding-level" className="field-label">Funding Level</label>
-          <input
+          <select
             id="funding-level"
             required
             value={formValues.fundingLevel}
             onChange={(event) => updateField("fundingLevel", event.target.value)}
             className="input"
-          />
+          >
+            <option value="">Select a level</option>
+            {LEVELS.map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </div>
 
         <div>
           <label htmlFor="funder-type" className="field-label">Funder Type</label>
-          <input
+          <select
             id="funder-type"
             value={formValues.funderType}
             onChange={(event) => updateField("funderType", event.target.value)}
             className="input"
-          />
+          >
+            <option value="">Not stated</option>
+            {FUNDER_TYPES.map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -165,6 +213,7 @@ export function FundingOpportunityForm({
           <input
             id="minimum-budget"
             type="number"
+            min={0}
             value={formValues.amountMin}
             onChange={(event) => updateField("amountMin", event.target.value)}
             className="input"
@@ -176,6 +225,8 @@ export function FundingOpportunityForm({
           <input
             id="maximum-budget"
             type="number"
+            required
+            min={0}
             value={formValues.amountMax}
             onChange={(event) => updateField("amountMax", event.target.value)}
             className="input"
@@ -235,17 +286,6 @@ export function FundingOpportunityForm({
           </label>
         </div>
 
-        <div>
-          <label htmlFor="expected-reopening-date" className="field-label">Expected reopening date</label>
-          <input
-            id="expected-reopening-date"
-            type="date"
-            value={formValues.expectedReopeningDate}
-            onChange={(event) => updateField("expectedReopeningDate", event.target.value)}
-            className="input"
-          />
-        </div>
-
         <div className="md:col-span-2">
           <label htmlFor="opportunity-themes" className="field-label">Themes / Tags</label>
           <input
@@ -299,16 +339,6 @@ export function FundingOpportunityForm({
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label htmlFor={`${round.id}-title`} className="field-label">Label</label>
-                    <input
-                      id={`${round.id}-title`}
-                      value={round.title}
-                      onChange={(event) => updateRound(index, "title", event.target.value)}
-                      className="input"
-                    />
-                  </div>
-
-                  <div>
                     <label htmlFor={`${round.id}-open-date`} className="field-label">Open date</label>
                     <input
                       id={`${round.id}-open-date`}
@@ -358,12 +388,18 @@ export function FundingOpportunityForm({
         </div>
       </div>
 
+      {error && (
+        <p role="alert" className="rounded-[20px] border border-red-200 bg-red-50 px-4.5 py-3 text-[14px] font-bold text-red-600">
+          {error}
+        </p>
+      )}
+
       <div className="flex justify-end gap-3">
-        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+        <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={submitting}>
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary">
-          {submitLabel}
+        <button type="submit" className="btn btn-primary" disabled={submitting}>
+          {submitting ? "Saving and scoring…" : submitLabel}
         </button>
       </div>
     </form>

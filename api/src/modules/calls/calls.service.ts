@@ -1,9 +1,12 @@
 import { sql, type ExpressionBuilder } from "kysely";
+import { env } from "../../config/env.ts";
 import { NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
 import type { DB } from "../../lib/db-types.ts";
+import { geminiProvider } from "../../lib/llm.ts";
 import { CONFIDENCES, KEY_POINT_KINDS } from "../matches/matches.schema.ts";
 import { labelFor } from "../matches/matches.scoring.ts";
+import { scoreCall } from "../matches/matches.service.ts";
 import {
   CALL_LEVELS,
   CALL_STATUSES,
@@ -11,6 +14,7 @@ import {
   type CallDetail,
   type CallListItem,
   type CallListResponse,
+  type CreateCallBody,
   type ListCallsQuery,
 } from "./calls.schema.ts";
 
@@ -157,13 +161,12 @@ export async function findCallById(id: number): Promise<CallDetail> {
 
   if (!row) throw new NotFoundError("Call not found");
 
-  const [themes, rounds, match, reasons] = await Promise.all([
+  const [tags, rounds, match, reasons] = await Promise.all([
     db
       .selectFrom("funding_call_tag")
       .innerJoin("tag", "tag.id", "funding_call_tag.tag_id")
-      .select("tag.label")
+      .select(["tag.label", "tag.type"])
       .where("funding_call_tag.call_id", "=", id)
-      .where("tag.type", "=", "theme")
       .orderBy("tag.label")
       .execute(),
     db
@@ -203,7 +206,10 @@ export async function findCallById(id: number): Promise<CallDetail> {
     eligibility: text(row.eligibility),
     ngoEligible: row.ngo_eligible,
     funderType: oneOf(FUNDER_TYPES, row.funder_type),
-    themes: themes.map((theme) => theme.label),
+    themes: tags.filter((t) => t.type === "theme").map((t) => t.label),
+    targetGroups: tags
+      .filter((t) => t.type === "target_group")
+      .map((t) => t.label),
     sourceUrl: row.source_url,
     externalId: row.external_id,
     lastChecked: row.last_checked?.toISOString() ?? null,
@@ -223,6 +229,93 @@ export async function findCallById(id: number): Promise<CallDetail> {
       message: reason.message,
     })),
   };
+}
+
+export async function createCall(body: CreateCallBody): Promise<CallDetail> {
+  const { rounds = [], themes = [], targetGroups = [], ...fields } = body;
+  const tags = [
+    ...themes.map((label) => ({ label, type: "theme" as const })),
+    ...targetGroups.map((label) => ({ label, type: "target_group" as const })),
+  ];
+
+  const id = await db.transaction().execute(async (trx) => {
+    const source = await trx
+      .selectFrom("funding_source")
+      .select("id")
+      .where("source_type", "=", "manual")
+      .executeTakeFirstOrThrow();
+    const { id } = await trx
+      .insertInto("funding_call")
+      .values({
+        funding_source_id: source.id,
+        title: fields.title,
+        summary: fields.summary,
+        description: fields.description,
+        eligibility: fields.eligibility,
+        funding_body: fields.fundingBody,
+        source_url: fields.sourceUrl,
+        level: fields.level,
+        funder_type: fields.funderType,
+        status: fields.status ?? statusFrom(rounds),
+        recurring: fields.recurring,
+        ngo_eligible: fields.ngoEligible,
+        budget_min: fields.budgetMin,
+        budget_max: fields.budgetMax,
+        currency: fields.currency,
+      })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+
+    if (rounds.length)
+      await trx
+        .insertInto("funding_round")
+        .values(
+          rounds.map((round, index) => ({
+            call_id: id,
+            round_no: index + 1,
+            open_date: round.openDate ?? null,
+            deadline_date: round.deadlineDate ?? null,
+            decision_date: round.decisionDate ?? null,
+            expected_next_open_date: round.expectedNextOpenDate ?? null,
+          })),
+        )
+        .execute();
+
+    if (tags.length) {
+      await trx
+        .insertInto("tag")
+        .values(tags)
+        .onConflict((oc) => oc.columns(["label", "type"]).doNothing())
+        .execute();
+      await trx
+        .insertInto("funding_call_tag")
+        .columns(["call_id", "tag_id"])
+        .expression(
+          trx
+            .selectFrom("tag")
+            .select([sql.lit(id).as("call_id"), "id"])
+            .where((eb) => eb.or(tags.map((tag) => eb.and(tag)))),
+        )
+        .execute();
+    }
+
+    return id;
+  });
+
+  if (env.GEMINI_API_KEY)
+    await scoreCall(
+      id,
+      geminiProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL),
+    ).catch((err) => console.error(`#${id}: scoring failed:`, err));
+
+  return findCallById(id);
+}
+
+function statusFrom(rounds: NonNullable<CreateCallBody["rounds"]>) {
+  const today = new Date().toISOString().slice(0, 10);
+  const deadlines = rounds.flatMap((round) => round.deadlineDate ?? []);
+  if (!deadlines.length) return undefined;
+  return deadlines.some((deadline) => deadline >= today) ? "open" : "closed";
 }
 
 export async function deleteCall(id: number): Promise<void> {

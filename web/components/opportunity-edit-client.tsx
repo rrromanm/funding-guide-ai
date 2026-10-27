@@ -26,7 +26,6 @@ export default function OpportunityEditClient({ opportunity }: { opportunity: Fu
     ngoEligible: opportunity.ngoEligible ?? false,
     status: opportunity.status,
     recurringCall: opportunity.recurringCall ?? false,
-    expectedReopeningDate: opportunity.expectedReopeningDate ?? "",
     themes: opportunity.themes.map((tag) => tag.value).join(", "),
     targetGroups: opportunity.targetGroups.map((tag) => tag.value).join(", "),
     fundingRounds: opportunity.fundingRounds,
@@ -46,7 +45,6 @@ export default function OpportunityEditClient({ opportunity }: { opportunity: Fu
       ngoEligible: values.ngoEligible,
       status: values.status,
       recurringCall: values.recurringCall,
-      expectedReopeningDate: values.expectedReopeningDate || undefined,
       sourceUrl: values.sourceUrl || undefined,
       themes: values.themes
         .split(",")

@@ -2,6 +2,7 @@ import { fundingCalls as initialFundingCalls, notifications as initialNotificati
 import type {
   ApiCallStatus,
   CallStatus,
+  CreateFundingCallDto,
   FitLabel,
   FundingCall,
   FundingCallDetailDto,
@@ -201,6 +202,7 @@ function isFundingCallDetail(value: unknown): value is FundingCallDetailDto {
     (call.ngoEligible === null || typeof call.ngoEligible === "boolean") &&
     (call.funderType === null || typeof call.funderType === "string") &&
     Array.isArray(call.themes) && call.themes.every((theme) => typeof theme === "string") &&
+    Array.isArray(call.targetGroups) && call.targetGroups.every((group) => typeof group === "string") &&
     (call.sourceUrl === null || typeof call.sourceUrl === "string") &&
     (call.externalId === null || typeof call.externalId === "string") &&
     (call.lastChecked === null || typeof call.lastChecked === "string") &&
@@ -264,6 +266,11 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
       value: theme,
       type: "Theme",
     })),
+    targetGroups: call.targetGroups.map((group, index) => ({
+      id: `${call.id}-group-${index}`,
+      value: group,
+      type: "TargetGroup",
+    })),
     fundingRounds,
   };
 }
@@ -293,28 +300,23 @@ export function getFundingCall(id: string): FundingCall | undefined {
   return structuredClone(initialFundingCalls.find((call) => call.id === id));
 }
 
-export function createFundingCall(payload: Omit<FundingCall, "id" | "matchResult"> & { id?: string }): FundingCall {
-  const call: FundingCall = {
-    ...payload,
-    id: payload.id ?? `call-${Date.now()}`,
-    matchResult: {
-      id: `match-${Date.now()}`,
-      overallScore: 80,
-      reviewStatus: "GENERATED",
-      fitLabel: "Good fit",
-      explanation: "The opportunity matches the organisation profile and should be reviewed by the PYN admin team.",
-      reasons: [
-        {
-          id: `reason-${Date.now()}`,
-          title: "Profile alignment",
-          description: "This call is broadly aligned with the current organisational profile.",
-        },
-      ],
-    },
-  };
+export async function createFundingCall(body: CreateFundingCallDto): Promise<{ id: string }> {
+  const response = await fetch(`${apiBaseUrl}/api/calls`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const payload = await response.json().catch(() => null);
 
-  initialFundingCalls.push(call);
-  return structuredClone(call);
+  if (!response.ok) {
+    const details: { path: string; message: string }[] = payload?.error?.details ?? [];
+    const message = details.length
+      ? details.map((detail) => `${detail.path}: ${detail.message}`).join("; ")
+      : payload?.error?.message ?? `Funding call could not be saved (${response.status})`;
+    throw new ApiRequestError(message, response.status);
+  }
+
+  return { id: String(payload.id) };
 }
 
 export function updateFundingCall(id: string, updates: Partial<FundingCall>): FundingCall | undefined {

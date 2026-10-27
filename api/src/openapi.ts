@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   callDetail,
   callListResponse,
+  createCallBody,
   listCallsQuery,
 } from "./modules/calls/calls.schema.ts";
 import { notificationListResponse } from "./modules/notifications/notifications.schema.ts";
@@ -63,7 +64,6 @@ export const openapi = {
   info: {
     title: "Funding Guide API",
     version: "0.1.0",
-    description: "Backend for the PYN funding guide.",
   },
   servers: [{ url: "/" }],
   paths: {
@@ -81,10 +81,7 @@ export const openapi = {
                   required: ["status", "uptime"],
                   properties: {
                     status: { type: "string", const: "ok" },
-                    uptime: {
-                      type: "number",
-                      description: "Seconds since start",
-                    },
+                    uptime: { type: "number" },
                   },
                 },
               },
@@ -96,10 +93,6 @@ export const openapi = {
     "/api/calls": {
       get: {
         summary: "List funding calls",
-        description:
-          "Ordered by score (highest first, unscored last), then by the nearest upcoming deadline. " +
-          "Calls scored 0 are never listed. " +
-          "Closed calls are excluded unless `status=closed` is given.",
         tags: ["calls"],
         parameters: queryParameters(listCallsQuery),
         responses: {
@@ -107,13 +100,26 @@ export const openapi = {
           "400": errorResponse,
         },
       },
+      post: {
+        summary: "Add a funding call by hand",
+        tags: ["calls"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(createCallBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "201": jsonResponse("The new call, scored", callDetail),
+          "400": errorResponse,
+        },
+      },
     },
     "/api/notifications": {
       get: {
         summary: "List notifications about relevant funding calls",
-        description:
-          "Newest first. A notification whose recommendation the admin " +
-          "dismissed is left out.",
         tags: ["notifications"],
         responses: {
           "200": jsonResponse("Every notification", notificationListResponse),
@@ -123,9 +129,6 @@ export const openapi = {
     "/api/profile": {
       get: {
         summary: "Get PYN's organisational profile",
-        description:
-          "A singleton -- there is one profile and it has no id in the path. " +
-          "Themes and target groups come from the profile's tags.",
         tags: ["profile"],
         responses: {
           "200": jsonResponse("The profile", profileResponse),
@@ -134,10 +137,6 @@ export const openapi = {
       },
       patch: {
         summary: "Edit PYN's organisational profile",
-        description:
-          "Every field is optional; an absent field is left alone. Name, " +
-          "legal status, city, country and founded year are not editable. `themes` and " +
-          "`targetGroups` replace the whole list. Unknown fields are a 400.",
         tags: ["profile"],
         requestBody: {
           required: true,
@@ -156,10 +155,6 @@ export const openapi = {
     "/api/sources": {
       get: {
         summary: "List scraped sources with their call counts",
-        description:
-          "One row per configured source, ordered by name. Counts cover the " +
-          "source's calls; `relevant` counts the " +
-          "calls the matcher rates a strong or possible fit and nobody dismissed.",
         tags: ["sources"],
         responses: {
           "200": jsonResponse("Every source", sourceListResponse),
@@ -186,9 +181,6 @@ export const openapi = {
       },
       delete: {
         summary: "Delete a funding call",
-        description:
-          "A soft delete: the call disappears from every endpoint and the scoring job, " +
-          "and the next scraper run does not bring it back. Deleting it again is a 404.",
         tags: ["calls"],
         parameters: [
           {

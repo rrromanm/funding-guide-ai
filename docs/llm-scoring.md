@@ -5,7 +5,7 @@ Funding Guide AI scores every funding call against PYN's profile with an LLM jud
 | | |
 | --- | --- |
 | Code | `api/src/modules/matches/` (TypeScript) |
-| Runs | `npm run score:llm` (from `api/`) |
+| Runs | `npm run score:llm` (from `api/`), and `POST /api/calls` for a call added by hand |
 | Stores in | `match_result` |
 | Served by | `GET /api/calls` (`score`, `fitLabel`) and `GET /api/calls/:id` (also `confidence`, `blockingReason`, `reasons`). The per-criterion breakdown stays in `raw_response`. |
 

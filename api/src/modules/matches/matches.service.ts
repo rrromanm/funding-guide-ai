@@ -179,6 +179,17 @@ export async function judgeCall(
   };
 }
 
+export async function scoreCall(callId: number, provider: LlmProvider) {
+  const [profileText, [call]] = await Promise.all([
+    loadProfileText(),
+    loadCalls(callId),
+  ]);
+  if (!call) throw new NotFoundError("Call not found");
+
+  const { raw, result } = await judgeCall(call, profileText, provider);
+  await saveResult(call, profileText, provider.model, raw, result);
+}
+
 export async function saveResult(
   call: CallInput,
   profileText: string,
