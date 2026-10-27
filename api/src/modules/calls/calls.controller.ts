@@ -3,12 +3,14 @@ import {
   callIdParams,
   createCallBody,
   listCallsQuery,
+  updateCallBody,
 } from "./calls.schema.ts";
 import {
   createCall,
   deleteCall,
   findCallById,
   findCalls,
+  updateCall,
 } from "./calls.service.ts";
 
 export const listCalls: RequestHandler = async (req, res) => {
@@ -27,6 +29,13 @@ export const postCall: RequestHandler = async (req, res) => {
   const body = createCallBody.parse(req.body);
 
   res.status(201).json(await createCall(body));
+};
+
+export const patchCall: RequestHandler = async (req, res) => {
+  const { id } = callIdParams.parse(req.params);
+  const body = updateCallBody.parse(req.body);
+
+  res.json(await updateCall(id, body));
 };
 
 export const deleteCallById: RequestHandler = async (req, res) => {

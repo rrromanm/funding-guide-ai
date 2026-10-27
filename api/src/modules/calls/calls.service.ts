@@ -2,7 +2,7 @@ import { sql, type ExpressionBuilder } from "kysely";
 import { env } from "../../config/env.ts";
 import { NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
-import type { DB } from "../../lib/db-types.ts";
+import type { DB, TagType } from "../../lib/db-types.ts";
 import { geminiProvider } from "../../lib/llm.ts";
 import { CONFIDENCES, KEY_POINT_KINDS } from "../matches/matches.schema.ts";
 import { labelFor } from "../matches/matches.scoring.ts";
@@ -16,6 +16,7 @@ import {
   type CallListResponse,
   type CreateCallBody,
   type ListCallsQuery,
+  type UpdateCallBody,
 } from "./calls.schema.ts";
 
 const LIST_COLUMNS = [
@@ -232,11 +233,7 @@ export async function findCallById(id: number): Promise<CallDetail> {
 }
 
 export async function createCall(body: CreateCallBody): Promise<CallDetail> {
-  const { rounds = [], themes = [], targetGroups = [], ...fields } = body;
-  const tags = [
-    ...themes.map((label) => ({ label, type: "theme" as const })),
-    ...targetGroups.map((label) => ({ label, type: "target_group" as const })),
-  ];
+  const { rounds = [], themes, targetGroups, ...fields } = body;
 
   const id = await db.transaction().execute(async (trx) => {
     const source = await trx
@@ -266,38 +263,8 @@ export async function createCall(body: CreateCallBody): Promise<CallDetail> {
       .returning("id")
       .executeTakeFirstOrThrow();
 
-    if (rounds.length)
-      await trx
-        .insertInto("funding_round")
-        .values(
-          rounds.map((round, index) => ({
-            call_id: id,
-            round_no: index + 1,
-            open_date: round.openDate ?? null,
-            deadline_date: round.deadlineDate ?? null,
-            decision_date: round.decisionDate ?? null,
-            expected_next_open_date: round.expectedNextOpenDate ?? null,
-          })),
-        )
-        .execute();
-
-    if (tags.length) {
-      await trx
-        .insertInto("tag")
-        .values(tags)
-        .onConflict((oc) => oc.columns(["label", "type"]).doNothing())
-        .execute();
-      await trx
-        .insertInto("funding_call_tag")
-        .columns(["call_id", "tag_id"])
-        .expression(
-          trx
-            .selectFrom("tag")
-            .select([sql.lit(id).as("call_id"), "id"])
-            .where((eb) => eb.or(tags.map((tag) => eb.and(tag)))),
-        )
-        .execute();
-    }
+    await insertRounds(trx, id, rounds);
+    await insertTags(trx, id, tagsOf(themes, targetGroups));
 
     return id;
   });
@@ -311,7 +278,111 @@ export async function createCall(body: CreateCallBody): Promise<CallDetail> {
   return findCallById(id);
 }
 
-function statusFrom(rounds: NonNullable<CreateCallBody["rounds"]>) {
+export async function updateCall(
+  id: number,
+  body: UpdateCallBody,
+): Promise<CallDetail> {
+  const { rounds, themes, targetGroups, ...fields } = body;
+
+  await db.transaction().execute(async (trx) => {
+    const row = await trx
+      .updateTable("funding_call")
+      .set({
+        title: fields.title,
+        summary: fields.summary,
+        description: fields.description,
+        eligibility: fields.eligibility,
+        funding_body: fields.fundingBody,
+        source_url: fields.sourceUrl,
+        level: fields.level,
+        funder_type: fields.funderType,
+        status: fields.status ?? (rounds && statusFrom(rounds)),
+        recurring: fields.recurring,
+        ngo_eligible: fields.ngoEligible,
+        budget_min: fields.budgetMin,
+        budget_max: fields.budgetMax,
+        currency: fields.currency,
+        edited_at: sql`now()`,
+        updated_at: sql`now()`,
+      })
+      .where("id", "=", id)
+      .where("deleted_at", "is", null)
+      .returning("id")
+      .executeTakeFirst();
+
+    if (!row) throw new NotFoundError("Call not found");
+
+    if (rounds) {
+      await trx.deleteFrom("funding_round").where("call_id", "=", id).execute();
+      await insertRounds(trx, id, rounds);
+    }
+
+    const replaced: TagType[] = [
+      ...(themes ? ["theme" as const] : []),
+      ...(targetGroups ? ["target_group" as const] : []),
+    ];
+    if (replaced.length) {
+      await trx
+        .deleteFrom("funding_call_tag")
+        .where("call_id", "=", id)
+        .where("tag_id", "in", (eb) =>
+          eb.selectFrom("tag").select("id").where("type", "in", replaced),
+        )
+        .execute();
+      await insertTags(trx, id, tagsOf(themes, targetGroups));
+    }
+  });
+
+  return findCallById(id);
+}
+
+type Rounds = NonNullable<CreateCallBody["rounds"]>;
+type Tags = { label: string; type: TagType }[];
+
+async function insertRounds(trx: typeof db, callId: number, rounds: Rounds) {
+  if (!rounds.length) return;
+  await trx
+    .insertInto("funding_round")
+    .values(
+      rounds.map((round, index) => ({
+        call_id: callId,
+        round_no: index + 1,
+        open_date: round.openDate ?? null,
+        deadline_date: round.deadlineDate ?? null,
+        decision_date: round.decisionDate ?? null,
+        expected_next_open_date: round.expectedNextOpenDate ?? null,
+      })),
+    )
+    .execute();
+}
+
+function tagsOf(themes: string[] = [], targetGroups: string[] = []): Tags {
+  return [
+    ...themes.map((label) => ({ label, type: "theme" as const })),
+    ...targetGroups.map((label) => ({ label, type: "target_group" as const })),
+  ];
+}
+
+async function insertTags(trx: typeof db, callId: number, tags: Tags) {
+  if (!tags.length) return;
+  await trx
+    .insertInto("tag")
+    .values(tags)
+    .onConflict((oc) => oc.columns(["label", "type"]).doNothing())
+    .execute();
+  await trx
+    .insertInto("funding_call_tag")
+    .columns(["call_id", "tag_id"])
+    .expression(
+      trx
+        .selectFrom("tag")
+        .select([sql.lit(callId).as("call_id"), "id"])
+        .where((eb) => eb.or(tags.map((tag) => eb.and(tag)))),
+    )
+    .execute();
+}
+
+function statusFrom(rounds: Rounds) {
   const today = new Date().toISOString().slice(0, 10);
   const deadlines = rounds.flatMap((round) => round.deadlineDate ?? []);
   if (!deadlines.length) return undefined;

@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from scrapers.pipeline import run
 from scrapers.pipeline.normalise import normalise
 from scrapers.pipeline.run import dedupe
-from scrapers.pipeline.store import CALL_COLS, ROUND_COLS, to_call, to_rounds
+from scrapers.pipeline.store import CALL_COLS, CALL_SQL, ROUND_COLS, to_call, to_rounds
 from tests.schema import columns
 
 BODY = "Du kan søge op til 150.000 kr. " + "x" * 500
@@ -66,6 +66,11 @@ def test_columns_exist_in_the_schema():
 
 def test_the_upsert_leaves_a_deleted_call_deleted():
     assert "deleted_at" in columns("funding_call") and "deleted_at" not in CALL_COLS
+
+
+def test_the_upsert_leaves_an_edited_call_alone():
+    assert "edited_at" in columns("funding_call") and "edited_at" not in CALL_COLS
+    assert CALL_SQL.endswith(" where funding_call.edited_at is null")
 
 
 def test_same_pool_on_two_pages_is_one_record():

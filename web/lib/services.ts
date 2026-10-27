@@ -2,9 +2,9 @@ import { fundingCalls as initialFundingCalls, notifications as initialNotificati
 import type {
   ApiCallStatus,
   CallStatus,
-  CreateFundingCallDto,
   FitLabel,
   FundingCall,
+  FundingCallBodyDto,
   FundingCallDetailDto,
   FundingCallDetails,
   FundingCallListItem,
@@ -347,6 +347,10 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
 }
 
 export async function getFundingCallById(id: string): Promise<FundingCallDetails> {
+  return mapFundingCallDetails(await getFundingCallDto(id));
+}
+
+export async function getFundingCallDto(id: string): Promise<FundingCallDetailDto> {
   if (!/^\d+$/.test(id) || Number(id) <= 0) {
     throw new ApiRequestError("Funding opportunity was not found", 404);
   }
@@ -364,18 +368,14 @@ export async function getFundingCallById(id: string): Promise<FundingCallDetails
     throw new ApiRequestError("Funding opportunity returned an unexpected response", 502);
   }
 
-  return mapFundingCallDetails(payload);
+  return payload;
 }
 
-export function getFundingCall(id: string): FundingCall | undefined {
-  return structuredClone(initialFundingCalls.find((call) => call.id === id));
-}
-
-export async function createFundingCall(body: CreateFundingCallDto): Promise<{ id: string }> {
-  const response = await fetch(`${apiBaseUrl}/api/calls`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
+async function sendFundingCall(path: string, method: string, body?: FundingCallBodyDto) {
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method,
+    headers: body && { "content-type": "application/json" },
+    body: body && JSON.stringify(body),
   });
   const payload = await response.json().catch(() => null);
 
@@ -383,32 +383,24 @@ export async function createFundingCall(body: CreateFundingCallDto): Promise<{ i
     const details: { path: string; message: string }[] = payload?.error?.details ?? [];
     const message = details.length
       ? details.map((detail) => `${detail.path}: ${detail.message}`).join("; ")
-      : payload?.error?.message ?? `Funding call could not be saved (${response.status})`;
+      : payload?.error?.message ?? `Funding call request failed (${response.status})`;
     throw new ApiRequestError(message, response.status);
   }
 
-  return { id: String(payload.id) };
+  return payload;
 }
 
-export function updateFundingCall(id: string, updates: Partial<FundingCall>): FundingCall | undefined {
-  const index = initialFundingCalls.findIndex((call) => call.id === id);
-  if (index === -1) {
-    return undefined;
-  }
-
-  const next = { ...initialFundingCalls[index], ...updates };
-  initialFundingCalls[index] = next;
-  return structuredClone(next);
+export async function createFundingCall(body: FundingCallBodyDto): Promise<{ id: string }> {
+  const created = await sendFundingCall("/api/calls", "POST", body);
+  return { id: String(created.id) };
 }
 
-export function deleteFundingCall(id: string): boolean {
-  const index = initialFundingCalls.findIndex((call) => call.id === id);
-  if (index === -1) {
-    return false;
-  }
+export async function updateFundingCall(id: string, body: FundingCallBodyDto): Promise<void> {
+  await sendFundingCall(`/api/calls/${id}`, "PATCH", body);
+}
 
-  initialFundingCalls.splice(index, 1);
-  return true;
+export async function deleteFundingCall(id: string): Promise<void> {
+  await sendFundingCall(`/api/calls/${id}`, "DELETE");
 }
 
 export function getNotifications(): Notification[] {

@@ -4,6 +4,7 @@ import {
   callListResponse,
   createCallBody,
   listCallsQuery,
+  updateCallBody,
 } from "./modules/calls/calls.schema.ts";
 import { notificationListResponse } from "./modules/notifications/notifications.schema.ts";
 import {
@@ -175,6 +176,31 @@ export const openapi = {
         ],
         responses: {
           "200": jsonResponse("The call", callDetail),
+          "400": errorResponse,
+          "404": errorResponse,
+        },
+      },
+      patch: {
+        summary: "Edit a funding call",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(updateCallBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "200": jsonResponse("The updated call", callDetail),
           "400": errorResponse,
           "404": errorResponse,
         },

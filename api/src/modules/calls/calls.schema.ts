@@ -92,8 +92,11 @@ export const createCallBody = z.strictObject({
   targetGroups: labels,
 });
 
+export const updateCallBody = createCallBody.partial();
+
 export type ListCallsQuery = z.infer<typeof listCallsQuery>;
 export type CreateCallBody = z.infer<typeof createCallBody>;
+export type UpdateCallBody = z.infer<typeof updateCallBody>;
 
 // Responses
 

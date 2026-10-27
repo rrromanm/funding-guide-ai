@@ -51,23 +51,23 @@ export interface FundingCallDetailDto extends FundingCallListItemDto {
   rounds: FundingRoundDto[];
 }
 
-export interface CreateFundingCallDto {
+export interface FundingCallBodyDto {
   title: string;
   description: string;
-  summary?: string;
-  eligibility?: string;
-  fundingBody?: string;
-  sourceUrl?: string;
-  level?: string;
-  funderType?: string;
-  status?: ApiCallStatus;
-  recurring?: boolean;
-  ngoEligible?: boolean;
-  budgetMin?: number;
-  budgetMax?: number;
-  rounds?: Omit<FundingRoundDto, "roundNo">[];
-  themes?: string[];
-  targetGroups?: string[];
+  summary: string;
+  eligibility: string;
+  fundingBody: string;
+  sourceUrl: string | null;
+  level: string | null;
+  funderType: string | null;
+  status: ApiCallStatus;
+  recurring: boolean;
+  ngoEligible: boolean | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  rounds: Omit<FundingRoundDto, "roundNo">[];
+  themes: string[];
+  targetGroups: string[];
 }
 
 export interface FundingCallListItem {

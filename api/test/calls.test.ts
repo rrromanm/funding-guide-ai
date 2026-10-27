@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, onTestFinished } from "vitest";
 import request from "supertest";
 import { createApp } from "../src/app.ts";
 import { db } from "../src/lib/db.ts";
@@ -41,6 +41,33 @@ describe("GET /api/calls (validation)", () => {
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("rejects a field the edit body does not know", async () => {
+    const res = await request(app)
+      .patch("/api/calls/1")
+      .send({ fundingLevel: "eu" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("rejects an edited round date that is not a date", async () => {
+    const res = await request(app)
+      .patch("/api/calls/1")
+      .send({ rounds: [{ deadlineDate: "1. april" }] });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details[0].path).toBe("rounds.0.deadlineDate");
+  });
+
+  it("rejects an edited description too short to score", async () => {
+    const res = await request(app)
+      .patch("/api/calls/1")
+      .send({ description: "Too short." });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details[0].path).toBe("description");
   });
 });
 
@@ -228,7 +255,7 @@ describe.skipIf(!process.env.DATABASE_URL)("DELETE /api/calls/:id", () => {
     const deleted = await request(app).delete(`/api/calls/${id}`);
     const fetched = await request(app).get(`/api/calls/${id}`);
     const again = await request(app).delete(`/api/calls/${id}`);
-    
+
     await db
       .insertInto("funding_call")
       .values({
@@ -254,6 +281,115 @@ describe.skipIf(!process.env.DATABASE_URL)("DELETE /api/calls/:id", () => {
 
   it("returns a 404 for an id that does not exist", async () => {
     const res = await request(app).delete("/api/calls/999999999");
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe("NOT_FOUND");
+  });
+});
+
+describe.skipIf(!process.env.DATABASE_URL)("PATCH /api/calls/:id", () => {
+  it("edits the call, replaces rounds and tags, and marks it edited", async () => {
+    const [source, theme, group] = await Promise.all([
+      db.selectFrom("funding_source").select("id").executeTakeFirstOrThrow(),
+      db
+        .selectFrom("tag")
+        .select("label")
+        .where("type", "=", "theme")
+        .executeTakeFirstOrThrow(),
+      db
+        .selectFrom("tag")
+        .select("label")
+        .where("type", "=", "target_group")
+        .executeTakeFirstOrThrow(),
+    ]);
+    const { id } = await db
+      .insertInto("funding_call")
+      .values({
+        funding_source_id: source.id,
+        source_url: `https://example.test/edit-${Date.now()}`,
+        title: "Test call",
+        status: "closed",
+      })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+    onTestFinished(async () => {
+      await db.deleteFrom("funding_call").where("id", "=", id).execute();
+    });
+
+    const edited = await request(app)
+      .patch(`/api/calls/${id}`)
+      .send({
+        title: "Edited call",
+        fundingBody: "Horsens Kommune",
+        level: "municipal",
+        funderType: "public_pool",
+        budgetMin: 1000,
+        budgetMax: 50000,
+        ngoEligible: true,
+        recurring: true,
+        eligibility: "Associations can apply.",
+        themes: [theme.label],
+        targetGroups: [group.label],
+        rounds: [
+          { openDate: "2026-01-01", deadlineDate: "2026-02-01" },
+          { deadlineDate: "2099-02-01", expectedNextOpenDate: "2100-01-01" },
+        ],
+      });
+    const partial = await request(app)
+      .patch(`/api/calls/${id}`)
+      .send({ eligibility: "", targetGroups: [] });
+    const stored = await db
+      .selectFrom("funding_call")
+      .select("edited_at")
+      .where("id", "=", id)
+      .executeTakeFirstOrThrow();
+
+    expect(edited.status).toBe(200);
+    expect(edited.body).toMatchObject({
+      title: "Edited call",
+      fundingBody: "Horsens Kommune",
+      level: "municipal",
+      funderType: "public_pool",
+      budgetMin: 1000,
+      budgetMax: 50000,
+      ngoEligible: true,
+      recurring: true,
+      eligibility: "Associations can apply.",
+      themes: [theme.label],
+      targetGroups: [group.label],
+      status: "open",
+      deadline: "2099-02-01",
+    });
+    expect(edited.body.rounds).toEqual([
+      {
+        roundNo: 1,
+        openDate: "2026-01-01",
+        deadlineDate: "2026-02-01",
+        decisionDate: null,
+        expectedNextOpenDate: null,
+      },
+      {
+        roundNo: 2,
+        openDate: null,
+        deadlineDate: "2099-02-01",
+        decisionDate: null,
+        expectedNextOpenDate: "2100-01-01",
+      },
+    ]);
+    expect(partial.body).toMatchObject({
+      eligibility: null,
+      fundingBody: "Horsens Kommune",
+      themes: [theme.label],
+      targetGroups: [],
+    });
+    expect(partial.body.rounds).toHaveLength(2);
+    expect(stored.edited_at).not.toBeNull();
+  });
+
+  it("returns a 404 for an id that does not exist", async () => {
+    const res = await request(app)
+      .patch("/api/calls/999999999")
+      .send({ recurring: true });
 
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");

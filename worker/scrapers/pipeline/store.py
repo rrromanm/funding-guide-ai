@@ -22,6 +22,7 @@ CALL_SQL = (
     "on conflict (funding_source_id, source_url) do update set "
     + ", ".join(f"{c} = excluded.{c}" for c in CALL_COLS
                 if c not in ("funding_source_id", "source_url"))
+    + " where funding_call.edited_at is null"
 )
 
 ROUND_SQL = (
@@ -133,8 +134,10 @@ def store(records: list[dict], sources: list[dict] = ()) -> tuple[int, int]:
 
         keys = {(source_ids[r["source"]], r["source_url"]) for r in records}
         cur.execute("select id, funding_source_id, source_url from funding_call "
-                    "where funding_source_id = any(%s)", [sorted({s for s, _ in keys})])
+                    "where funding_source_id = any(%s) and edited_at is null",
+                    [sorted({s for s, _ in keys})])
         by_url = {(s, u): i for i, s, u in cur.fetchall() if (s, u) in keys}
+        records = [rec for rec in records if (source_ids[rec["source"]], rec["source_url"]) in by_url]
 
         rounds = [r for rec in records
                   for r in to_rounds(rec, by_url[(source_ids[rec["source"]], rec["source_url"])])]
