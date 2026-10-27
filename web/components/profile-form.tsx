@@ -1,7 +1,93 @@
 "use client";
 
 import { useState } from "react";
-import type { OrgProfile } from "@/lib/types";
+import type { OrgProfile, Tag, TagType } from "@/lib/types";
+
+const tagStyles: Record<TagType, string> = {
+  Theme: "border-violet-200 bg-violet-50 text-violet-800",
+  TargetGroup: "border-green-200 bg-green-50 text-green-800",
+  Sector: "border-hairline bg-chip text-muted",
+  Country: "border-hairline bg-chip text-muted",
+  Other: "border-hairline bg-chip text-muted",
+};
+
+function ProfileTags({ tags, editing, onRemove }: { tags: Tag[]; editing?: boolean; onRemove?: (id: string) => void }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <span key={tag.id} className={`inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-[14px] font-semibold ${tagStyles[tag.type]}`}>
+          <span className="break-words">{tag.value}</span>
+          {editing && onRemove && (
+            <button
+              type="button"
+              className="inline-flex size-5 shrink-0 items-center justify-center rounded-full text-current hover:bg-black/10"
+              aria-label={`Remove ${tag.value}`}
+              onClick={() => onRemove(tag.id)}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function EditableTagGroup({
+  label,
+  helperText,
+  placeholder,
+  tags,
+  type,
+  onChange,
+}: {
+  label: string;
+  helperText: string;
+  placeholder: string;
+  tags: Tag[];
+  type: TagType;
+  onChange: (tags: Tag[]) => void;
+}) {
+  const [newValue, setNewValue] = useState("");
+
+  const addTag = () => {
+    const value = newValue.trim();
+    if (!value || tags.some((tag) => tag.value === value)) {
+      return;
+    }
+
+    onChange([...tags, { id: `${type}-${value}-${Date.now()}`, value, type }]);
+    setNewValue("");
+  };
+
+  return (
+    <section className="rounded-[20px] border border-hairline bg-canvas p-4 sm:p-5">
+      <div className="mb-4">
+        <div className="field-label mb-2">{label} · {tags.length}</div>
+        <p className="text-[14px] leading-relaxed text-muted">{helperText}</p>
+      </div>
+      <ProfileTags tags={tags} editing onRemove={(id) => onChange(tags.filter((tag) => tag.id !== id))} />
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+        <input
+          value={newValue}
+          placeholder={placeholder}
+          aria-label={`New ${label.toLowerCase()}`}
+          className="input min-w-0 flex-1"
+          onChange={(event) => setNewValue(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              addTag();
+            }
+          }}
+        />
+        <button type="button" className="btn btn-secondary shrink-0" onClick={addTag}>
+          + Add
+        </button>
+      </div>
+    </section>
+  );
+}
 
 export default function ProfileForm({ initialProfile, onSave }: { initialProfile: OrgProfile; onSave: (profile: OrgProfile) => void }) {
   const [profile, setProfile] = useState(initialProfile);
@@ -46,12 +132,40 @@ export default function ProfileForm({ initialProfile, onSave }: { initialProfile
           <input id="profile-capacity" readOnly={!editing} value={profile.administrativeCapacity} onChange={(event) => handleChange("administrativeCapacity", event.target.value)} className="input" />
         </div>
         <div className="md:col-span-2">
-          <label htmlFor="profile-themes" className="field-label">Themes / Tags</label>
-          <input id="profile-themes" readOnly={!editing} value={profile.themes.map((tag) => tag.value).join(", ")} onChange={(event) => handleChange("themes", event.target.value.split(",").map((value, index) => ({ id: `${value}-${index}`, value: value.trim(), type: "Theme" as const })))} className="input" />
-        </div>
-        <div className="md:col-span-2">
-          <label htmlFor="profile-target-groups" className="field-label">Target groups / Tags</label>
-          <input id="profile-target-groups" readOnly={!editing} value={profile.targetGroups.map((tag) => tag.value).join(", ")} onChange={(event) => handleChange("targetGroups", event.target.value.split(",").map((value, index) => ({ id: `${value}-${index}`, value: value.trim(), type: "TargetGroup" as const })))} className="input" />
+          <div className="mb-4">
+            <h2 className="font-display text-[24px] font-bold tracking-[-.03em] text-ink-900">What we work on</h2>
+          </div>
+          {editing ? (
+            <div className="space-y-4">
+              <EditableTagGroup
+                label="Themes"
+                helperText="What PYN's projects are about. The matcher compares these with each call's purpose."
+                placeholder="Add a theme, e.g. Culture"
+                tags={profile.themes}
+                type="Theme"
+                onChange={(themes) => handleChange("themes", themes)}
+              />
+              <EditableTagGroup
+                label="Target groups"
+                helperText="Who PYN's activities reach."
+                placeholder="Add a target group"
+                tags={profile.targetGroups}
+                type="TargetGroup"
+                onChange={(targetGroups) => handleChange("targetGroups", targetGroups)}
+              />
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <section>
+                <div className="field-label mb-3">Themes · {profile.themes.length}</div>
+                <ProfileTags tags={profile.themes} />
+              </section>
+              <section className="border-t border-hairline pt-6">
+                <div className="field-label mb-3">Target groups · {profile.targetGroups.length}</div>
+                <ProfileTags tags={profile.targetGroups} />
+              </section>
+            </div>
+          )}
         </div>
       </div>
 
