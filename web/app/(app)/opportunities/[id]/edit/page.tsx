@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import OpportunityEditClient from "@/components/opportunity-edit-client";
-import { getFundingCall } from "@/lib/services";
+import { ApiRequestError, getFundingCallDto } from "@/lib/services";
 
 export default async function EditOpportunityPage({
   params,
@@ -8,11 +8,16 @@ export default async function EditOpportunityPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const call = getFundingCall(id);
+  let call;
 
-  if (!call) {
-    redirect("/");
+  try {
+    call = await getFundingCallDto(id);
+  } catch (error) {
+    if (error instanceof ApiRequestError && error.status === 404) {
+      notFound();
+    }
+    throw error;
   }
 
-  return <OpportunityEditClient opportunity={call} />;
+  return <OpportunityEditClient call={call} />;
 }

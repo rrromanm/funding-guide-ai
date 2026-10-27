@@ -3,72 +3,64 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal, PageHeader } from "@/components/common";
-import { FundingOpportunityForm, type FundingOpportunityFormValues } from "@/components/funding-opportunity-form";
+import {
+  FundingOpportunityForm,
+  toFundingCallBody,
+  type FundingOpportunityFormValues,
+} from "@/components/funding-opportunity-form";
 import { deleteFundingCall, updateFundingCall } from "@/lib/services";
-import type { FundingCall } from "@/lib/types";
+import type { CallStatus, FundingCallDetailDto } from "@/lib/types";
 
-export default function OpportunityEditClient({ opportunity }: { opportunity: FundingCall }) {
+export default function OpportunityEditClient({ call }: { call: FundingCallDetailDto }) {
   const router = useRouter();
+  const id = String(call.id);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
 
   const initialValues: FundingOpportunityFormValues = {
-    id: opportunity.id,
-    title: opportunity.title,
-    summary: opportunity.summary,
-    description: opportunity.description,
-    fundingBody: opportunity.fundingBody,
-    fundingLevel: opportunity.fundingLevel,
-    funderType: opportunity.funderType ?? "",
-    sourceUrl: opportunity.sourceUrl ?? "",
-    amountMin: opportunity.amountMin?.toString() ?? "",
-    amountMax: opportunity.amountMax?.toString() ?? "",
-    eligibility: opportunity.eligibility,
-    ngoEligible: opportunity.ngoEligible ?? false,
-    status: opportunity.status,
-    recurringCall: opportunity.recurringCall ?? false,
-    themes: opportunity.themes.map((tag) => tag.value).join(", "),
-    targetGroups: opportunity.targetGroups.map((tag) => tag.value).join(", "),
-    fundingRounds: opportunity.fundingRounds,
+    id,
+    title: call.title,
+    summary: call.summary ?? "",
+    description: call.description ?? "",
+    fundingBody: call.fundingBody ?? "",
+    fundingLevel: call.level ?? "",
+    funderType: call.funderType ?? "",
+    sourceUrl: call.sourceUrl ?? "",
+    amountMin: call.budgetMin?.toString() ?? "",
+    amountMax: call.budgetMax?.toString() ?? "",
+    eligibility: call.eligibility ?? "",
+    ngoEligible: call.ngoEligible ?? false,
+    status: call.status.toUpperCase() as CallStatus,
+    recurringCall: call.recurring,
+    themes: call.themes.join(", "),
+    targetGroups: call.targetGroups.join(", "),
+    fundingRounds: call.rounds.map((round, index) => ({
+      id: `round-${index}`,
+      title: `Round ${index + 1}`,
+      openDate: round.openDate ?? undefined,
+      deadline: round.deadlineDate ?? undefined,
+      decisionDate: round.decisionDate ?? undefined,
+      expectedNextOpenDate: round.expectedNextOpenDate ?? undefined,
+    })),
   };
 
-  const handleSubmit = (values: FundingOpportunityFormValues) => {
-    const updated: Partial<FundingCall> = {
-      title: values.title,
-      summary: values.summary,
-      description: values.description,
-      fundingBody: values.fundingBody,
-      fundingLevel: values.fundingLevel,
-      funderType: values.funderType,
-      amountMin: values.amountMin ? Number(values.amountMin) : undefined,
-      amountMax: values.amountMax ? Number(values.amountMax) : undefined,
-      eligibility: values.eligibility,
-      ngoEligible: values.ngoEligible,
-      status: values.status,
-      recurringCall: values.recurringCall,
-      sourceUrl: values.sourceUrl || undefined,
-      themes: values.themes
-        .split(",")
-        .map((tag, index) => ({ id: `theme-${index}-${tag.trim()}`, value: tag.trim(), type: "Theme" as const }))
-        .filter((tag) => tag.value),
-      targetGroups: values.targetGroups
-        .split(",")
-        .map((tag, index) => ({ id: `group-${index}-${tag.trim()}`, value: tag.trim(), type: "TargetGroup" as const }))
-        .filter((tag) => tag.value),
-      fundingRounds: values.fundingRounds,
-    };
-
-    const result = updateFundingCall(opportunity.id, updated);
-    if (result) {
-      router.push(`/opportunities/${opportunity.id}`);
-    }
+  const handleSubmit = async (values: FundingOpportunityFormValues) => {
+    await updateFundingCall(id, {
+      ...toFundingCallBody(values),
+      // A checkbox has no "not stated": left unticked, a scraped call keeps its null.
+      ngoEligible: values.ngoEligible || (call.ngoEligible === null ? null : false),
+    });
+    router.push(`/opportunities/${id}`);
   };
 
-  const handleDelete = () => {
-    const removed = deleteFundingCall(opportunity.id);
-    if (removed) {
+  const handleDelete = async () => {
+    try {
+      await deleteFundingCall(id);
       router.push("/");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Deleting failed.");
+      setDeleteOpen(false);
     }
-    setDeleteOpen(false);
   };
 
   return (
@@ -83,11 +75,18 @@ export default function OpportunityEditClient({ opportunity }: { opportunity: Fu
         }
       />
 
+      {deleteError && (
+        <p role="alert" className="mb-6 rounded-[20px] border border-red-200 bg-red-50 px-4.5 py-3 text-[14px] font-bold text-red-600">
+          {deleteError}
+        </p>
+      )}
+
       <FundingOpportunityForm
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        onCancel={() => router.push(`/opportunities/${opportunity.id}`)}
+        onCancel={() => router.push(`/opportunities/${id}`)}
         submitLabel="Save Changes"
+        pendingLabel="Saving…"
       />
 
       <ConfirmationModal

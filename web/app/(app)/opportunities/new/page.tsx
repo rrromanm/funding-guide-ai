@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/common";
-import { FundingOpportunityForm, type FundingOpportunityFormValues } from "@/components/funding-opportunity-form";
+import { FundingOpportunityForm, toFundingCallBody, type FundingOpportunityFormValues } from "@/components/funding-opportunity-form";
 import { createFundingCall } from "@/lib/services";
-import type { ApiCallStatus } from "@/lib/types";
 
 const defaultValues: FundingOpportunityFormValues = {
   title: "",
@@ -38,34 +37,7 @@ export default function NewOpportunityPage() {
   const router = useRouter();
 
   const handleSubmit = async (values: FundingOpportunityFormValues) => {
-    const text = (value: string) => value.trim() || undefined;
-    const tags = (value: string) => value.split(",").map((tag) => tag.trim()).filter(Boolean);
-
-    const created = await createFundingCall({
-      title: values.title.trim(),
-      description: values.description.trim(),
-      summary: text(values.summary),
-      eligibility: text(values.eligibility),
-      fundingBody: text(values.fundingBody),
-      sourceUrl: text(values.sourceUrl),
-      level: text(values.fundingLevel),
-      funderType: text(values.funderType),
-      status: values.status.toLowerCase() as ApiCallStatus,
-      recurring: values.recurringCall,
-      ngoEligible: values.ngoEligible,
-      budgetMin: values.amountMin ? Number(values.amountMin) : undefined,
-      budgetMax: values.amountMax ? Number(values.amountMax) : undefined,
-      rounds: values.fundingRounds
-        .filter((round) => round.openDate || round.deadline || round.decisionDate || round.expectedNextOpenDate)
-        .map((round) => ({
-          openDate: round.openDate || null,
-          deadlineDate: round.deadline || null,
-          decisionDate: round.decisionDate || null,
-          expectedNextOpenDate: round.expectedNextOpenDate || null,
-        })),
-      themes: tags(values.themes),
-      targetGroups: tags(values.targetGroups),
-    });
+    const created = await createFundingCall(toFundingCallBody(values));
     router.push(`/opportunities/${created.id}`);
   };
 

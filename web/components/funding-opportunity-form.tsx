@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { CallStatus, FundingRound } from "@/lib/types";
+import type { ApiCallStatus, CallStatus, FundingCallBodyDto, FundingRound } from "@/lib/types";
 
 const MIN_DESCRIPTION_CHARS = 500;
 const LEVELS = [
@@ -39,16 +39,49 @@ export interface FundingOpportunityFormValues {
   fundingRounds: FundingRound[];
 }
 
+// Empty fields go out as "" / null rather than being left out, so an edit clears them.
+export function toFundingCallBody(values: FundingOpportunityFormValues): FundingCallBodyDto {
+  const tags = (value: string) => value.split(",").map((tag) => tag.trim()).filter(Boolean);
+
+  return {
+    title: values.title.trim(),
+    description: values.description.trim(),
+    summary: values.summary.trim(),
+    eligibility: values.eligibility.trim(),
+    fundingBody: values.fundingBody.trim(),
+    sourceUrl: values.sourceUrl.trim() || null,
+    level: values.fundingLevel || null,
+    funderType: values.funderType || null,
+    status: values.status.toLowerCase() as ApiCallStatus,
+    recurring: values.recurringCall,
+    ngoEligible: values.ngoEligible,
+    budgetMin: values.amountMin ? Number(values.amountMin) : null,
+    budgetMax: values.amountMax ? Number(values.amountMax) : null,
+    rounds: values.fundingRounds
+      .filter((round) => round.openDate || round.deadline || round.decisionDate || round.expectedNextOpenDate)
+      .map((round) => ({
+        openDate: round.openDate || null,
+        deadlineDate: round.deadline || null,
+        decisionDate: round.decisionDate || null,
+        expectedNextOpenDate: round.expectedNextOpenDate || null,
+      })),
+    themes: tags(values.themes),
+    targetGroups: tags(values.targetGroups),
+  };
+}
+
 export function FundingOpportunityForm({
   initialValues,
   onSubmit,
   onCancel,
   submitLabel,
+  pendingLabel = "Saving and scoring…",
 }: {
   initialValues: FundingOpportunityFormValues;
   onSubmit: (values: FundingOpportunityFormValues) => Promise<void> | void;
   onCancel: () => void;
   submitLabel: string;
+  pendingLabel?: string;
 }) {
   const [formValues, setFormValues] = useState<FundingOpportunityFormValues>(initialValues);
   const [submitting, setSubmitting] = useState(false);
@@ -399,7 +432,7 @@ export function FundingOpportunityForm({
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? "Saving and scoring…" : submitLabel}
+          {submitting ? pendingLabel : submitLabel}
         </button>
       </div>
     </form>
