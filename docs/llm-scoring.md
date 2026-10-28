@@ -71,9 +71,9 @@ der har interesse i …" (and others who are interested in …).
 ## Pipeline
 
 ```
-funding_call + funding_round ──┐
-                               ├─► formatted text ─► input_hash ─► unchanged? skip
-org_profile + tags ────────────┘                         │
+funding_call + funding_round ─► formatted text ─► input_hash ─► unchanged? skip
+                                                          │ new or changed
+org_profile + tags ─► profile text ───────────────────────┤
                                                           ▼
                                         judge prompt (prompt.v1.ts) ─► Gemini (JSON mode)
                                                           │
@@ -189,7 +189,7 @@ point, using the domain model's `kind` and `message` plus a `label` for what the
 | `blocking_reason` | why it was blocked |
 | `raw_response` (jsonb) | the model's output exactly as returned, for auditing |
 | `model`, `prompt_version` | what produced it |
-| `input_hash` | sha256 of call text + profile text + prompt version + model |
+| `input_hash` | sha256 of call text + prompt version + model (not the profile) |
 | `scored_at` | when |
 | `review_status`, `manual_score`, `admin_note` | the admin's review; `GET /api/calls` shows `manual_score` over `score` |
 
@@ -207,13 +207,16 @@ columns, so an admin's review survives.
 
 ### When a call is re-scored
 
-`input_hash` is computed over the *formatted* call and profile text the model sees, plus `PROMPT_VERSION` and the
+`input_hash` is computed over the *formatted* call text the model sees, plus `PROMPT_VERSION` and the
 model name. The job re-scores a call when it has no row, or when the stored hash differs from the current one. That covers:
 
 - **the call changed** (text, rounds, budget, status);
-- **the profile changed** (any field or tag);
 - **the prompt changed** (bump `PROMPT_VERSION`);
 - **the model changed** (`GEMINI_MODEL`), so every stored result comes from one model.
+
+The profile is not hashed. Editing it would otherwise re-score every call (~100 requests) for what is usually a
+small change. New and changed calls are scored against the current profile; older results stay until someone
+re-scores a call from its page (`POST /api/calls/:id/score`).
 
 Timestamps are not used. The worker rewrites `funding_call.updated_at` on every scrape even when nothing
 changed, and `org_profile` has no `updated_at`. The date passed to the prompt is not hashed, so
@@ -264,7 +267,7 @@ inputs here are public call texts and PYN's public profile.
 | --- | --- | --- |
 | weights, thresholds, confidence | `matches.config.ts` | new results only; re-score with `--call` or bump the prompt version to apply to all |
 | prompt wording | copy the latest to `prompt.v<N+1>.ts`, bump `PROMPT_VERSION`, import it in the service (and the test) | every call re-scored on the next run |
-| PYN's profile | `org_profile` / tags (`founded_year` feeds eligibility and `maturity_fit`) | every call re-scored on the next run |
+| PYN's profile | `org_profile` / tags (`founded_year` feeds eligibility and `maturity_fit`) | new and changed calls only; re-score others one by one |
 
 ## Tests
 

@@ -135,21 +135,13 @@ export async function loadCalls(callId?: number): Promise<CallInput[]> {
   });
 }
 
-export function inputHash(
-  callText: string,
-  profileText: string,
-  model: string,
-) {
+export function inputHash(callText: string, model: string) {
   return createHash("sha256")
-    .update([callText, profileText, PROMPT_VERSION, model].join("\u0000"))
+    .update([callText, PROMPT_VERSION, model].join("\u0000"))
     .digest("hex");
 }
 
-export async function findCallsToScore(
-  profileText: string,
-  model: string,
-  callId?: number,
-) {
+export async function findCallsToScore(model: string, callId?: number) {
   const [calls, stored] = await Promise.all([
     loadCalls(callId),
     db.selectFrom("match_result").select(["call_id", "input_hash"]).execute(),
@@ -158,7 +150,7 @@ export async function findCallsToScore(
 
   const hashes = new Map(stored.map((row) => [row.call_id, row.input_hash]));
   return calls.filter(
-    (call) => hashes.get(call.id) !== inputHash(call.text, profileText, model),
+    (call) => hashes.get(call.id) !== inputHash(call.text, model),
   );
 }
 
@@ -187,12 +179,11 @@ export async function scoreCall(callId: number, provider: LlmProvider) {
   if (!call) throw new NotFoundError("Call not found");
 
   const { raw, result } = await judgeCall(call, profileText, provider);
-  await saveResult(call, profileText, provider.model, raw, result);
+  await saveResult(call, provider.model, raw, result);
 }
 
 export async function saveResult(
   call: CallInput,
-  profileText: string,
   model: string,
   raw: unknown,
   result: ScoredResult,
@@ -206,7 +197,7 @@ export async function saveResult(
     raw_response: JSON.stringify(raw),
     model,
     prompt_version: PROMPT_VERSION,
-    input_hash: inputHash(call.text, profileText, model),
+    input_hash: inputHash(call.text, model),
     scored_at: new Date(),
   };
 
