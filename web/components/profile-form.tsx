@@ -116,19 +116,19 @@ export default function ProfileForm({ initialProfile, onSave }: { initialProfile
       <div className="grid gap-5 md:grid-cols-2">
         <div>
           <label htmlFor="profile-name" className="field-label">Name</label>
-          <input id="profile-name" readOnly={!editing} value={profile.name} onChange={(event) => handleChange("name", event.target.value)} className="input" />
+          <input id="profile-name" disabled value={profile.name} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
         </div>
         <div>
           <label htmlFor="profile-legal-status" className="field-label">Legal status</label>
-          <input id="profile-legal-status" readOnly={!editing} value={profile.legalStatus} onChange={(event) => handleChange("legalStatus", event.target.value)} className="input" />
+          <input id="profile-legal-status" disabled value={profile.legalStatus} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
         </div>
         <div>
           <label htmlFor="profile-city" className="field-label">City</label>
-          <input id="profile-city" readOnly={!editing} value={profile.city} onChange={(event) => handleChange("city", event.target.value)} className="input" />
+          <input id="profile-city" disabled value={profile.city} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
         </div>
         <div>
           <label htmlFor="profile-country" className="field-label">Country</label>
-          <input id="profile-country" readOnly={!editing} value={profile.country} onChange={(event) => handleChange("country", event.target.value)} className="input" />
+          <input id="profile-country" disabled value={profile.country} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
         </div>
         <div>
           <label htmlFor="profile-staff-count" className="field-label">Staff count / team size</label>
