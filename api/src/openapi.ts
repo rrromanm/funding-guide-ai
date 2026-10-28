@@ -223,5 +223,25 @@ export const openapi = {
         },
       },
     },
+    "/api/calls/{id}/score": {
+      post: {
+        summary: "Rescore a funding call with the AI now",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          "200": jsonResponse("The call with its new score", callDetail),
+          "400": errorResponse,
+          "404": errorResponse,
+          "503": errorResponse,
+        },
+      },
+    },
   },
 };

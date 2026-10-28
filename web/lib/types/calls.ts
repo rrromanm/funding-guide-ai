@@ -4,6 +4,13 @@ import type { FundingSource } from "./sources";
 
 export type CallStatus = "UPCOMING" | "OPEN" | "CLOSED" | "UNKNOWN";
 export type ApiCallStatus = "upcoming" | "open" | "closed" | "unknown";
+export type ApiFitLabel = "strong_fit" | "possible_fit" | "weak_fit" | "not_recommended";
+
+export interface MatchReasonDto {
+  kind: "blocker" | "barrier" | "strength" | "info";
+  about: string | null;
+  message: string;
+}
 
 export interface FundingCallListItemDto {
   id: number;
@@ -16,6 +23,7 @@ export interface FundingCallListItemDto {
   recurring: boolean;
   deadline: string | null;
   score: number | null;
+  fitLabel: ApiFitLabel | null;
   budgetMin: number | null;
   budgetMax: number | null;
   currency: string;
@@ -49,6 +57,7 @@ export interface FundingCallDetailDto extends FundingCallListItemDto {
   lastChecked: string | null;
   createdAt: string;
   rounds: FundingRoundDto[];
+  reasons: MatchReasonDto[];
 }
 
 export interface FundingCallBodyDto {
@@ -109,7 +118,8 @@ export interface FundingCallDetails {
   themes: Tag[];
   targetGroups?: Tag[];
   fundingRounds: FundingRound[];
-  matchResult?: MatchResult;
+  fitLabel?: ApiFitLabel;
+  reasons: MatchReasonDto[];
 }
 
 export interface FundingRound {

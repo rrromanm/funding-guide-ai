@@ -2,20 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ConfirmationModal, PageHeader } from "@/components/common";
+import { ConfirmationModal } from "@/components/common/confirmation-modal";
+import { PageHeader } from "@/components/common/page-header";
+import { ScoringModal } from "@/components/common/scoring-modal";
 import {
   FundingOpportunityForm,
   toFundingCallBody,
   type FundingOpportunityFormValues,
 } from "@/components/funding-opportunity-form";
-import { deleteFundingCall, updateFundingCall } from "@/lib/services";
+import { rescoreFundingCall, updateFundingCall } from "@/lib/services";
 import type { CallStatus, FundingCallDetailDto } from "@/lib/types";
 
 export default function OpportunityEditClient({ call }: { call: FundingCallDetailDto }) {
   const router = useRouter();
   const id = String(call.id);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteError, setDeleteError] = useState<string>();
+  const [rescoreOpen, setRescoreOpen] = useState(false);
+  const [rescoring, setRescoring] = useState(false);
+  const [rescoreError, setRescoreError] = useState<string>();
+  const showCall = () => router.push(`/opportunities/${id}`);
 
   const initialValues: FundingOpportunityFormValues = {
     id,
@@ -32,8 +36,8 @@ export default function OpportunityEditClient({ call }: { call: FundingCallDetai
     ngoEligible: call.ngoEligible ?? false,
     status: call.status.toUpperCase() as CallStatus,
     recurringCall: call.recurring,
-    themes: call.themes.join(", "),
-    targetGroups: call.targetGroups.join(", "),
+    themes: call.themes,
+    targetGroups: call.targetGroups,
     fundingRounds: call.rounds.map((round, index) => ({
       id: `round-${index}`,
       title: `Round ${index + 1}`,
@@ -45,21 +49,24 @@ export default function OpportunityEditClient({ call }: { call: FundingCallDetai
   };
 
   const handleSubmit = async (values: FundingOpportunityFormValues) => {
+    const body = toFundingCallBody(values);
     await updateFundingCall(id, {
-      ...toFundingCallBody(values),
-      // A checkbox has no "not stated": left unticked, a scraped call keeps its null.
+      ...body,
+      description: values.description === initialValues.description ? undefined : body.description,
       ngoEligible: values.ngoEligible || (call.ngoEligible === null ? null : false),
     });
-    router.push(`/opportunities/${id}`);
+    setRescoreOpen(true);
   };
 
-  const handleDelete = async () => {
+  const handleRescore = async () => {
+    setRescoring(true);
+    setRescoreError(undefined);
     try {
-      await deleteFundingCall(id);
-      router.push("/");
+      await rescoreFundingCall(id);
+      showCall();
     } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : "Deleting failed.");
-      setDeleteOpen(false);
+      setRescoreError(err instanceof Error ? err.message : "Rescoring failed.");
+      setRescoring(false);
     }
   };
 
@@ -68,35 +75,32 @@ export default function OpportunityEditClient({ call }: { call: FundingCallDetai
       <PageHeader
         title="Edit Funding Opportunity"
         subtitle="Update the stored call details and keep the record aligned with the latest organisational context."
-        action={
-          <button type="button" className="btn btn-secondary" onClick={() => setDeleteOpen(true)}>
-            Delete Opportunity
-          </button>
-        }
       />
 
-      {deleteError && (
-        <p role="alert" className="mb-6 rounded-[20px] border border-red-200 bg-red-50 px-4.5 py-3 text-[14px] font-bold text-red-600">
-          {deleteError}
-        </p>
-      )}
+      {rescoring && <ScoringModal />}
 
-      <FundingOpportunityForm
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        onCancel={() => router.push(`/opportunities/${id}`)}
-        submitLabel="Save Changes"
-        pendingLabel="Saving…"
-      />
+      <div inert={rescoring}>
+        <FundingOpportunityForm
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          onCancel={showCall}
+          submitLabel="Save Changes"
+          pendingLabel="Saving…"
+        />
+      </div>
 
       <ConfirmationModal
-        open={deleteOpen}
-        title="Delete Funding Opportunity?"
-        description="Are you sure you want to delete this funding opportunity? This action cannot be undone."
-        confirmLabel="Delete"
-        confirmVariant="destructive"
-        onCancel={() => setDeleteOpen(false)}
-        onConfirm={handleDelete}
+        open={rescoreOpen && !rescoring}
+        title="Rescore with AI?"
+        description={
+          rescoreError
+            ? `Rescoring failed: ${rescoreError}. Your changes are saved.`
+            : "Your changes are saved. Should the AI rescore this call against the updated details? It can take up to half a minute."
+        }
+        confirmLabel={rescoreError ? "Try again" : "Rescore"}
+        cancelLabel="Not now"
+        onCancel={showCall}
+        onConfirm={handleRescore}
       />
     </div>
   );

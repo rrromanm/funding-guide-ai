@@ -10,6 +10,7 @@ import {
   deleteCall,
   findCallById,
   findCalls,
+  rescoreCall,
   updateCall,
 } from "./calls.service.ts";
 
@@ -36,6 +37,12 @@ export const patchCall: RequestHandler = async (req, res) => {
   const body = updateCallBody.parse(req.body);
 
   res.json(await updateCall(id, body));
+};
+
+export const rescoreCallById: RequestHandler = async (req, res) => {
+  const { id } = callIdParams.parse(req.params);
+
+  res.json(await rescoreCall(id));
 };
 
 export const deleteCallById: RequestHandler = async (req, res) => {

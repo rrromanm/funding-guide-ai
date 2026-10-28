@@ -33,7 +33,7 @@ function ProfileTags({ tags, editing, onRemove }: { tags: Tag[]; editing?: boole
   );
 }
 
-function EditableTagGroup({
+export function EditableTagGroup({
   label,
   helperText,
   placeholder,

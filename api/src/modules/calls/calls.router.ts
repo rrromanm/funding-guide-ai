@@ -5,6 +5,7 @@ import {
   listCalls,
   patchCall,
   postCall,
+  rescoreCallById,
 } from "./calls.controller.ts";
 
 export const callsRouter = Router()
@@ -12,4 +13,5 @@ export const callsRouter = Router()
   .post("/", postCall)
   .get("/:id", getCall)
   .patch("/:id", patchCall)
+  .post("/:id/score", rescoreCallById)
   .delete("/:id", deleteCallById);

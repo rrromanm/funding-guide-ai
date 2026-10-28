@@ -52,6 +52,12 @@ describe("GET /api/calls (validation)", () => {
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 
+  it("rejects a non-numeric id on rescore", async () => {
+    const res = await request(app).post("/api/calls/abc/score");
+
+    expect(res.status).toBe(400);
+  });
+
   it("rejects an edited round date that is not a date", async () => {
     const res = await request(app)
       .patch("/api/calls/1")
@@ -394,4 +400,16 @@ describe.skipIf(!process.env.DATABASE_URL)("PATCH /api/calls/:id", () => {
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");
   });
+});
+
+describe.skipIf(!process.env.DATABASE_URL)("POST /api/calls/:id/score", () => {
+  it.skipIf(!process.env.GEMINI_API_KEY)(
+    "returns a 404 for an id that does not exist",
+    async () => {
+      const res = await request(app).post("/api/calls/999999999/score");
+
+      expect(res.status).toBe(404);
+      expect(res.body.error.code).toBe("NOT_FOUND");
+    },
+  );
 });

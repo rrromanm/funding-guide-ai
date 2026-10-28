@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { EmptyState, PageHeader } from "@/components/common";
+import { EmptyState } from "@/components/common/empty-state";
+import { PageHeader } from "@/components/common/page-header";
 import { getNotifications, markNotificationRead } from "@/lib/services";
 import type { Notification } from "@/lib/types";
 

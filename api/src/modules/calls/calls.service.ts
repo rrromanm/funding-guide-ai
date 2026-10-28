@@ -1,6 +1,6 @@
 import { sql, type ExpressionBuilder } from "kysely";
 import { env } from "../../config/env.ts";
-import { NotFoundError } from "../../errors.ts";
+import { HttpError, NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
 import type { DB, TagType } from "../../lib/db-types.ts";
 import { geminiProvider } from "../../lib/llm.ts";
@@ -333,6 +333,18 @@ export async function updateCall(
     }
   });
 
+  return findCallById(id);
+}
+
+export async function rescoreCall(id: number): Promise<CallDetail> {
+  if (!env.GEMINI_API_KEY)
+    throw new HttpError(
+      503,
+      "SCORING_UNAVAILABLE",
+      "AI scoring is not configured",
+    );
+
+  await scoreCall(id, geminiProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL));
   return findCallById(id);
 }
 

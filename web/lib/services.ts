@@ -277,6 +277,9 @@ function isFundingCallDetail(value: unknown): value is FundingCallDetailDto {
     (call.sourceUrl === null || typeof call.sourceUrl === "string") &&
     (call.externalId === null || typeof call.externalId === "string") &&
     (call.lastChecked === null || typeof call.lastChecked === "string") &&
+    (call.fitLabel === null || typeof call.fitLabel === "string") &&
+    Array.isArray(call.reasons) &&
+    call.reasons.every((reason) => typeof reason?.message === "string") &&
     typeof call.createdAt === "string" &&
     Array.isArray(rounds) &&
     rounds.every((round) => {
@@ -326,6 +329,8 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
     amountMax: call.budgetMax ?? undefined,
     currency: call.currency,
     score: call.score ?? undefined,
+    fitLabel: call.fitLabel ?? undefined,
+    reasons: call.reasons,
     eligibility: toOptionalText(call.eligibility) ?? "—",
     ngoEligible: call.ngoEligible,
     status: mapCallStatus(call.status),
@@ -371,7 +376,7 @@ export async function getFundingCallDto(id: string): Promise<FundingCallDetailDt
   return payload;
 }
 
-async function sendFundingCall(path: string, method: string, body?: FundingCallBodyDto) {
+async function sendFundingCall(path: string, method: string, body?: Partial<FundingCallBodyDto>) {
   const response = await fetch(`${apiBaseUrl}${path}`, {
     method,
     headers: body && { "content-type": "application/json" },
@@ -395,8 +400,12 @@ export async function createFundingCall(body: FundingCallBodyDto): Promise<{ id:
   return { id: String(created.id) };
 }
 
-export async function updateFundingCall(id: string, body: FundingCallBodyDto): Promise<void> {
+export async function updateFundingCall(id: string, body: Partial<FundingCallBodyDto>): Promise<void> {
   await sendFundingCall(`/api/calls/${id}`, "PATCH", body);
+}
+
+export async function rescoreFundingCall(id: string): Promise<void> {
+  await sendFundingCall(`/api/calls/${id}/score`, "POST");
 }
 
 export async function deleteFundingCall(id: string): Promise<void> {

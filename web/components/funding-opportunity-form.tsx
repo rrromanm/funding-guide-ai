@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { ApiCallStatus, CallStatus, FundingCallBodyDto, FundingRound } from "@/lib/types";
+import { EditableTagGroup } from "@/components/profile-form";
+import type { ApiCallStatus, CallStatus, FundingCallBodyDto, FundingRound, Tag, TagType } from "@/lib/types";
 
 const MIN_DESCRIPTION_CHARS = 500;
 const LEVELS = [
@@ -34,15 +35,15 @@ export interface FundingOpportunityFormValues {
   ngoEligible: boolean;
   status: CallStatus;
   recurringCall: boolean;
-  themes: string;
-  targetGroups: string;
+  themes: string[];
+  targetGroups: string[];
   fundingRounds: FundingRound[];
 }
 
+const toTags = (values: string[], type: TagType): Tag[] => values.map((value) => ({ id: value, value, type }));
+
 // Empty fields go out as "" / null rather than being left out, so an edit clears them.
 export function toFundingCallBody(values: FundingOpportunityFormValues): FundingCallBodyDto {
-  const tags = (value: string) => value.split(",").map((tag) => tag.trim()).filter(Boolean);
-
   return {
     title: values.title.trim(),
     description: values.description.trim(),
@@ -65,8 +66,8 @@ export function toFundingCallBody(values: FundingOpportunityFormValues): Funding
         decisionDate: round.decisionDate || null,
         expectedNextOpenDate: round.expectedNextOpenDate || null,
       })),
-    themes: tags(values.themes),
-    targetGroups: tags(values.targetGroups),
+    themes: values.themes,
+    targetGroups: values.targetGroups,
   };
 }
 
@@ -126,12 +127,6 @@ export function FundingOpportunityForm({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Without a deadline the AI cannot rate deadline readiness.
-    if (!formValues.recurringCall && !formValues.fundingRounds.some((round) => round.deadline)) {
-      setError("Add a deadline to a funding round, or tick Recurring call.");
-      return;
-    }
-
     setError(undefined);
     setSubmitting(true);
     try {
@@ -161,7 +156,6 @@ export function FundingOpportunityForm({
           <label htmlFor="opportunity-summary" className="field-label">Summary</label>
           <textarea
             id="opportunity-summary"
-            required
             value={formValues.summary}
             onChange={(event) => updateField("summary", event.target.value)}
             rows={3}
@@ -183,32 +177,34 @@ export function FundingOpportunityForm({
           />
           <p id="opportunity-description-hint" className="mt-1 text-[14px] text-muted">
             The AI scores the call from this text, so paste the full call: purpose, who can apply, what is
-            funded and how to apply. {formValues.description.trim().length} / {MIN_DESCRIPTION_CHARS} characters
+            funded and how to apply. {MIN_DESCRIPTION_CHARS} characters
             minimum.
           </p>
         </div>
 
         <div>
-          <label htmlFor="funding-body" className="field-label">Funding Body</label>
+          <label htmlFor="funding-body" className="field-label">Funder</label>
           <input
             id="funding-body"
-            required
+            aria-describedby="funding-body-hint"
             value={formValues.fundingBody}
             onChange={(event) => updateField("fundingBody", event.target.value)}
             className="input"
           />
+          <p id="funding-body-hint" className="mt-1 text-[14px] text-muted">
+            The organisation that gives the money, e.g. Statens Kunstfond, not the website the call was found on.
+          </p>
         </div>
 
         <div>
           <label htmlFor="funding-level" className="field-label">Funding Level</label>
           <select
             id="funding-level"
-            required
             value={formValues.fundingLevel}
             onChange={(event) => updateField("fundingLevel", event.target.value)}
             className="input"
           >
-            <option value="">Select a level</option>
+            <option value="">Not stated</option>
             {LEVELS.map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
@@ -258,7 +254,6 @@ export function FundingOpportunityForm({
           <input
             id="maximum-budget"
             type="number"
-            required
             min={0}
             value={formValues.amountMax}
             onChange={(event) => updateField("amountMax", event.target.value)}
@@ -270,7 +265,6 @@ export function FundingOpportunityForm({
           <label htmlFor="eligibility-requirements" className="field-label">Eligibility Requirements</label>
           <textarea
             id="eligibility-requirements"
-            required
             value={formValues.eligibility}
             onChange={(event) => updateField("eligibility", event.target.value)}
             rows={4}
@@ -319,25 +313,22 @@ export function FundingOpportunityForm({
           </label>
         </div>
 
-        <div className="md:col-span-2">
-          <label htmlFor="opportunity-themes" className="field-label">Themes / Tags</label>
-          <input
-            id="opportunity-themes"
-            value={formValues.themes}
-            onChange={(event) => updateField("themes", event.target.value)}
-            placeholder="e.g. Youth, Climate, Civic engagement"
-            className="input"
+        <div className="space-y-4 md:col-span-2">
+          <EditableTagGroup
+            label="Themes"
+            helperText="What the call funds. The matcher compares these with PYN's themes."
+            placeholder="Add a theme, e.g. Youth"
+            tags={toTags(formValues.themes, "Theme")}
+            type="Theme"
+            onChange={(tags) => updateField("themes", tags.map((tag) => tag.value))}
           />
-        </div>
-
-        <div className="md:col-span-2">
-          <label htmlFor="opportunity-target-groups" className="field-label">Target Groups / Tags</label>
-          <input
-            id="opportunity-target-groups"
-            value={formValues.targetGroups}
-            onChange={(event) => updateField("targetGroups", event.target.value)}
-            placeholder="e.g. Young people, Youth NGOs"
-            className="input"
+          <EditableTagGroup
+            label="Target groups"
+            helperText="Who the call is meant to reach."
+            placeholder="Add a target group, e.g. Young people"
+            tags={toTags(formValues.targetGroups, "TargetGroup")}
+            type="TargetGroup"
+            onChange={(tags) => updateField("targetGroups", tags.map((tag) => tag.value))}
           />
         </div>
       </div>
