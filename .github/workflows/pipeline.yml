@@ -28,7 +28,7 @@ jobs:
       - run: pip install -e .
         working-directory: worker
       - name: Scrape sources
-        run: python -m scrapers.pipeline.run
+        run: python -u -m scrapers.pipeline.run # -u: stream prints to the log instead of buffering
         working-directory: worker
 
       - uses: actions/setup-node@v4

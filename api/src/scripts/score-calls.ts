@@ -23,9 +23,10 @@ if (!env.GEMINI_API_KEY) {
 const provider = geminiProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL);
 const profileText = await loadProfileText();
 const callId = values.call === undefined ? undefined : Number(values.call);
-const calls = (
-  await findCallsToScore(profileText, provider.model, callId)
-).slice(0, values.limit === undefined ? undefined : Number(values.limit));
+const calls = (await findCallsToScore(provider.model, callId)).slice(
+  0,
+  values.limit === undefined ? undefined : Number(values.limit),
+);
 
 const intervalMs = Math.ceil(60_000 / env.GEMINI_RPM);
 
@@ -39,7 +40,7 @@ for (const [i, call] of calls.entries()) {
   if (i > 0) await delay(intervalMs);
   try {
     const { raw, result } = await judgeCall(call, profileText, provider);
-    await saveResult(call, profileText, provider.model, raw, result);
+    await saveResult(call, provider.model, raw, result);
     scored++;
     console.log(
       `#${call.id} ${call.title}: ${result.score} ${result.fitLabel} (${result.confidence})` +
