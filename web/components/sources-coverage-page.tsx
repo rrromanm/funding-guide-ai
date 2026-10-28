@@ -2,72 +2,40 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EmptyState } from "@/components/common/empty-state";
-import { PageHeader } from "@/components/common/page-header";
-import { getFundingSources } from "@/lib/services";
+import { checkAllSources, getFundingSources } from "@/lib/services";
 import type { SourceListItem } from "@/lib/types";
 
-function formatDate(value: string | null) {
+const relative = new Intl.RelativeTimeFormat("en-GB", { numeric: "auto" });
+
+function formatLastChecked(value: string | null) {
   if (!value) {
     return "Not checked yet";
   }
 
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? value
-    : date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const time = new Date(value).getTime();
+  if (Number.isNaN(time)) {
+    return value;
+  }
+
+  const minutes = Math.round((time - Date.now()) / 60_000);
+  if (minutes > -1) return "Just now";
+  if (minutes > -60) return relative.format(minutes, "minute");
+  if (minutes > -60 * 24) return relative.format(Math.round(minutes / 60), "hour");
+  return relative.format(Math.round(minutes / (60 * 24)), "day");
 }
 
 function formatSourceType(value: string | null) {
-  return value ? value.replaceAll("_", " ") : "Unclassified";
+  if (!value) return "Unclassified";
+  const label = value.replaceAll("_", " ");
+  return label.length <= 2 ? label.toUpperCase() : label[0].toUpperCase() + label.slice(1);
 }
 
-function MetricCard({ label, value, detail }: { label: string; value: number; detail: string }) {
+function MetricCard({ label, value, className }: { label: string; value: number; className: string }) {
   return (
     <div className="card min-w-0">
       <p className="field-label">{label}</p>
-      <p className="font-display text-[32px] font-bold leading-none text-ink-900">{value}</p>
-      <p className="mt-3 text-[14px] text-muted">{detail}</p>
+      <p className={`font-display text-[40px] font-bold leading-none ${className}`}>{value}</p>
     </div>
-  );
-}
-
-function SourceRow({ source }: { source: SourceListItem }) {
-  return (
-    <article className="border-t border-hairline py-5 first:border-t-0 first:pt-0 last:pb-0">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-display text-[19px] font-bold text-ink-900">{source.name}</h3>
-            <span className="chip-neutral">{formatSourceType(source.sourceType)}</span>
-          </div>
-          {source.baseUrl && (
-            <a
-              href={source.baseUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 block max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-[14px] text-violet-600 hover:text-violet-800"
-            >
-              {source.baseUrl}
-            </a>
-          )}
-        </div>
-
-        <div className="grid shrink-0 grid-cols-3 gap-5 text-left lg:text-right">
-          <div>
-            <p className="field-label">Stored calls</p>
-            <p className="font-display text-[22px] font-bold text-ink-900">{source.counts.total}</p>
-          </div>
-          <div>
-            <p className="field-label">Open</p>
-            <p className="font-display text-[22px] font-bold text-green-800">{source.counts.open}</p>
-          </div>
-          <div>
-            <p className="field-label">Last checked</p>
-            <p className="text-[14px] text-ink-600">{formatDate(source.lastChecked)}</p>
-          </div>
-        </div>
-      </div>
-    </article>
   );
 }
 
@@ -75,7 +43,7 @@ function LoadingState() {
   return (
     <div className="space-y-6" aria-label="Loading source information" role="status">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[1, 2, 3, 4].map((item) => <div key={item} className="card h-36 animate-pulse bg-white/70" />)}
+        {[1, 2, 3, 4].map((item) => <div key={item} className="card h-28 animate-pulse bg-white/70" />)}
       </div>
       <div className="card h-72 animate-pulse bg-white/70" />
     </div>
@@ -86,6 +54,8 @@ export default function SourcesCoveragePage() {
   const [sources, setSources] = useState<SourceListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [check, setCheck] = useState<"idle" | "starting" | "started" | "failed">("idle");
+  const [checkError, setCheckError] = useState("");
 
   const loadSources = useCallback(async () => {
     setLoading(true);
@@ -99,6 +69,17 @@ export default function SourcesCoveragePage() {
       setLoading(false);
     }
   }, []);
+
+  async function checkAll() {
+    setCheck("starting");
+    try {
+      await checkAllSources();
+      setCheck("started");
+    } catch (err) {
+      setCheckError(err instanceof Error ? err.message : "The source check could not be started.");
+      setCheck("failed");
+    }
+  }
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -121,21 +102,28 @@ export default function SourcesCoveragePage() {
     [sources],
   );
 
-  const coverageGroups = useMemo(() => {
-    const groups = new Map<string, number>();
-    sources.forEach((source) => {
-      const label = formatSourceType(source.sourceType);
-      groups.set(label, (groups.get(label) ?? 0) + 1);
-    });
-    return [...groups.entries()].sort((left, right) => right[1] - left[1]);
-  }, [sources]);
-
   return (
     <div className="p-8">
-      <PageHeader
-        title="Sources & Coverage"
-        subtitle="Overview of funding sources monitored by the Funding Guide ingestion system."
-      />
+      <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="field-label">Where calls are collected from{!loading && ` · ${sources.length} sources`}</p>
+          <h1 className="font-display text-[30px] font-bold tracking-[-.04em] text-ink-900">Sources</h1>
+        </div>
+        <div className="flex flex-col items-start gap-2 md:items-end">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={check === "starting" || check === "started"}
+            onClick={() => void checkAll()}
+          >
+            {check === "starting" ? "Starting…" : "Check all sources now"}
+          </button>
+          <p role="status" className={`text-[14px] ${check === "failed" ? "text-red-600" : "text-muted"}`}>
+            {check === "started" && "Check started. New calls appear here when it finishes."}
+            {check === "failed" && checkError}
+          </p>
+        </div>
+      </div>
 
       {loading ? <LoadingState /> : error ? (
         <div className="card flex flex-col items-start gap-4">
@@ -150,42 +138,55 @@ export default function SourcesCoveragePage() {
       ) : (
         <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard label="Configured sources" value={sources.length} detail="Sources returned by the API" />
-            <MetricCard label="Stored calls" value={totals.total} detail="Calls across all sources" />
-            <MetricCard label="Open calls" value={totals.open} detail="Currently marked open" />
-            <MetricCard label="Relevant calls" value={totals.relevant} detail="Strong or possible fit, not dismissed" />
+            <MetricCard label="Total calls found" value={totals.total} className="text-ink-900" />
+            <MetricCard label="Relevant calls" value={totals.relevant} className="text-green-800" />
+            <MetricCard label="Open" value={totals.open} className="text-violet-800" />
+            <MetricCard label="Closed" value={totals.closed} className="text-ink-600" />
           </section>
 
-          <section className="card mt-6">
-            <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="eyebrow mb-2">Automated ingestion modules</p>
-                <h2 className="font-display text-[24px] font-bold text-ink-900">Monitored funding sources</h2>
-              </div>
-              <p className="font-mono text-[11px] uppercase tracking-[.12em] text-muted">discover → fetch → parse → normalise → dedupe → store</p>
+          <div className="card mt-6 overflow-hidden p-0">
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-collapse text-left">
+                <thead className="font-mono text-[12px] uppercase tracking-[.12em] text-muted">
+                  <tr>
+                    <th className="px-5 py-4 font-normal">Source</th>
+                    <th className="px-5 py-4 font-normal">Level</th>
+                    <th className="whitespace-nowrap px-5 py-4 font-normal">Last checked</th>
+                    <th className="px-5 py-4 text-center font-normal">Total</th>
+                    <th className="px-5 py-4 text-center font-normal">Relevant</th>
+                    <th className="px-5 py-4 text-center font-normal">Open</th>
+                    <th className="px-5 py-4 text-center font-normal">Closed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sources.map((source) => (
+                    <tr key={source.id} className="border-t border-hairline align-middle">
+                      <td className="px-5 py-5">
+                        <p className="font-bold text-ink-900">{source.name}</p>
+                        {source.baseUrl && (
+                          <a
+                            href={source.baseUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            title={source.baseUrl}
+                            className="mt-1 block max-w-88 truncate font-mono text-[14px] text-violet-600 hover:text-violet-800"
+                          >
+                            {source.baseUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+                          </a>
+                        )}
+                      </td>
+                      <td className="px-5 py-5"><span className="chip-neutral">{formatSourceType(source.sourceType)}</span></td>
+                      <td className="whitespace-nowrap px-5 py-5 text-ink-900">{formatLastChecked(source.lastChecked)}</td>
+                      <td className="px-5 py-5 text-center font-display text-[20px] font-bold text-ink-900">{source.counts.total}</td>
+                      <td className="px-5 py-5 text-center font-display text-[20px] font-bold text-green-800">{source.counts.relevant}</td>
+                      <td className="px-5 py-5 text-center font-display text-[20px] font-bold text-violet-800">{source.counts.open}</td>
+                      <td className="px-5 py-5 text-center font-display text-[20px] font-bold text-ink-600">{source.counts.closed}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div>
-              {sources.map((source) => <SourceRow key={source.id} source={source} />)}
-            </div>
-          </section>
-
-          {coverageGroups.length > 0 && (
-            <section className="card mt-6">
-              <p className="eyebrow mb-2">Coverage by source classification</p>
-              <h2 className="font-display text-[24px] font-bold text-ink-900">Source coverage</h2>
-              <div className="mt-6 space-y-5">
-                {coverageGroups.map(([label, count]) => (
-                  <div key={label}>
-                    <div className="mb-2 flex items-center justify-between gap-4 text-[14px]">
-                      <span className="font-bold text-ink-900">{label}</span>
-                      <span className="text-muted">{count} {count === 1 ? "source" : "sources"}</span>
-                    </div>
-                    <div className="meter"><div className="meter-fill" style={{ width: `${(count / sources.length) * 100}%` }} /></div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+          </div>
         </>
       )}
     </div>

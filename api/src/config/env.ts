@@ -7,6 +7,7 @@ const schema = z.object({
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().min(1).default("gemini-3.5-flash-lite"),
   GEMINI_RPM: z.coerce.number().positive().default(15),
+  GITHUB_DISPATCH_TOKEN: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

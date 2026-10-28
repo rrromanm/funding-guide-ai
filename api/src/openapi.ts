@@ -162,6 +162,19 @@ export const openapi = {
         },
       },
     },
+    "/api/sources/check": {
+      post: {
+        summary: "Start scraping every source and scoring new calls now",
+        tags: ["sources"],
+        responses: {
+          "202": {
+            description: "The pipeline run was queued on GitHub Actions",
+          },
+          "502": errorResponse,
+          "503": errorResponse,
+        },
+      },
+    },
     "/api/calls/{id}": {
       get: {
         summary: "Get one funding call with its rounds",

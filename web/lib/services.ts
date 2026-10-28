@@ -412,6 +412,14 @@ export async function deleteFundingCall(id: string): Promise<void> {
   await sendFundingCall(`/api/calls/${id}`, "DELETE");
 }
 
+export async function checkAllSources(): Promise<void> {
+  const response = await fetch(`${apiBaseUrl}/api/sources/check`, { method: "POST" });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => null);
+    throw new ApiRequestError(payload?.error?.message ?? `Source check failed (${response.status})`, response.status);
+  }
+}
+
 export function getNotifications(): Notification[] {
   return structuredClone(initialNotifications);
 }
