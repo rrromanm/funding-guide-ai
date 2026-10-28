@@ -18,6 +18,18 @@ describe("GET /api/sources", () => {
   });
 });
 
+describe("POST /api/sources/check", () => {
+  it.skipIf(!!process.env.GITHUB_DISPATCH_TOKEN)(
+    "503s when no dispatch token is set",
+    async () => {
+      const res = await request(app).post("/api/sources/check");
+
+      expect(res.status).toBe(503);
+      expect(res.body.error.code).toBe("PIPELINE_UNAVAILABLE");
+    },
+  );
+});
+
 describe.skipIf(!process.env.DATABASE_URL)(
   "GET /api/sources (database)",
   () => {

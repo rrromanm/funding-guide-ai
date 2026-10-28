@@ -1,7 +1,11 @@
+import { env } from "../../config/env.ts";
+import { HttpError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
 import type { SourceListResponse } from "./sources.schema.ts";
 
 const RELEVANT_FIT = ["strong_fit", "possible_fit"];
+const PIPELINE_DISPATCH_URL =
+  "https://api.github.com/repos/rrromanm/funding-guide-ai/actions/workflows/pipeline.yml/dispatches";
 
 export async function findSources(): Promise<SourceListResponse> {
   const rows = await db
@@ -52,4 +56,33 @@ export async function findSources(): Promise<SourceListResponse> {
       },
     })),
   };
+}
+
+// Starts the scrape + scoring workflow; it runs on GitHub Actions, results land in the DB later.
+export async function startPipeline(): Promise<void> {
+  if (!env.GITHUB_DISPATCH_TOKEN)
+    throw new HttpError(
+      503,
+      "PIPELINE_UNAVAILABLE",
+      "The manual source check is not configured",
+    );
+
+  const res = await fetch(PIPELINE_DISPATCH_URL, {
+    method: "POST",
+    headers: {
+      accept: "application/vnd.github+json",
+      authorization: `Bearer ${env.GITHUB_DISPATCH_TOKEN}`,
+      "x-github-api-version": "2022-11-28",
+    },
+    body: JSON.stringify({ ref: "main" }),
+  });
+
+  if (!res.ok) {
+    console.error("Pipeline dispatch failed:", res.status, await res.text());
+    throw new HttpError(
+      502,
+      "PIPELINE_DISPATCH_FAILED",
+      "GitHub did not start the source check",
+    );
+  }
 }

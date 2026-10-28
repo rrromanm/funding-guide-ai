@@ -8,7 +8,7 @@ const nav = [
   { href: "/", label: "Funding Opportunities" },
   { href: "/notifications", label: "Notifications" },
   { href: "/profile", label: "Organization Profile" },
-  { href: "/sources", label: "Sources & Coverage" },
+  { href: "/sources", label: "Sources" },
 ];
 
 export default function Sidebar() {

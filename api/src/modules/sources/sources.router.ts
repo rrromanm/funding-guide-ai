@@ -1,4 +1,6 @@
 import { Router } from "express";
-import { listSources } from "./sources.controller.ts";
+import { checkSources, listSources } from "./sources.controller.ts";
 
-export const sourcesRouter = Router().get("/", listSources);
+export const sourcesRouter = Router()
+  .get("/", listSources)
+  .post("/check", checkSources);
