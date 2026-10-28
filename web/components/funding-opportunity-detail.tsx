@@ -1,11 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { PageHeader, StatusBadge } from "@/components/common";
-import type { FundingCallDetails } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { ConfirmationModal } from "@/components/common/confirmation-modal";
+import { PageHeader } from "@/components/common/page-header";
+import { StatusBadge } from "@/components/common/status-badge";
+import { deleteFundingCall } from "@/lib/services";
+import type { ApiFitLabel, FundingCallDetails } from "@/lib/types";
 
 const DESCRIPTION_PREVIEW_LENGTH = 900;
+const FIT_LABELS: Record<ApiFitLabel, string> = {
+  strong_fit: "Strong fit",
+  possible_fit: "Possible fit",
+  weak_fit: "Weak fit",
+  not_recommended: "Not recommended",
+};
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -38,30 +48,65 @@ const formatAmount = (value: number | undefined, currency: string) => {
 
 export default function FundingOpportunityDetail({ initialCall }: { initialCall: FundingCallDetails }) {
   const call = initialCall;
+  const router = useRouter();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
+  const rounds = call.fundingRounds;
+  const [roundIndex, setRoundIndex] = useState(0);
+  const round = rounds[roundIndex];
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const descriptionIsLong = call.description.length > DESCRIPTION_PREVIEW_LENGTH;
   const visibleDescription = descriptionExpanded || !descriptionIsLong
     ? call.description
     : `${call.description.slice(0, DESCRIPTION_PREVIEW_LENGTH).trimEnd()}…`;
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const observer = new ResizeObserver(() => setHeaderHeight(header.offsetHeight));
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleDelete = async () => {
+    try {
+      await deleteFundingCall(String(call.id));
+      router.push("/");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Deleting failed.");
+      setDeleteOpen(false);
+    }
+  };
 
   return (
-    <div className="mx-auto max-w-[1440px] p-5 sm:p-8">
-      <PageHeader
-        title={call.title}
-        subtitle="Funding opportunity details"
-        action={
-          <div className="flex flex-wrap gap-3">
-            <Link href="/" className="btn btn-secondary">
-              Back to Funding Opportunities
-            </Link>
-            <Link href={`/opportunities/${call.id}/edit`} className="btn btn-primary">
-              Edit Opportunity
-            </Link>
-          </div>
-        }
-      />
+    <div className="mx-auto max-w-[1440px] px-5 pb-5 sm:px-8 sm:pb-8">
+      <div ref={headerRef} className="flow-root bg-canvas pt-5 sm:pt-8 lg:sticky lg:top-0 lg:z-10 lg:-mx-8 lg:px-8">
+        <PageHeader
+          title={call.title}
+          action={
+            <div className="flex flex-wrap gap-3 md:max-w-1/2 md:shrink-0 md:self-start md:justify-end">
+              <Link href="/" className="btn btn-secondary">
+                Back to Funding Opportunities
+              </Link>
+              <Link href={`/opportunities/${call.id}/edit`} className="btn btn-primary">
+                Edit Opportunity
+              </Link>
+              <button type="button" className="btn btn-destructive" onClick={() => setDeleteOpen(true)}>
+                Delete Opportunity
+              </button>
+            </div>
+          }
+        />
+        {deleteError && (
+          <p role="alert" className="mb-6 rounded-[20px] border border-red-200 bg-red-50 px-4.5 py-3 text-[14px] font-bold text-red-600">
+            {deleteError}
+          </p>
+        )}
+      </div>
 
-      <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(300px,0.8fr)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(300px,0.8fr)]">
         <div className="space-y-6">
           <section className="card">
             <div className="mb-4 flex items-center justify-between gap-3">
@@ -105,7 +150,7 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
 
             <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
               <div>
-                <h3 className="field-label">Funding body</h3>
+                <h3 className="field-label">Funder</h3>
                 <p className="text-[15px] text-ink-600">{call.fundingBody}</p>
               </div>
               <div>
@@ -166,53 +211,65 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
           </section>
         </div>
 
-        <aside className="space-y-6">
-          <div className="card">
-            <p className="eyebrow mb-3">AI Recommendation</p>
-            {call.score === undefined ? <p className="text-[15px] text-muted">Recommendation not available.</p> : <>
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <div className="font-display text-[28px] font-bold tracking-[-.04em] text-ink-900">
-                    {call.score}/100
-                  </div>
-                  <div className="text-[14px] text-muted">Fit score</div>
+        {/* ponytail: assumes the aside fits on screen; past that its bottom shows only at the end of the page. */}
+        <aside className="space-y-6 lg:sticky lg:self-start" style={{ top: headerHeight }}>
+          <div className="panel-gradient">
+            <p className="font-mono text-[13px] uppercase tracking-[.16em] text-white/85">Match score</p>
+            {call.score === undefined ? (
+              <p className="mt-3 text-[15px] text-white/85">Not scored yet.</p>
+            ) : (
+              <>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="font-display text-[56px] font-bold leading-none tracking-[-.04em]">{call.score}</span>
+                  <span className="text-[17px] text-white/90">
+                    / 100{call.fitLabel && ` · ${FIT_LABELS[call.fitLabel]}`}
+                  </span>
                 </div>
-                {call.matchResult && <span className="chip chip-possible">{call.matchResult.fitLabel}</span>}
-              </div>
-
-              {call.matchResult && <p className="mb-4 text-[15px] text-ink-600">{call.matchResult.explanation}</p>}
-
-              <div className="mb-4">
-                <div className="meter">
-                  <div className="meter-fill-violet" style={{ width: `${call.score}%` }} />
+                <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/25">
+                  <div className="h-full rounded-full bg-white" style={{ width: `${call.score}%` }} />
                 </div>
-              </div>
-
-              <div className="space-y-3">
-                {call.matchResult?.reasons.map((reason) => (
-                  <div key={reason.id} className="rounded-[16px] border border-hairline bg-canvas p-3">
-                    <div className="font-bold text-ink-900">{reason.title}</div>
-                    <p className="mt-1 text-[14px] leading-relaxed text-ink-600">{reason.description}</p>
-                  </div>
-                ))}
-              </div>
-
-            </>}
+              </>
+            )}
           </div>
 
           <div className="card">
-            <p className="eyebrow mb-3">Key dates</p>
-            <div className="space-y-3 text-[15px] text-ink-600">
-              {call.fundingRounds.length > 0 ? (
-                call.fundingRounds.map((round) => (
-                  <div key={round.id} className="rounded-[16px] border border-hairline bg-canvas p-3">
-                    <div className="font-bold text-ink-900">{round.title}</div>
-                    <div className="mt-2">Open: {formatDate(round.openDate)}</div>
-                    <div>Deadline: {formatDate(round.deadline)}</div>
-                    <div>Decision: {formatDate(round.decisionDate)}</div>
-                    <div>Next open: {formatDate(round.expectedNextOpenDate)}</div>
-                  </div>
-                ))
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="eyebrow">Key dates</p>
+              {rounds.length > 1 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-secondary size-8 p-0 disabled:cursor-default disabled:opacity-40"
+                    aria-label="Previous round"
+                    disabled={roundIndex === 0}
+                    onClick={() => setRoundIndex((index) => index - 1)}
+                  >
+                    ‹
+                  </button>
+                  <span className="font-mono text-[13px] text-muted" aria-live="polite">
+                    {roundIndex + 1} / {rounds.length}
+                  </span>
+                  <button
+                    type="button"
+                    className="btn btn-secondary size-8 p-0 disabled:cursor-default disabled:opacity-40"
+                    aria-label="Next round"
+                    disabled={roundIndex === rounds.length - 1}
+                    onClick={() => setRoundIndex((index) => index + 1)}
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="text-[15px] text-ink-600">
+              {round ? (
+                <div className="rounded-[16px] border border-hairline bg-canvas p-3">
+                  <div className="font-bold text-ink-900">{round.title}</div>
+                  <div className="mt-2">Open: {formatDate(round.openDate)}</div>
+                  <div>Deadline: {formatDate(round.deadline)}</div>
+                  <div>Decision: {formatDate(round.decisionDate)}</div>
+                  <div>Next open: {formatDate(round.expectedNextOpenDate)}</div>
+                </div>
               ) : (
                 <p>—</p>
               )}
@@ -221,6 +278,15 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         </aside>
       </div>
 
+      <ConfirmationModal
+        open={deleteOpen}
+        title="Delete Funding Opportunity?"
+        description="Are you sure you want to delete this funding opportunity? This action cannot be undone."
+        confirmLabel="Delete"
+        confirmVariant="destructive"
+        onCancel={() => setDeleteOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

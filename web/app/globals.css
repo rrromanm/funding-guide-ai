@@ -41,18 +41,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-a {
-  color: var(--color-violet-600);
-}
-a:hover {
-  color: var(--color-violet-800);
-  text-decoration: underline;
+/* Layered so .btn / text-* utilities can override link color */
+@layer base {
+  a {
+    color: var(--color-violet-600);
+  }
+  a:hover {
+    color: var(--color-violet-800);
+    text-decoration: underline;
+  }
 }
 
 @layer components {
   /* Buttons — compose: class="btn btn-primary" */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full font-sans text-[15px] font-bold px-6.5 py-3.25 cursor-pointer border-0 transition-colors;
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-sans text-[15px] font-bold px-6.5 py-3.25 cursor-pointer border-0 no-underline transition-colors;
   }
   .btn-primary {
     @apply bg-green-500 text-white hover:bg-green-600;
@@ -77,6 +80,10 @@ a:hover {
   /* Mono uppercase label above every field, 7px gap */
   .field-label {
     @apply block font-mono text-[11px] uppercase tracking-[.12em] text-muted mb-1.75;
+  }
+  .field-label:has(+ :required)::after {
+    content: " *";
+    color: var(--color-red-600);
   }
 
   /* Status chips — compose: class="chip chip-strong" */

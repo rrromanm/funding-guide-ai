@@ -79,6 +79,7 @@ export async function loadCalls(callId?: number): Promise<CallInput[]> {
       "budget_max",
       "currency",
     ])
+    .where("deleted_at", "is", null)
     .orderBy("id");
   if (callId !== undefined) query = query.where("id", "=", callId);
 
@@ -176,6 +177,17 @@ export async function judgeCall(
     raw,
     result: aggregate(groundCheck(output, call.text), call.missingData),
   };
+}
+
+export async function scoreCall(callId: number, provider: LlmProvider) {
+  const [profileText, [call]] = await Promise.all([
+    loadProfileText(),
+    loadCalls(callId),
+  ]);
+  if (!call) throw new NotFoundError("Call not found");
+
+  const { raw, result } = await judgeCall(call, profileText, provider);
+  await saveResult(call, profileText, provider.model, raw, result);
 }
 
 export async function saveResult(

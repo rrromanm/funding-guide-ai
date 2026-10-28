@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EmptyState, PageHeader } from "@/components/common";
+import { EmptyState } from "@/components/common/empty-state";
+import { PageHeader } from "@/components/common/page-header";
 import { getFundingSources } from "@/lib/services";
 import type { SourceListItem } from "@/lib/types";
 

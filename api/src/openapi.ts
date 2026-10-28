@@ -2,7 +2,9 @@ import { z } from "zod";
 import {
   callDetail,
   callListResponse,
+  createCallBody,
   listCallsQuery,
+  updateCallBody,
 } from "./modules/calls/calls.schema.ts";
 import { notificationListResponse } from "./modules/notifications/notifications.schema.ts";
 import {
@@ -63,7 +65,6 @@ export const openapi = {
   info: {
     title: "Funding Guide API",
     version: "0.1.0",
-    description: "Backend for the PYN funding guide.",
   },
   servers: [{ url: "/" }],
   paths: {
@@ -81,10 +82,7 @@ export const openapi = {
                   required: ["status", "uptime"],
                   properties: {
                     status: { type: "string", const: "ok" },
-                    uptime: {
-                      type: "number",
-                      description: "Seconds since start",
-                    },
+                    uptime: { type: "number" },
                   },
                 },
               },
@@ -96,10 +94,6 @@ export const openapi = {
     "/api/calls": {
       get: {
         summary: "List funding calls",
-        description:
-          "Ordered by score (highest first, unscored last), then by the nearest upcoming deadline. " +
-          "Calls scored 0 are never listed. " +
-          "Closed calls are excluded unless `status=closed` is given.",
         tags: ["calls"],
         parameters: queryParameters(listCallsQuery),
         responses: {
@@ -107,13 +101,26 @@ export const openapi = {
           "400": errorResponse,
         },
       },
+      post: {
+        summary: "Add a funding call by hand",
+        tags: ["calls"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(createCallBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "201": jsonResponse("The new call, scored", callDetail),
+          "400": errorResponse,
+        },
+      },
     },
     "/api/notifications": {
       get: {
         summary: "List notifications about relevant funding calls",
-        description:
-          "Newest first. A notification whose recommendation the admin " +
-          "dismissed is left out.",
         tags: ["notifications"],
         responses: {
           "200": jsonResponse("Every notification", notificationListResponse),
@@ -123,9 +130,6 @@ export const openapi = {
     "/api/profile": {
       get: {
         summary: "Get PYN's organisational profile",
-        description:
-          "A singleton -- there is one profile and it has no id in the path. " +
-          "Themes and target groups come from the profile's tags.",
         tags: ["profile"],
         responses: {
           "200": jsonResponse("The profile", profileResponse),
@@ -134,10 +138,6 @@ export const openapi = {
       },
       patch: {
         summary: "Edit PYN's organisational profile",
-        description:
-          "Every field is optional; an absent field is left alone. Name, " +
-          "legal status, city, country and founded year are not editable. `themes` and " +
-          "`targetGroups` replace the whole list. Unknown fields are a 400.",
         tags: ["profile"],
         requestBody: {
           required: true,
@@ -156,10 +156,6 @@ export const openapi = {
     "/api/sources": {
       get: {
         summary: "List scraped sources with their call counts",
-        description:
-          "One row per configured source, ordered by name. Counts cover the " +
-          "source's calls; `relevant` counts the " +
-          "calls the matcher rates a strong or possible fit and nobody dismissed.",
         tags: ["sources"],
         responses: {
           "200": jsonResponse("Every source", sourceListResponse),
@@ -182,6 +178,68 @@ export const openapi = {
           "200": jsonResponse("The call", callDetail),
           "400": errorResponse,
           "404": errorResponse,
+        },
+      },
+      patch: {
+        summary: "Edit a funding call",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(updateCallBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "200": jsonResponse("The updated call", callDetail),
+          "400": errorResponse,
+          "404": errorResponse,
+        },
+      },
+      delete: {
+        summary: "Delete a funding call",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          "204": { description: "Deleted" },
+          "400": errorResponse,
+          "404": errorResponse,
+        },
+      },
+    },
+    "/api/calls/{id}/score": {
+      post: {
+        summary: "Rescore a funding call with the AI now",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          "200": jsonResponse("The call with its new score", callDetail),
+          "400": errorResponse,
+          "404": errorResponse,
+          "503": errorResponse,
         },
       },
     },

@@ -16,7 +16,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sticky top-0 flex max-h-screen min-h-screen w-72 shrink-0 flex-col overflow-y-auto border-r border-hairline bg-white px-4 py-8 max-md:w-20 max-md:px-2">
-      <div className="flex items-center gap-3.5 px-2">
+      <Link href="/" className="flex items-center gap-3.5 px-2 text-inherit no-underline hover:no-underline">
         <div className="size-11 rounded-full bg-linear-[135deg,#16B364,#3FA9A0_35%,#7A22CE]" />
         <div className="max-md:hidden">
           <div className="font-display text-lg font-bold leading-tight">Funding Guide AI</div>
@@ -24,11 +24,11 @@ export default function Sidebar() {
             Pangaea Youth Network
           </div>
         </div>
-      </div>
+      </Link>
 
       <nav className="mt-8 flex flex-col gap-1">
         {nav.map(({ href, label }) => {
-          const active = pathname === href;
+          const active = pathname === href || (href === "/" && pathname.startsWith("/opportunities/"));
           return (
             <Link
               key={href}

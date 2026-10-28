@@ -1,9 +1,12 @@
 import { sql, type ExpressionBuilder } from "kysely";
-import { NotFoundError } from "../../errors.ts";
+import { env } from "../../config/env.ts";
+import { HttpError, NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
-import type { DB } from "../../lib/db-types.ts";
+import type { DB, TagType } from "../../lib/db-types.ts";
+import { geminiProvider } from "../../lib/llm.ts";
 import { CONFIDENCES, KEY_POINT_KINDS } from "../matches/matches.schema.ts";
 import { labelFor } from "../matches/matches.scoring.ts";
+import { scoreCall } from "../matches/matches.service.ts";
 import {
   CALL_LEVELS,
   CALL_STATUSES,
@@ -11,7 +14,9 @@ import {
   type CallDetail,
   type CallListItem,
   type CallListResponse,
+  type CreateCallBody,
   type ListCallsQuery,
+  type UpdateCallBody,
 } from "./calls.schema.ts";
 
 const LIST_COLUMNS = [
@@ -69,6 +74,7 @@ function filters(
   { q, status, level }: ListCallsQuery,
 ) {
   const conditions = [
+    eb("funding_call.deleted_at", "is", null),
     status
       ? eb("funding_call.status", "=", status)
       : eb("funding_call.status", "!=", "closed"),
@@ -151,17 +157,17 @@ export async function findCallById(id: number): Promise<CallDetail> {
     )
     .select((eb) => [...DETAIL_COLUMNS, nextDeadline(eb), matchScore(eb)])
     .where("funding_call.id", "=", id)
+    .where("funding_call.deleted_at", "is", null)
     .executeTakeFirst();
 
   if (!row) throw new NotFoundError("Call not found");
 
-  const [themes, rounds, match, reasons] = await Promise.all([
+  const [tags, rounds, match, reasons] = await Promise.all([
     db
       .selectFrom("funding_call_tag")
       .innerJoin("tag", "tag.id", "funding_call_tag.tag_id")
-      .select("tag.label")
+      .select(["tag.label", "tag.type"])
       .where("funding_call_tag.call_id", "=", id)
-      .where("tag.type", "=", "theme")
       .orderBy("tag.label")
       .execute(),
     db
@@ -201,7 +207,10 @@ export async function findCallById(id: number): Promise<CallDetail> {
     eligibility: text(row.eligibility),
     ngoEligible: row.ngo_eligible,
     funderType: oneOf(FUNDER_TYPES, row.funder_type),
-    themes: themes.map((theme) => theme.label),
+    themes: tags.filter((t) => t.type === "theme").map((t) => t.label),
+    targetGroups: tags
+      .filter((t) => t.type === "target_group")
+      .map((t) => t.label),
     sourceUrl: row.source_url,
     externalId: row.external_id,
     lastChecked: row.last_checked?.toISOString() ?? null,
@@ -221,6 +230,187 @@ export async function findCallById(id: number): Promise<CallDetail> {
       message: reason.message,
     })),
   };
+}
+
+export async function createCall(body: CreateCallBody): Promise<CallDetail> {
+  const { rounds = [], themes, targetGroups, ...fields } = body;
+
+  const id = await db.transaction().execute(async (trx) => {
+    const source = await trx
+      .selectFrom("funding_source")
+      .select("id")
+      .where("source_type", "=", "manual")
+      .executeTakeFirstOrThrow();
+    const { id } = await trx
+      .insertInto("funding_call")
+      .values({
+        funding_source_id: source.id,
+        title: fields.title,
+        summary: fields.summary,
+        description: fields.description,
+        eligibility: fields.eligibility,
+        funding_body: fields.fundingBody,
+        source_url: fields.sourceUrl,
+        level: fields.level,
+        funder_type: fields.funderType,
+        status: fields.status ?? statusFrom(rounds),
+        recurring: fields.recurring,
+        ngo_eligible: fields.ngoEligible,
+        budget_min: fields.budgetMin,
+        budget_max: fields.budgetMax,
+        currency: fields.currency,
+      })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+
+    await insertRounds(trx, id, rounds);
+    await insertTags(trx, id, tagsOf(themes, targetGroups));
+
+    return id;
+  });
+
+  if (env.GEMINI_API_KEY)
+    await scoreCall(
+      id,
+      geminiProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL),
+    ).catch((err) => console.error(`#${id}: scoring failed:`, err));
+
+  return findCallById(id);
+}
+
+export async function updateCall(
+  id: number,
+  body: UpdateCallBody,
+): Promise<CallDetail> {
+  const { rounds, themes, targetGroups, ...fields } = body;
+
+  await db.transaction().execute(async (trx) => {
+    const row = await trx
+      .updateTable("funding_call")
+      .set({
+        title: fields.title,
+        summary: fields.summary,
+        description: fields.description,
+        eligibility: fields.eligibility,
+        funding_body: fields.fundingBody,
+        source_url: fields.sourceUrl,
+        level: fields.level,
+        funder_type: fields.funderType,
+        status: fields.status ?? (rounds && statusFrom(rounds)),
+        recurring: fields.recurring,
+        ngo_eligible: fields.ngoEligible,
+        budget_min: fields.budgetMin,
+        budget_max: fields.budgetMax,
+        currency: fields.currency,
+        edited_at: sql`now()`,
+        updated_at: sql`now()`,
+      })
+      .where("id", "=", id)
+      .where("deleted_at", "is", null)
+      .returning("id")
+      .executeTakeFirst();
+
+    if (!row) throw new NotFoundError("Call not found");
+
+    if (rounds) {
+      await trx.deleteFrom("funding_round").where("call_id", "=", id).execute();
+      await insertRounds(trx, id, rounds);
+    }
+
+    const replaced: TagType[] = [
+      ...(themes ? ["theme" as const] : []),
+      ...(targetGroups ? ["target_group" as const] : []),
+    ];
+    if (replaced.length) {
+      await trx
+        .deleteFrom("funding_call_tag")
+        .where("call_id", "=", id)
+        .where("tag_id", "in", (eb) =>
+          eb.selectFrom("tag").select("id").where("type", "in", replaced),
+        )
+        .execute();
+      await insertTags(trx, id, tagsOf(themes, targetGroups));
+    }
+  });
+
+  return findCallById(id);
+}
+
+export async function rescoreCall(id: number): Promise<CallDetail> {
+  if (!env.GEMINI_API_KEY)
+    throw new HttpError(
+      503,
+      "SCORING_UNAVAILABLE",
+      "AI scoring is not configured",
+    );
+
+  await scoreCall(id, geminiProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL));
+  return findCallById(id);
+}
+
+type Rounds = NonNullable<CreateCallBody["rounds"]>;
+type Tags = { label: string; type: TagType }[];
+
+async function insertRounds(trx: typeof db, callId: number, rounds: Rounds) {
+  if (!rounds.length) return;
+  await trx
+    .insertInto("funding_round")
+    .values(
+      rounds.map((round, index) => ({
+        call_id: callId,
+        round_no: index + 1,
+        open_date: round.openDate ?? null,
+        deadline_date: round.deadlineDate ?? null,
+        decision_date: round.decisionDate ?? null,
+        expected_next_open_date: round.expectedNextOpenDate ?? null,
+      })),
+    )
+    .execute();
+}
+
+function tagsOf(themes: string[] = [], targetGroups: string[] = []): Tags {
+  return [
+    ...themes.map((label) => ({ label, type: "theme" as const })),
+    ...targetGroups.map((label) => ({ label, type: "target_group" as const })),
+  ];
+}
+
+async function insertTags(trx: typeof db, callId: number, tags: Tags) {
+  if (!tags.length) return;
+  await trx
+    .insertInto("tag")
+    .values(tags)
+    .onConflict((oc) => oc.columns(["label", "type"]).doNothing())
+    .execute();
+  await trx
+    .insertInto("funding_call_tag")
+    .columns(["call_id", "tag_id"])
+    .expression(
+      trx
+        .selectFrom("tag")
+        .select([sql.lit(callId).as("call_id"), "id"])
+        .where((eb) => eb.or(tags.map((tag) => eb.and(tag)))),
+    )
+    .execute();
+}
+
+function statusFrom(rounds: Rounds) {
+  const today = new Date().toISOString().slice(0, 10);
+  const deadlines = rounds.flatMap((round) => round.deadlineDate ?? []);
+  if (!deadlines.length) return undefined;
+  return deadlines.some((deadline) => deadline >= today) ? "open" : "closed";
+}
+
+export async function deleteCall(id: number): Promise<void> {
+  const row = await db
+    .updateTable("funding_call")
+    .set({ deleted_at: sql`now()` })
+    .where("id", "=", id)
+    .where("deleted_at", "is", null)
+    .returning("id")
+    .executeTakeFirst();
+
+  if (!row) throw new NotFoundError("Call not found");
 }
 
 type ListRow = {

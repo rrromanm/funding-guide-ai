@@ -37,7 +37,9 @@ export interface FundingCall {
   budget_min: Numeric | null;
   created_at: Generated<Timestamp>;
   currency: Generated<string>;
+  deleted_at: Timestamp | null;
   description: string | null;
+  edited_at: Timestamp | null;
   eligibility: string | null;
   external_id: string | null;
   funder_type: string | null;

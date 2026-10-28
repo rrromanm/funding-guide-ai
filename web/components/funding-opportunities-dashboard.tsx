@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getFundingCalls } from "@/lib/services";
-import { PageHeader, StatusBadge, EmptyState } from "@/components/common";
+import { EmptyState } from "@/components/common/empty-state";
+import { PageHeader } from "@/components/common/page-header";
+import { StatusBadge } from "@/components/common/status-badge";
 import { getDisplayedDeadline } from "@/lib/funding-deadlines";
 import type { FundingCall, FundingCallListItem } from "@/lib/types";
 

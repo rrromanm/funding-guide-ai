@@ -6,10 +6,10 @@ const RELEVANT_FIT = ["strong_fit", "possible_fit"];
 export async function findSources(): Promise<SourceListResponse> {
   const rows = await db
     .selectFrom("funding_source")
-    .leftJoin(
-      "funding_call",
-      "funding_call.funding_source_id",
-      "funding_source.id",
+    .leftJoin("funding_call", (join) =>
+      join
+        .onRef("funding_call.funding_source_id", "=", "funding_source.id")
+        .on("funding_call.deleted_at", "is", null),
     )
     .leftJoin("match_result", "match_result.call_id", "funding_call.id")
     .select(({ fn }) => [

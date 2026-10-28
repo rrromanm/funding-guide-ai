@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${poppins.variable} ${nunitoSans.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex">{children}</body>
+      <body className="min-h-full flex" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

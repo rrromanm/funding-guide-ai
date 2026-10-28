@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MIN_DESCRIPTION_CHARS } from "../matches/matches.config.ts";
 import {
   CONFIDENCES,
   FIT_LABELS,
@@ -35,7 +36,67 @@ export const callIdParams = z.object({
   id: z.coerce.number().int().positive(),
 });
 
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .transform((text) => text || null)
+    .nullable()
+    .optional();
+const date = z.iso.date().nullable().optional();
+const labels = z.array(z.string().trim().min(1).max(100)).max(50).optional();
+
+export const createCallBody = z.strictObject({
+  title: z.string().trim().min(1).max(300),
+  summary: optionalText(2000),
+  description: z
+    .string()
+    .trim()
+    .min(MIN_DESCRIPTION_CHARS)
+    .max(20000)
+    .describe(
+      "The full call text. The AI scores from it, so paste everything the call says.",
+    ),
+  eligibility: optionalText(5000),
+  fundingBody: optionalText(200),
+  sourceUrl: z.url().nullable().optional(),
+  level: z.enum(CALL_LEVELS).nullable().optional(),
+  funderType: z.enum(FUNDER_TYPES).nullable().optional(),
+  status: z
+    .enum(CALL_STATUSES)
+    .optional()
+    .describe("Left out: derived from the round deadlines, else `unknown`."),
+  recurring: z.boolean().optional(),
+  ngoEligible: z.boolean().nullable().optional(),
+  budgetMin: z.number().min(0).nullable().optional(),
+  budgetMax: z.number().min(0).nullable().optional(),
+  currency: z
+    .string()
+    .regex(/^[A-Z]{3}$/)
+    .optional()
+    .describe("ISO 4217 code. Defaults to DKK."),
+  rounds: z
+    .array(
+      z.strictObject({
+        openDate: date,
+        deadlineDate: date,
+        decisionDate: date,
+        expectedNextOpenDate: date,
+      }),
+    )
+    .max(20)
+    .optional()
+    .describe("`roundNo` is the position in the list."),
+  themes: labels,
+  targetGroups: labels,
+});
+
+export const updateCallBody = createCallBody.partial();
+
 export type ListCallsQuery = z.infer<typeof listCallsQuery>;
+export type CreateCallBody = z.infer<typeof createCallBody>;
+export type UpdateCallBody = z.infer<typeof updateCallBody>;
 
 // Responses
 
@@ -93,6 +154,7 @@ export const callDetail = callListItem.extend({
   ngoEligible: z.boolean().nullable(),
   funderType: z.enum(FUNDER_TYPES).nullable(),
   themes: z.array(z.string()).describe("Theme tags on the call."),
+  targetGroups: z.array(z.string()).describe("Target group tags on the call."),
   sourceUrl: z
     .string()
     .nullable()

@@ -4,6 +4,7 @@ import type {
   CallStatus,
   FitLabel,
   FundingCall,
+  FundingCallBodyDto,
   FundingCallDetailDto,
   FundingCallDetails,
   FundingCallListItem,
@@ -272,9 +273,13 @@ function isFundingCallDetail(value: unknown): value is FundingCallDetailDto {
     (call.ngoEligible === null || typeof call.ngoEligible === "boolean") &&
     (call.funderType === null || typeof call.funderType === "string") &&
     Array.isArray(call.themes) && call.themes.every((theme) => typeof theme === "string") &&
+    Array.isArray(call.targetGroups) && call.targetGroups.every((group) => typeof group === "string") &&
     (call.sourceUrl === null || typeof call.sourceUrl === "string") &&
     (call.externalId === null || typeof call.externalId === "string") &&
     (call.lastChecked === null || typeof call.lastChecked === "string") &&
+    (call.fitLabel === null || typeof call.fitLabel === "string") &&
+    Array.isArray(call.reasons) &&
+    call.reasons.every((reason) => typeof reason?.message === "string") &&
     typeof call.createdAt === "string" &&
     Array.isArray(rounds) &&
     rounds.every((round) => {
@@ -324,6 +329,8 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
     amountMax: call.budgetMax ?? undefined,
     currency: call.currency,
     score: call.score ?? undefined,
+    fitLabel: call.fitLabel ?? undefined,
+    reasons: call.reasons,
     eligibility: toOptionalText(call.eligibility) ?? "—",
     ngoEligible: call.ngoEligible,
     status: mapCallStatus(call.status),
@@ -335,11 +342,20 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
       value: theme,
       type: "Theme",
     })),
+    targetGroups: call.targetGroups.map((group, index) => ({
+      id: `${call.id}-group-${index}`,
+      value: group,
+      type: "TargetGroup",
+    })),
     fundingRounds,
   };
 }
 
 export async function getFundingCallById(id: string): Promise<FundingCallDetails> {
+  return mapFundingCallDetails(await getFundingCallDto(id));
+}
+
+export async function getFundingCallDto(id: string): Promise<FundingCallDetailDto> {
   if (!/^\d+$/.test(id) || Number(id) <= 0) {
     throw new ApiRequestError("Funding opportunity was not found", 404);
   }
@@ -357,56 +373,43 @@ export async function getFundingCallById(id: string): Promise<FundingCallDetails
     throw new ApiRequestError("Funding opportunity returned an unexpected response", 502);
   }
 
-  return mapFundingCallDetails(payload);
+  return payload;
 }
 
-export function getFundingCall(id: string): FundingCall | undefined {
-  return structuredClone(initialFundingCalls.find((call) => call.id === id));
-}
+async function sendFundingCall(path: string, method: string, body?: Partial<FundingCallBodyDto>) {
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method,
+    headers: body && { "content-type": "application/json" },
+    body: body && JSON.stringify(body),
+  });
+  const payload = await response.json().catch(() => null);
 
-export function createFundingCall(payload: Omit<FundingCall, "id" | "matchResult"> & { id?: string }): FundingCall {
-  const call: FundingCall = {
-    ...payload,
-    id: payload.id ?? `call-${Date.now()}`,
-    matchResult: {
-      id: `match-${Date.now()}`,
-      overallScore: 80,
-      reviewStatus: "GENERATED",
-      fitLabel: "Good fit",
-      explanation: "The opportunity matches the organisation profile and should be reviewed by the PYN admin team.",
-      reasons: [
-        {
-          id: `reason-${Date.now()}`,
-          title: "Profile alignment",
-          description: "This call is broadly aligned with the current organisational profile.",
-        },
-      ],
-    },
-  };
-
-  initialFundingCalls.push(call);
-  return structuredClone(call);
-}
-
-export function updateFundingCall(id: string, updates: Partial<FundingCall>): FundingCall | undefined {
-  const index = initialFundingCalls.findIndex((call) => call.id === id);
-  if (index === -1) {
-    return undefined;
+  if (!response.ok) {
+    const details: { path: string; message: string }[] = payload?.error?.details ?? [];
+    const message = details.length
+      ? details.map((detail) => `${detail.path}: ${detail.message}`).join("; ")
+      : payload?.error?.message ?? `Funding call request failed (${response.status})`;
+    throw new ApiRequestError(message, response.status);
   }
 
-  const next = { ...initialFundingCalls[index], ...updates };
-  initialFundingCalls[index] = next;
-  return structuredClone(next);
+  return payload;
 }
 
-export function deleteFundingCall(id: string): boolean {
-  const index = initialFundingCalls.findIndex((call) => call.id === id);
-  if (index === -1) {
-    return false;
-  }
+export async function createFundingCall(body: FundingCallBodyDto): Promise<{ id: string }> {
+  const created = await sendFundingCall("/api/calls", "POST", body);
+  return { id: String(created.id) };
+}
 
-  initialFundingCalls.splice(index, 1);
-  return true;
+export async function updateFundingCall(id: string, body: Partial<FundingCallBodyDto>): Promise<void> {
+  await sendFundingCall(`/api/calls/${id}`, "PATCH", body);
+}
+
+export async function rescoreFundingCall(id: string): Promise<void> {
+  await sendFundingCall(`/api/calls/${id}/score`, "POST");
+}
+
+export async function deleteFundingCall(id: string): Promise<void> {
+  await sendFundingCall(`/api/calls/${id}`, "DELETE");
 }
 
 export function getNotifications(): Notification[] {

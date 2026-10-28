@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { PageHeader } from "@/components/common";
+import { PageHeader } from "@/components/common/page-header";
 import ProfileForm from "@/components/profile-form";
 import { getOrgProfile, updateOrgProfile } from "@/lib/services";
 import type { OrgProfile } from "@/lib/types";
