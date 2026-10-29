@@ -31,24 +31,27 @@ test.describe("Organization profile", () => {
   });
 
   test("chips can be added, rejected as duplicates or blanks, and discarded with Cancel", async ({ page }) => {
-    const themes = page.getByText(/^Themes · \d+$/);
+    const themes = page.getByText(/^Themes · \d+$/i);
+    // textContent ignores CSS text-transform, unlike innerText.
+    const count = async () => Number(((await themes.textContent()) ?? "").split("·")[1]);
     await page.getByRole("button", { name: "Edit Profile" }).click();
-    const before = await themes.innerText();
+    const before = await count();
     const input = page.getByRole("textbox", { name: "New themes" });
 
     await input.fill("e2e temporary theme");
     await input.press("Enter");
     await expect(page.getByText("e2e temporary theme")).toBeVisible();
-    await expect(themes).not.toHaveText(before);
+    await expect.poll(count).toBe(before + 1);
 
     await input.fill("e2e temporary theme");
     await input.press("Enter");
     await input.fill("   ");
     await page.getByRole("button", { name: "+ Add" }).first().click();
     await expect(page.getByText("e2e temporary theme")).toHaveCount(1);
+    await expect.poll(count).toBe(before + 1);
 
     await page.getByRole("button", { name: "Remove e2e temporary theme" }).click();
-    await expect(themes).toHaveText(before);
+    await expect.poll(count).toBe(before);
 
     await input.fill("e2e discarded theme");
     await input.press("Enter");
@@ -56,6 +59,6 @@ test.describe("Organization profile", () => {
 
     await expect(page.getByText("e2e discarded theme")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Edit Profile" })).toBeVisible();
-    await expect(themes).toHaveText(before);
+    await expect.poll(count).toBe(before);
   });
 });
