@@ -7,7 +7,8 @@ import { ConfirmationModal } from "@/components/common/confirmation-modal";
 import { PageHeader } from "@/components/common/page-header";
 import { StatusBadge } from "@/components/common/status-badge";
 import { deleteFundingCall } from "@/lib/services";
-import type { ApiConfidence, ApiFitLabel, FundingCallDetails, MatchReasonDto } from "@/lib/types";
+import { FIT_LABELS } from "@/lib/fit-label";
+import type { ApiConfidence, FundingCallDetails, MatchReasonDto } from "@/lib/types";
 
 const DESCRIPTION_PREVIEW_LENGTH = 900;
 const CONFIDENCE_LABELS: Record<ApiConfidence, string> = { high: "High", medium: "Medium", low: "Low" };
@@ -20,12 +21,6 @@ const REASON_KINDS: Record<MatchReasonDto["kind"], { label: string; chip: string
 const REASON_ORDER: MatchReasonDto["kind"][] = ["blocker", "barrier", "strength", "info"];
 const reasonTopic = (about: string | null) =>
   about ? about.replace(/_/g, " ").replace(/^./, (letter) => letter.toUpperCase()) : null;
-const FIT_LABELS: Record<ApiFitLabel, string> = {
-  strong_fit: "Strong fit",
-  possible_fit: "Possible fit",
-  weak_fit: "Weak fit",
-  not_recommended: "Not recommended",
-};
 
 const formatDate = (value?: string) => {
   if (!value) {

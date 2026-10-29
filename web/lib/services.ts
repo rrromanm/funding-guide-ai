@@ -1,6 +1,8 @@
 import { fundingCalls as initialFundingCalls, notifications as initialNotifications } from "./mock-data";
+import { API_FIT_LABELS } from "./fit-label";
 import type {
   ApiCallStatus,
+  ApiFitLabel,
   CallStatus,
   FitLabel,
   FundingCall,
@@ -75,6 +77,7 @@ function isCallListResponse(value: unknown): value is FundingCallListResponseDto
       typeof call.recurring === "boolean" &&
       (call.deadline === null || typeof call.deadline === "string") &&
       (call.score === null || typeof call.score === "number") &&
+      (call.fitLabel === null || API_FIT_LABELS.includes(call.fitLabel as ApiFitLabel)) &&
       (call.budgetMin === null || typeof call.budgetMin === "number") &&
       (call.budgetMax === null || typeof call.budgetMax === "number") &&
       typeof call.currency === "string" &&
@@ -99,6 +102,7 @@ function mapFundingCallListItem(call: FundingCallListItemDto): FundingCallListIt
     recurringCall: call.recurring,
     deadline: call.deadline ?? undefined,
     score: call.score ?? undefined,
+    fitLabel: call.fitLabel ?? undefined,
     amountMin: call.budgetMin ?? undefined,
     amountMax: call.budgetMax ?? undefined,
     currency: call.currency,
@@ -119,7 +123,7 @@ async function fetchCallPage(query: string): Promise<FundingCallListResponseDto>
   return payload;
 }
 
-async function fetchAllCallPages(status?: ApiCallStatus): Promise<FundingCallListItemDto[]> {
+async function fetchAllCallPages(status?: ApiCallStatus, search?: string): Promise<FundingCallListItemDto[]> {
   const items: FundingCallListItemDto[] = [];
   const limit = 100;
   let offset = 0;
@@ -129,6 +133,9 @@ async function fetchAllCallPages(status?: ApiCallStatus): Promise<FundingCallLis
     const query = new URLSearchParams({ limit: String(limit), offset: String(offset) });
     if (status) {
       query.set("status", status);
+    }
+    if (search) {
+      query.set("q", search);
     }
 
     const page = await fetchCallPage(query.toString());
@@ -158,10 +165,10 @@ export async function getFundingSources(): Promise<SourceListResponse> {
   return payload;
 }
 
-export async function getFundingCalls(): Promise<FundingCallListItem[]> {
+export async function getFundingCalls(search?: string): Promise<FundingCallListItem[]> {
   const [currentCalls, closedCalls] = await Promise.all([
-    fetchAllCallPages(),
-    fetchAllCallPages("closed"),
+    fetchAllCallPages(undefined, search),
+    fetchAllCallPages("closed", search),
   ]);
   const uniqueCalls = new Map<number, FundingCallListItemDto>();
 

@@ -93,6 +93,7 @@ export interface FundingCallListItem {
   recurringCall: boolean;
   deadline?: string;
   score?: number;
+  fitLabel?: ApiFitLabel;
   amountMin?: number;
   amountMax?: number;
   currency: string;
