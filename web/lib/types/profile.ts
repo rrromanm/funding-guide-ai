@@ -12,6 +12,7 @@ export interface OrgProfile {
   legalStatus: string;
   city: string;
   country: string;
+  foundedYear?: number;
   staffCount: number;
   administrativeCapacity: string;
   themes: Tag[];
