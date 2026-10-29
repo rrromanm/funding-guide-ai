@@ -92,19 +92,28 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
 
   return (
     <div className="mx-auto max-w-[1440px] px-5 pb-5 sm:px-8 sm:pb-8">
-      <div ref={headerRef} className="flow-root bg-canvas pt-5 sm:pt-8 lg:sticky lg:top-0 lg:z-10 lg:-mx-8 lg:px-8">
+      <div ref={headerRef} className="flow-root bg-canvas pt-3 sm:pt-5 lg:sticky lg:top-0 lg:z-10 lg:-mx-8 lg:px-8">
+        <Link href="/" className="btn btn-tertiary btn-sm -ml-3 mb-1 text-[14px]">
+          <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12.5 4.5 7 10l5.5 5.5" />
+          </svg>
+          Back to opportunities
+        </Link>
         <PageHeader
           title={call.title}
           action={
-            <div className="flex flex-wrap gap-3 md:max-w-1/2 md:shrink-0 md:self-start md:justify-end">
-              <Link href="/" className="btn btn-secondary">
-                Back to Funding Opportunities
+            <div className="flex flex-wrap items-center gap-2 md:shrink-0 md:flex-nowrap md:self-start md:justify-end">
+              <Link href={`/opportunities/${call.id}/edit`} className="btn btn-primary btn-sm" aria-label="Edit opportunity">
+                <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M13.5 3.5a1.8 1.8 0 0 1 2.5 2.5L7 15l-3.5 1L4.5 12.5 13.5 3.5Z" />
+                </svg>
+                Edit
               </Link>
-              <Link href={`/opportunities/${call.id}/edit`} className="btn btn-primary">
-                Edit Opportunity
-              </Link>
-              <button type="button" className="btn btn-destructive" onClick={() => setDeleteOpen(true)}>
-                Delete Opportunity
+              <button type="button" className="btn btn-danger-outline btn-sm" aria-label="Delete opportunity" onClick={() => setDeleteOpen(true)}>
+                <svg viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 6h12M8 6V4h4v2M6 6l.7 9.2a1 1 0 0 0 1 .8h4.6a1 1 0 0 0 1-.8L14 6M8.5 9v4M11.5 9v4" />
+                </svg>
+                Delete
               </button>
             </div>
           }

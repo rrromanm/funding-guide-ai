@@ -72,6 +72,17 @@ body {
   .btn-tertiary {
     @apply bg-transparent text-muted font-semibold px-2 py-3 hover:text-ink-900;
   }
+  /* Quiet destructive action: red only on emphasis */
+  .btn-danger-outline {
+    @apply bg-white text-red-600 border-[1.5px] border-red-200 px-6 py-3 hover:bg-red-50 hover:border-red-600;
+  }
+  /* Compact size; keep after the variants so it overrides their padding */
+  .btn-sm {
+    @apply gap-2 px-4.5 py-2.5 text-[14px];
+  }
+  .btn:focus-visible {
+    @apply outline-2 outline-offset-2 outline-violet-600;
+  }
 
   /* Inputs — selects match but sit on white (add bg-white) */
   .input {
