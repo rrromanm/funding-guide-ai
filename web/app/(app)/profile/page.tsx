@@ -55,7 +55,7 @@ export default function OrganizationProfilePage() {
   ) : null;
 
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <PageHeader
         title="Organization Profile"
         subtitle="These details inform how funding opportunities are matched to the PYN strategy and organisational profile."

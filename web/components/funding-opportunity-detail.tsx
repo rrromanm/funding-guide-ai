@@ -120,29 +120,29 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(300px,0.8fr)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(300px,0.8fr)]">
         <div className="space-y-6">
           <section className="card">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
                 <p className="eyebrow mb-2">Overview</p>
-                <h2 className="font-display text-[24px] font-bold tracking-[-.03em] text-ink-900">Funding opportunity</h2>
+                <h2 className="break-words font-display text-[24px] font-bold tracking-[-.03em] text-ink-900">Funding opportunity</h2>
               </div>
               <StatusBadge status={call.status} />
             </div>
             <div className="max-w-[72ch]">
               <h3 className="field-label">Summary</h3>
-              <p className="text-[17px] leading-8 text-ink-600">{call.summary}</p>
+              <p className="break-words text-[17px] leading-8 text-ink-600">{call.summary}</p>
             </div>
           </section>
 
           <section className="card">
             <div className="mb-4">
               <p className="eyebrow mb-2">Description</p>
-              <h2 className="font-display text-[24px] font-bold tracking-[-.03em] text-ink-900">About this opportunity</h2>
+              <h2 className="break-words font-display text-[24px] font-bold tracking-[-.03em] text-ink-900">About this opportunity</h2>
             </div>
             <div className="max-w-[72ch]">
-              <p className="whitespace-pre-line text-[16px] leading-8 text-ink-600">{visibleDescription}</p>
+              <p className="whitespace-pre-line break-words text-[16px] leading-8 text-ink-600">{visibleDescription}</p>
               {descriptionIsLong && (
                 <button
                   type="button"
@@ -191,7 +191,7 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
               </div>
               <div className="sm:col-span-2">
                 <h3 className="field-label">Eligibility</h3>
-                <p className="max-w-[72ch] whitespace-pre-line text-[15px] leading-7 text-ink-600">{call.eligibility}</p>
+                <p className="max-w-[72ch] whitespace-pre-line break-words text-[15px] leading-7 text-ink-600">{call.eligibility}</p>
               </div>
               <div>
                 <h3 className="field-label">Expected reopening</h3>

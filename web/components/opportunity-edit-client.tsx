@@ -71,7 +71,7 @@ export default function OpportunityEditClient({ call }: { call: FundingCallDetai
   };
 
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <PageHeader
         title="Edit Funding Opportunity"
         subtitle="Update the stored call details and keep the record aligned with the latest organisational context."

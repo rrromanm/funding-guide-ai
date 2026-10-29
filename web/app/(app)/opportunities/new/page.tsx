@@ -51,7 +51,7 @@ export default function NewOpportunityPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <PageHeader
         title="Add Funding Opportunity"
         subtitle="Create a manual entry for a funding call that should be reviewed by the PYN admin team."
