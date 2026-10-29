@@ -7,9 +7,19 @@ import { ConfirmationModal } from "@/components/common/confirmation-modal";
 import { PageHeader } from "@/components/common/page-header";
 import { StatusBadge } from "@/components/common/status-badge";
 import { deleteFundingCall } from "@/lib/services";
-import type { ApiFitLabel, FundingCallDetails } from "@/lib/types";
+import type { ApiConfidence, ApiFitLabel, FundingCallDetails, MatchReasonDto } from "@/lib/types";
 
 const DESCRIPTION_PREVIEW_LENGTH = 900;
+const CONFIDENCE_LABELS: Record<ApiConfidence, string> = { high: "High", medium: "Medium", low: "Low" };
+const REASON_KINDS: Record<MatchReasonDto["kind"], { label: string; chip: string }> = {
+  strength: { label: "Strength", chip: "chip-strong" },
+  info: { label: "Info", chip: "chip-possible" },
+  barrier: { label: "Barrier", chip: "chip-conditional" },
+  blocker: { label: "Blocker", chip: "chip-closed" },
+};
+const REASON_ORDER: MatchReasonDto["kind"][] = ["blocker", "barrier", "strength", "info"];
+const reasonTopic = (about: string | null) =>
+  about ? about.replace(/_/g, " ").replace(/^./, (letter) => letter.toUpperCase()) : null;
 const FIT_LABELS: Record<ApiFitLabel, string> = {
   strong_fit: "Strong fit",
   possible_fit: "Possible fit",
@@ -231,6 +241,40 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
               </>
             )}
           </div>
+
+          {(call.confidence || call.blockingReason || call.reasons.length > 0) && (
+            <div className="card">
+              <p className="eyebrow mb-3">AI recommendation</p>
+              {call.confidence && (
+                <p className="text-[15px] text-ink-600">
+                  <span className="font-bold text-ink-900">Confidence:</span> {CONFIDENCE_LABELS[call.confidence]}
+                </p>
+              )}
+              {call.blockingReason && (
+                <div role="alert" className="mt-3 rounded-[16px] border border-red-200 bg-red-50 p-3">
+                  <div className="font-bold text-red-600">Not eligible</div>
+                  <p className="mt-1 break-words text-[14px] leading-relaxed text-ink-600">{call.blockingReason}</p>
+                </div>
+              )}
+              {call.reasons.length > 0 && (
+                <ul className="mt-3 space-y-3">
+                  {[...call.reasons]
+                    .sort((left, right) => REASON_ORDER.indexOf(left.kind) - REASON_ORDER.indexOf(right.kind))
+                    .map((reason, index) => (
+                      <li key={`${reason.kind}-${index}`} className="rounded-[16px] border border-hairline bg-canvas p-3">
+                        <div className="mb-2 flex flex-wrap items-center gap-2">
+                          <span className={`chip ${REASON_KINDS[reason.kind].chip}`}>{REASON_KINDS[reason.kind].label}</span>
+                          {reasonTopic(reason.about) && (
+                            <span className="font-mono text-[12px] text-muted">{reasonTopic(reason.about)}</span>
+                          )}
+                        </div>
+                        <p className="break-words text-[14px] leading-relaxed text-ink-600">{reason.message}</p>
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </div>
+          )}
 
           <div className="card">
             <div className="mb-3 flex items-center justify-between gap-3">
