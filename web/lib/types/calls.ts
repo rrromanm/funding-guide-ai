@@ -5,6 +5,7 @@ import type { FundingSource } from "./sources";
 export type CallStatus = "UPCOMING" | "OPEN" | "CLOSED" | "UNKNOWN";
 export type ApiCallStatus = "upcoming" | "open" | "closed" | "unknown";
 export type ApiFitLabel = "strong_fit" | "possible_fit" | "weak_fit" | "not_recommended";
+export type ApiConfidence = "high" | "medium" | "low";
 
 export interface MatchReasonDto {
   kind: "blocker" | "barrier" | "strength" | "info";
@@ -57,6 +58,8 @@ export interface FundingCallDetailDto extends FundingCallListItemDto {
   lastChecked: string | null;
   createdAt: string;
   rounds: FundingRoundDto[];
+  confidence: ApiConfidence | null;
+  blockingReason: string | null;
   reasons: MatchReasonDto[];
 }
 
@@ -119,6 +122,8 @@ export interface FundingCallDetails {
   targetGroups?: Tag[];
   fundingRounds: FundingRound[];
   fitLabel?: ApiFitLabel;
+  confidence?: ApiConfidence;
+  blockingReason?: string;
   reasons: MatchReasonDto[];
 }
 

@@ -278,8 +278,10 @@ function isFundingCallDetail(value: unknown): value is FundingCallDetailDto {
     (call.externalId === null || typeof call.externalId === "string") &&
     (call.lastChecked === null || typeof call.lastChecked === "string") &&
     (call.fitLabel === null || typeof call.fitLabel === "string") &&
+    (call.confidence === null || ["high", "medium", "low"].includes(call.confidence as string)) &&
+    (call.blockingReason === null || typeof call.blockingReason === "string") &&
     Array.isArray(call.reasons) &&
-    call.reasons.every((reason) => typeof reason?.message === "string") &&
+    call.reasons.every((reason) => typeof reason?.message === "string" && ["blocker", "barrier", "strength", "info"].includes(reason?.kind)) &&
     typeof call.createdAt === "string" &&
     Array.isArray(rounds) &&
     rounds.every((round) => {
@@ -330,6 +332,8 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
     currency: call.currency,
     score: call.score ?? undefined,
     fitLabel: call.fitLabel ?? undefined,
+    confidence: call.confidence ?? undefined,
+    blockingReason: toOptionalText(call.blockingReason),
     reasons: call.reasons,
     eligibility: toOptionalText(call.eligibility) ?? "—",
     ngoEligible: call.ngoEligible,
