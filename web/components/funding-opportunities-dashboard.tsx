@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getFundingCalls } from "@/lib/services";
 import { EmptyState } from "@/components/common/empty-state";
 import { PageHeader } from "@/components/common/page-header";
 import { StatusBadge } from "@/components/common/status-badge";
 import { getDisplayedDeadline } from "@/lib/funding-deadlines";
+import { API_FIT_LABELS, FIT_LABEL_CHIPS, FIT_LABELS } from "@/lib/fit-label";
 import type { FundingCall, FundingCallListItem } from "@/lib/types";
+
+const SEARCH_DEBOUNCE_MS = 300;
+const ALL_FITS = "All fits";
 
 const formatDate = (value?: string) => {
   if (!value) {
@@ -31,72 +35,66 @@ export default function FundingOpportunitiesDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All levels");
-  const [selectedTheme, setSelectedTheme] = useState("All themes");
+  const [selectedFit, setSelectedFit] = useState(ALL_FITS);
   const [selectedStatus, setSelectedStatus] = useState("All statuses");
-  const [selectedRegion, setSelectedRegion] = useState("All regions");
   const [page, setPage] = useState(1);
   const pageSize = 6;
+  const latestRequest = useRef(0);
 
-  const loadCalls = useCallback(async () => {
+  const loadCalls = useCallback(async (term: string) => {
+    const request = ++latestRequest.current;
     setLoading(true);
     setError(false);
     try {
-      setCalls(await getFundingCalls());
+      const result = await getFundingCalls(term || undefined);
+      if (request === latestRequest.current) setCalls(result);
     } catch {
-      setError(true);
+      if (request === latestRequest.current) setError(true);
     } finally {
-      setLoading(false);
+      if (request === latestRequest.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search.trim()), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
     const frame = requestAnimationFrame(() => {
-      void loadCalls();
+      void loadCalls(debouncedSearch);
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [loadCalls]);
+  }, [loadCalls, debouncedSearch]);
 
   const levels = ["All levels", ...new Set(calls.map((call) => call.fundingLevel).filter(Boolean))];
-  const themes = [
-    "All themes",
-    ...new Set(calls.flatMap((call) => (call.themes ?? []).map((tag) => tag.value))),
-  ];
   const statuses = ["All statuses", "OPEN", "UPCOMING", "CLOSED", "UNKNOWN"];
-  const regions = ["All regions", ...new Set(calls.flatMap((call) => call.relevantRegions ?? []))];
+  const fits = [ALL_FITS, ...API_FIT_LABELS.map((fit) => FIT_LABELS[fit])];
 
   const filtered = useMemo(() => {
-    const normalized = search.trim().toLowerCase();
-
     return calls.filter((call) => {
-      const matchesSearch =
-        !normalized ||
-          call.title.toLowerCase().includes(normalized) ||
-          call.fundingBody.toLowerCase().includes(normalized) ||
-          call.summary.toLowerCase().includes(normalized);
-
       const matchesLevel = selectedLevel === "All levels" || call.fundingLevel === selectedLevel;
-      const matchesTheme =
-        selectedTheme === "All themes" || (call.themes ?? []).some((tag) => tag.value === selectedTheme);
       const matchesStatus = selectedStatus === "All statuses" || call.status === selectedStatus;
-      const matchesRegion =
-        selectedRegion === "All regions" || (call.relevantRegions ?? []).includes(selectedRegion);
+      const matchesFit = selectedFit === ALL_FITS || (call.fitLabel !== undefined && FIT_LABELS[call.fitLabel] === selectedFit);
 
-      return matchesSearch && matchesLevel && matchesTheme && matchesStatus && matchesRegion;
+      return matchesLevel && matchesStatus && matchesFit;
     });
-  }, [calls, search, selectedLevel, selectedTheme, selectedStatus, selectedRegion]);
+  }, [calls, selectedLevel, selectedStatus, selectedFit]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageNumber = Math.min(page, totalPages);
   const visibleCalls = filtered.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+  const hasFilters = search !== "" || selectedLevel !== "All levels" || selectedFit !== ALL_FITS || selectedStatus !== "All statuses";
 
   const clearFilters = () => {
     setSearch("");
+    setDebouncedSearch("");
     setSelectedLevel("All levels");
-    setSelectedTheme("All themes");
+    setSelectedFit(ALL_FITS);
     setSelectedStatus("All statuses");
-    setSelectedRegion("All regions");
     setPage(1);
   };
 
@@ -113,23 +111,26 @@ export default function FundingOpportunitiesDashboard() {
       />
 
       <section className="card mb-6">
-        <div className="grid gap-4 xl:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
-          <div>
-            <label className="field-label">Search</label>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-[1.6fr_repeat(3,minmax(0,1fr))]">
+          <div className="sm:col-span-2 xl:col-span-1">
+            <label htmlFor="opportunity-search" className="field-label">Search</label>
             <input
+              id="opportunity-search"
+              type="search"
               value={search}
               onChange={(event) => {
                 setSearch(event.target.value);
                 setPage(1);
               }}
-              placeholder="Search title, funder, or summary"
+              placeholder="Search title, funder, or description"
               className="input"
             />
           </div>
 
           <div>
-            <label className="field-label">Funding level</label>
+            <label htmlFor="opportunity-level" className="field-label">Funding level</label>
             <select
+              id="opportunity-level"
               value={selectedLevel}
               onChange={(event) => {
                 setSelectedLevel(event.target.value);
@@ -146,24 +147,28 @@ export default function FundingOpportunitiesDashboard() {
           </div>
 
           <div>
-            <label className="field-label">Theme</label>
+            <label htmlFor="opportunity-fit" className="field-label">Fit</label>
             <select
-              value={selectedTheme}
-              disabled
-              className="input disabled:cursor-not-allowed disabled:opacity-60"
+              id="opportunity-fit"
+              value={selectedFit}
+              onChange={(event) => {
+                setSelectedFit(event.target.value);
+                setPage(1);
+              }}
+              className="input"
             >
-              {themes.slice(0, 1).map((theme) => (
-                <option key={theme} value={theme}>
-                  {theme}
+              {fits.map((fit) => (
+                <option key={fit} value={fit}>
+                  {fit}
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-[12px] text-muted">Not available from the current API</p>
           </div>
 
           <div>
-            <label className="field-label">Status</label>
+            <label htmlFor="opportunity-status" className="field-label">Status</label>
             <select
+              id="opportunity-status"
               value={selectedStatus}
               onChange={(event) => {
                 setSelectedStatus(event.target.value);
@@ -173,26 +178,10 @@ export default function FundingOpportunitiesDashboard() {
             >
               {statuses.map((status) => (
                 <option key={status} value={status}>
-                  {status === "All statuses" ? status : status}
+                  {status}
                 </option>
               ))}
             </select>
-          </div>
-
-          <div>
-            <label className="field-label">Region</label>
-            <select
-              value={selectedRegion}
-              disabled
-              className="input disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {regions.slice(0, 1).map((region) => (
-                <option key={region} value={region}>
-                  {region}
-                </option>
-              ))}
-            </select>
-            <p className="mt-1 text-[12px] text-muted">Not available from the current API</p>
           </div>
         </div>
 
@@ -200,7 +189,7 @@ export default function FundingOpportunitiesDashboard() {
           <p className="text-[14px] text-muted">
             {filtered.length} {filtered.length === 1 ? "opportunity" : "opportunities"}
           </p>
-          {(search || selectedLevel !== "All levels" || selectedTheme !== "All themes" || selectedStatus !== "All statuses" || selectedRegion !== "All regions") && (
+          {hasFilters && (
             <button type="button" className="btn btn-secondary" onClick={clearFilters}>
               Clear filters
             </button>
@@ -218,12 +207,12 @@ export default function FundingOpportunitiesDashboard() {
             <h2 className="font-display text-[21px] font-bold text-ink-900">Funding opportunities could not be loaded.</h2>
             <p className="mt-2 text-[15px] text-ink-600">The API did not return the opportunity list.</p>
           </div>
-          <button type="button" className="btn btn-secondary" onClick={() => void loadCalls()}>Retry</button>
+          <button type="button" className="btn btn-secondary" onClick={() => void loadCalls(debouncedSearch)}>Retry</button>
         </div>
       ) : visibleCalls.length === 0 ? (
         <EmptyState
-          title={calls.length === 0 ? "No funding opportunities are currently available." : "No funding opportunities found."}
-          description={calls.length === 0 ? "The API returned no opportunities." : "Try adjusting your search or filters."}
+          title={hasFilters ? "No funding opportunities found." : "No funding opportunities are currently available."}
+          description={hasFilters ? "Try adjusting your search or filters." : "The API returned no opportunities."}
           action={
             <button type="button" className="btn btn-secondary" onClick={clearFilters}>
               Clear filters
@@ -262,7 +251,10 @@ export default function FundingOpportunitiesDashboard() {
                       <td className="px-5 py-4 text-ink-600">{formatDate(call.deadline)}</td>
                       <td className="px-5 py-4"><StatusBadge status={call.status} /></td>
                       <td className="px-5 py-4">
-                        <span className="text-ink-600">{call.score === undefined ? "—" : `${call.score}/100`}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-ink-600">{call.score === undefined ? "—" : `${call.score}/100`}</span>
+                          {call.fitLabel && <span className={`chip ${FIT_LABEL_CHIPS[call.fitLabel]}`}>{FIT_LABELS[call.fitLabel]}</span>}
+                        </div>
                       </td>
                       <td className="px-5 py-4">
                         <Link href={`/opportunities/${call.id}`} className="font-bold text-violet-600 hover:no-underline hover:text-violet-800">
