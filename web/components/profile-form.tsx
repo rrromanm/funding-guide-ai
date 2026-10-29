@@ -11,6 +11,8 @@ const tagStyles: Record<TagType, string> = {
   Other: "border-hairline bg-chip text-muted",
 };
 
+const humanize = (value: string) => value.replace(/_/g, " ").replace(/^./, (letter) => letter.toUpperCase());
+
 function ProfileTags({ tags, editing, onRemove }: { tags: Tag[]; editing?: boolean; onRemove?: (id: string) => void }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -114,21 +116,29 @@ export default function ProfileForm({ initialProfile, onSave }: { initialProfile
       )}
 
       <div className="grid gap-5 md:grid-cols-2">
-        <div>
-          <label htmlFor="profile-name" className="field-label">Name</label>
-          <input id="profile-name" disabled value={profile.name} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
+        <div className="md:col-span-2">
+          <p className="eyebrow mb-1">Organization information</p>
+          <p className="text-[14px] text-muted">These details are fixed and cannot be changed here.</p>
         </div>
-        <div>
-          <label htmlFor="profile-legal-status" className="field-label">Legal status</label>
-          <input id="profile-legal-status" disabled value={profile.legalStatus} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
-        </div>
-        <div>
-          <label htmlFor="profile-city" className="field-label">City</label>
-          <input id="profile-city" disabled value={profile.city} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
-        </div>
-        <div>
-          <label htmlFor="profile-country" className="field-label">Country</label>
-          <input id="profile-country" disabled value={profile.country} className="input disabled:cursor-not-allowed disabled:bg-chip disabled:opacity-60" />
+        <dl className="grid gap-5 sm:grid-cols-2 md:col-span-2 lg:grid-cols-3">
+          {[
+            ["Name", profile.name],
+            ["Legal status", humanize(profile.legalStatus)],
+            ["City", profile.city],
+            ["Country", profile.country],
+            ...(profile.foundedYear ? [["Founded", String(profile.foundedYear)]] : []),
+          ].map(([label, value]) => (
+            <div key={label} className="min-w-0">
+              <dt className="field-label">{label}</dt>
+              <dd className="break-words text-[16px] font-semibold text-ink-900">{value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="border-t border-hairline pt-5 md:col-span-2">
+          <p className="eyebrow mb-1">Matching information</p>
+          <p className="text-[14px] text-muted">
+            {editing ? "You can edit these fields." : "Used by the matcher. Choose Edit Profile to change them."}
+          </p>
         </div>
         <div>
           <label htmlFor="profile-staff-count" className="field-label">Staff count / team size</label>

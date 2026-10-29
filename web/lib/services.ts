@@ -203,6 +203,7 @@ function mapOrgProfile(profile: OrgProfileDto): OrgProfile {
     legalStatus: profile.legalStatus,
     city: profile.city,
     country: profile.country,
+    foundedYear: profile.foundedYear ?? undefined,
     staffCount: profile.staffCount,
     administrativeCapacity: profile.adminCapacity ?? "",
     themes: profile.themes.map((value, index) => ({ id: `profile-theme-${index}-${value}`, value, type: "Theme" })),
