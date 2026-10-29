@@ -33,7 +33,7 @@ export default function NotificationsList() {
   const unreadCount = notifications.filter((item) => !item.read).length;
 
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <PageHeader
         title="Notifications"
         subtitle={unreadCount > 0 ? `${unreadCount} unread update${unreadCount === 1 ? "" : "s"}` : "No unread updates"}
@@ -48,20 +48,20 @@ export default function NotificationsList() {
         <div className="space-y-4">
           {notifications.map((notification) => (
             <div key={notification.id} className={`card flex flex-col gap-4 md:flex-row md:items-center md:justify-between ${notification.read ? "opacity-80" : ""}`}>
-              <div className="flex items-start gap-4">
-                <div className={`mt-1 size-3 rounded-full ${notification.read ? "bg-hairline" : "bg-violet-600"}`} />
-                <div>
-                  <div className="font-bold text-ink-900">{notification.title}</div>
-                  <p className="mt-1 text-[15px] text-ink-600">{notification.message}</p>
+              <div className="flex min-w-0 items-start gap-4">
+                <div className={`mt-1 size-3 shrink-0 rounded-full ${notification.read ? "bg-hairline" : "bg-violet-600"}`} />
+                <div className="min-w-0">
+                  <div className="break-words font-bold text-ink-900">{notification.title}</div>
+                  <p className="mt-1 break-words text-[15px] text-ink-600">{notification.message}</p>
                   <p className="mt-2 text-[13px] text-muted">{formatDate(notification.createdAt)}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 {!notification.read && (
                   <span className="chip chip-possible">Unread</span>
                 )}
-                <Link href={`/opportunities/${notification.fundingCallId}`} className="btn btn-secondary" onClick={() => handleView(notification.id)}>
+                <Link href={`/opportunities/${notification.fundingCallId}`} className="btn btn-secondary max-sm:px-4 max-sm:text-[14px]" onClick={() => handleView(notification.id)}>
                   View Opportunity
                 </Link>
               </div>

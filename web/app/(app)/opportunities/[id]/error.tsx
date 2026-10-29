@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function OpportunityDetailsError({ reset }: { reset: () => void }) {
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <div className="card flex flex-col items-start gap-4">
         <div>
           <p className="eyebrow mb-2">Funding opportunity</p>

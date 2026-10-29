@@ -99,7 +99,7 @@ export default function FundingOpportunitiesDashboard() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <PageHeader
         title="Funding Opportunities"
         subtitle="Review current opportunities, status updates, and AI-generated recommendations."
@@ -268,7 +268,7 @@ export default function FundingOpportunitiesDashboard() {
             </table>
           </div>
 
-          <div className="flex items-center justify-between gap-3 border-t border-hairline px-5 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-hairline px-5 py-4">
             <button
               type="button"
               className="btn btn-secondary"

@@ -103,7 +103,7 @@ export default function SourcesCoveragePage() {
   );
 
   return (
-    <div className="p-8">
+    <div className="p-5 sm:p-8">
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="field-label">Where calls are collected from{!loading && ` · ${sources.length} sources`}</p>
