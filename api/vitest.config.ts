@@ -12,5 +12,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["test/**/*.test.ts"],
+    setupFiles: ["test/setup.ts"],
+    env: { SUPABASE_URL: "https://test.supabase.co" },
   },
 });

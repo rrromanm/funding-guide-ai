@@ -9,6 +9,7 @@ import { healthRouter } from "./modules/health/health.router.ts";
 import { notificationsRouter } from "./modules/notifications/notifications.router.ts";
 import { profileRouter } from "./modules/profile/profile.router.ts";
 import { sourcesRouter } from "./modules/sources/sources.router.ts";
+import { requireAdmin } from "./middleware/auth.ts";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.ts";
 
 export function createApp() {
@@ -24,6 +25,7 @@ export function createApp() {
 
   // Routes
   app.use("/health", healthRouter);
+  app.use("/api", requireAdmin);
   app.use("/api/calls", callsRouter);
   app.use("/api/notifications", notificationsRouter);
   app.use("/api/profile", profileRouter);
