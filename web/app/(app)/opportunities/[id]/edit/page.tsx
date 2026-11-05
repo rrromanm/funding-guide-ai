@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+import { AuthErrorNotice } from "@/components/auth-error-notice";
 import OpportunityEditClient from "@/components/opportunity-edit-client";
-import { ApiRequestError, getFundingCallDto } from "@/lib/services";
+import { ApiRequestError, getFundingCallDto, isAuthErrorStatus } from "@/lib/services";
 import { getAccessToken } from "@/lib/supabase/server";
 
 export default async function EditOpportunityPage({
@@ -16,6 +17,9 @@ export default async function EditOpportunityPage({
   } catch (error) {
     if (error instanceof ApiRequestError && error.status === 404) {
       notFound();
+    }
+    if (error instanceof ApiRequestError && isAuthErrorStatus(error.status)) {
+      return <AuthErrorNotice status={error.status} />;
     }
     throw error;
   }

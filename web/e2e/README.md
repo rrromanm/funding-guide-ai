@@ -7,7 +7,7 @@ Playwright browser tests for the stable, read-only flows. Nothing here creates, 
 | Project  | Needs                    | Covers |
 |----------|--------------------------|--------|
 | `public` | only the running web app | route protection, login page, login page on a phone |
-| `admin`  | admin credentials, API and database | list, search, filters, details, profile (no save), navigation, phone layout |
+| `admin`  | admin credentials, API and database | list, search, filters, details, profile (no save), navigation, phone layout, 401/403 handling (mocked API) |
 
 `admin` is only registered when `E2E_EMAIL` and `E2E_PASSWORD` (or `E2E_STORAGE_STATE`) are set.
 
