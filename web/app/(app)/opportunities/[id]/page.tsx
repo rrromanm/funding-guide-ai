@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import FundingOpportunityDetail from "@/components/funding-opportunity-detail";
 import { ApiRequestError, getFundingCallById } from "@/lib/services";
+import { getAccessToken } from "@/lib/supabase/server";
 
 export default async function FundingOpportunityDetailsPage({
   params,
@@ -11,7 +12,7 @@ export default async function FundingOpportunityDetailsPage({
   let call;
 
   try {
-    call = await getFundingCallById(id);
+    call = await getFundingCallById(id, await getAccessToken());
   } catch (error) {
     if (error instanceof ApiRequestError && error.status === 404) {
       notFound();

@@ -7,6 +7,11 @@ if (!env.DATABASE_URL) {
   process.exit(1);
 }
 
+if (!env.SUPABASE_URL) {
+  console.error("SUPABASE_URL is required");
+  process.exit(1);
+}
+
 const app = createApp();
 export default app;
 

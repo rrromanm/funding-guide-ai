@@ -1,5 +1,6 @@
 import { fundingCalls as initialFundingCalls, notifications as initialNotifications } from "./mock-data";
 import { API_FIT_LABELS } from "./fit-label";
+import { createClient as createBrowserSupabase } from "./supabase/client";
 import type {
   ApiCallStatus,
   ApiFitLabel,
@@ -19,6 +20,16 @@ import type {
 } from "./types";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
+async function apiFetch(path: string, init: RequestInit = {}, accessToken?: string) {
+  accessToken ??= (await createBrowserSupabase().auth.getSession()).data.session?.access_token;
+  const headers = new Headers(init.headers);
+  if (accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  return fetch(`${apiBaseUrl}${path}`, { ...init, headers });
+}
 
 function isSourceListResponse(value: unknown): value is SourceListResponse {
   if (!value || typeof value !== "object" || !("items" in value) || !Array.isArray(value.items)) {
@@ -110,7 +121,7 @@ function mapFundingCallListItem(call: FundingCallListItemDto): FundingCallListIt
 }
 
 async function fetchCallPage(query: string): Promise<FundingCallListResponseDto> {
-  const response = await fetch(`${apiBaseUrl}/api/calls?${query}`, { cache: "no-store" });
+  const response = await apiFetch(`/api/calls?${query}`, { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`Funding calls endpoint returned ${response.status}`);
   }
@@ -152,7 +163,7 @@ async function fetchAllCallPages(status?: ApiCallStatus, search?: string): Promi
 }
 
 export async function getFundingSources(): Promise<SourceListResponse> {
-  const response = await fetch(`${apiBaseUrl}/api/sources`, { cache: "no-store" });
+  const response = await apiFetch("/api/sources", { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`Source endpoint returned ${response.status}`);
   }
@@ -235,12 +246,12 @@ async function parseOrgProfileResponse(response: Response, action: string): Prom
 }
 
 export async function getOrgProfile(): Promise<OrgProfile> {
-  const response = await fetch(`${apiBaseUrl}/api/profile`, { cache: "no-store" });
+  const response = await apiFetch("/api/profile", { cache: "no-store" });
   return parseOrgProfileResponse(response, "loaded");
 }
 
 export async function updateOrgProfile(profile: OrgProfile): Promise<OrgProfile> {
-  const response = await fetch(`${apiBaseUrl}/api/profile`, {
+  const response = await apiFetch("/api/profile", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -363,16 +374,16 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
   };
 }
 
-export async function getFundingCallById(id: string): Promise<FundingCallDetails> {
-  return mapFundingCallDetails(await getFundingCallDto(id));
+export async function getFundingCallById(id: string, accessToken?: string): Promise<FundingCallDetails> {
+  return mapFundingCallDetails(await getFundingCallDto(id, accessToken));
 }
 
-export async function getFundingCallDto(id: string): Promise<FundingCallDetailDto> {
+export async function getFundingCallDto(id: string, accessToken?: string): Promise<FundingCallDetailDto> {
   if (!/^\d+$/.test(id) || Number(id) <= 0) {
     throw new ApiRequestError("Funding opportunity was not found", 404);
   }
 
-  const response = await fetch(`${apiBaseUrl}/api/calls/${id}`, { cache: "no-store" });
+  const response = await apiFetch(`/api/calls/${id}`, { cache: "no-store" }, accessToken);
   if (response.status === 404) {
     throw new ApiRequestError("Funding opportunity was not found", 404);
   }
@@ -389,7 +400,7 @@ export async function getFundingCallDto(id: string): Promise<FundingCallDetailDt
 }
 
 async function sendFundingCall(path: string, method: string, body?: Partial<FundingCallBodyDto>) {
-  const response = await fetch(`${apiBaseUrl}${path}`, {
+  const response = await apiFetch(path, {
     method,
     headers: body && { "content-type": "application/json" },
     body: body && JSON.stringify(body),
@@ -425,7 +436,7 @@ export async function deleteFundingCall(id: string): Promise<void> {
 }
 
 export async function checkAllSources(): Promise<void> {
-  const response = await fetch(`${apiBaseUrl}/api/sources/check`, { method: "POST" });
+  const response = await apiFetch("/api/sources/check", { method: "POST" });
   if (!response.ok) {
     const payload = await response.json().catch(() => null);
     throw new ApiRequestError(payload?.error?.message ?? `Source check failed (${response.status})`, response.status);

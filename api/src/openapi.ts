@@ -67,11 +67,22 @@ export const openapi = {
     version: "0.1.0",
   },
   servers: [{ url: "/" }],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        },
+    },
+  },
+  security: [{ bearerAuth: [] }],
   paths: {
     "/health": {
       get: {
         summary: "Liveness probe",
         tags: ["system"],
+        security: [],
         responses: {
           "200": {
             description: "Service is up",
