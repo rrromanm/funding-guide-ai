@@ -4,12 +4,16 @@ import { API_URL, FIT_LABEL_PATTERN, waitForList } from "./helpers";
 const DESCRIPTION_PREVIEW_LENGTH = 900;
 
 async function findCallId(page: Page, matches: (call: { description: string | null; confidence: string | null; reasons: unknown[] }) => boolean) {
-  const list = await page.request.get(`${API_URL}/api/calls?limit=40`);
+  const dashboardRequest = page.waitForRequest((request) => request.url().startsWith(`${API_URL}/api/calls`));
+  await page.goto("/");
+  const headers = { authorization: (await (await dashboardRequest).allHeaders()).authorization };
+
+  const list = await page.request.get(`${API_URL}/api/calls?limit=40`, { headers });
   expect(list.ok(), "GET /api/calls should respond").toBeTruthy();
   const { items } = (await list.json()) as { items: { id: number }[] };
 
   for (const { id } of items) {
-    const detail = await page.request.get(`${API_URL}/api/calls/${id}`);
+    const detail = await page.request.get(`${API_URL}/api/calls/${id}`, { headers });
     if (detail.ok() && matches(await detail.json())) return id;
   }
   return undefined;

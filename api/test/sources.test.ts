@@ -1,9 +1,8 @@
 import { afterAll, describe, expect, it } from "vitest";
-import request from "supertest";
-import { createApp } from "../src/app.ts";
+import { adminApi } from "./auth.ts";
 import { db } from "../src/lib/db.ts";
 
-const app = createApp();
+const api = adminApi();
 
 afterAll(async () => {
   await db.destroy();
@@ -11,7 +10,7 @@ afterAll(async () => {
 
 describe("GET /api/sources", () => {
   it("404s on an unknown sub-path", async () => {
-    const res = await request(app).get("/api/sources/fonde");
+    const res = await api.get("/api/sources/fonde");
 
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");
@@ -22,7 +21,7 @@ describe("POST /api/sources/check", () => {
   it.skipIf(!!process.env.GITHUB_DISPATCH_TOKEN)(
     "503s when no dispatch token is set",
     async () => {
-      const res = await request(app).post("/api/sources/check");
+      const res = await api.post("/api/sources/check");
 
       expect(res.status).toBe(503);
       expect(res.body.error.code).toBe("PIPELINE_UNAVAILABLE");
@@ -34,7 +33,7 @@ describe.skipIf(!process.env.DATABASE_URL)(
   "GET /api/sources (database)",
   () => {
     it("returns every source with its counts", async () => {
-      const res = await request(app).get("/api/sources");
+      const res = await api.get("/api/sources");
 
       expect(res.status).toBe(200);
       expect(res.body.items.length).toBeGreaterThan(0);
@@ -50,8 +49,8 @@ describe.skipIf(!process.env.DATABASE_URL)(
 
     it("counts every listed call against some source", async () => {
       const [sources, calls] = await Promise.all([
-        request(app).get("/api/sources"),
-        request(app).get("/api/calls?limit=1"),
+        api.get("/api/sources"),
+        api.get("/api/calls?limit=1"),
       ]);
       const open = sources.body.items.reduce(
         (sum: number, item: { counts: { open: number } }) =>

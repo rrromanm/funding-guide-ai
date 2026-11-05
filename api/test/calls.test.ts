@@ -1,9 +1,8 @@
 import { afterAll, describe, expect, it, onTestFinished } from "vitest";
-import request from "supertest";
-import { createApp } from "../src/app.ts";
+import { adminApi } from "./auth.ts";
 import { db } from "../src/lib/db.ts";
 
-const app = createApp();
+const api = adminApi();
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 afterAll(async () => {
@@ -13,7 +12,7 @@ afterAll(async () => {
 // Validation happens before the service, so these need no database.
 describe("GET /api/calls (validation)", () => {
   it("rejects a limit above the maximum", async () => {
-    const res = await request(app).get("/api/calls?limit=500");
+    const res = await api.get("/api/calls?limit=500");
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
@@ -23,43 +22,41 @@ describe("GET /api/calls (validation)", () => {
   });
 
   it("rejects an unknown status", async () => {
-    const res = await request(app).get("/api/calls?status=nope");
+    const res = await api.get("/api/calls?status=nope");
 
     expect(res.status).toBe(400);
     expect(res.body.error.details[0].path).toBe("status");
   });
 
   it("rejects a non-numeric id", async () => {
-    const res = await request(app).get("/api/calls/abc");
+    const res = await api.get("/api/calls/abc");
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 
   it("rejects a non-numeric id on delete", async () => {
-    const res = await request(app).delete("/api/calls/abc");
+    const res = await api.delete("/api/calls/abc");
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 
   it("rejects a field the edit body does not know", async () => {
-    const res = await request(app)
-      .patch("/api/calls/1")
-      .send({ fundingLevel: "eu" });
+    const res = await api.patch("/api/calls/1").send({ fundingLevel: "eu" });
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 
   it("rejects a non-numeric id on rescore", async () => {
-    const res = await request(app).post("/api/calls/abc/score");
+    const res = await api.post("/api/calls/abc/score");
 
     expect(res.status).toBe(400);
   });
 
   it("rejects an edited round date that is not a date", async () => {
-    const res = await request(app)
+    const res = await api
       .patch("/api/calls/1")
       .send({ rounds: [{ deadlineDate: "1. april" }] });
 
@@ -68,7 +65,7 @@ describe("GET /api/calls (validation)", () => {
   });
 
   it("rejects an edited description too short to score", async () => {
-    const res = await request(app)
+    const res = await api
       .patch("/api/calls/1")
       .send({ description: "Too short." });
 
@@ -79,7 +76,7 @@ describe("GET /api/calls (validation)", () => {
 
 describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
   it("returns a page of calls", async () => {
-    const res = await request(app).get("/api/calls?limit=5");
+    const res = await api.get("/api/calls?limit=5");
 
     expect(res.status).toBe(200);
     expect(res.body.items).toHaveLength(5);
@@ -94,7 +91,7 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
   });
 
   it("orders by score, highest first and unscored calls last", async () => {
-    const res = await request(app).get("/api/calls?limit=100");
+    const res = await api.get("/api/calls?limit=100");
     const items: { score: number | null; deadline: string | null }[] =
       res.body.items;
 
@@ -110,7 +107,7 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
 
   it("never lists a call scored 0, in any status", async () => {
     for (const status of ["", "&status=closed"]) {
-      const res = await request(app).get(`/api/calls?limit=100${status}`);
+      const res = await api.get(`/api/calls?limit=100${status}`);
       const scores = res.body.items.map(
         (item: { score: number | null }) => item.score,
       );
@@ -125,14 +122,14 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
       .executeTakeFirst();
     if (!match) return;
 
-    const res = await request(app).get(`/api/calls/${match.call_id}`);
+    const res = await api.get(`/api/calls/${match.call_id}`);
 
     expect(res.status).toBe(200);
     expect(res.body.score).toBe(match.manual_score ?? match.score);
   });
 
   it("labels every scored call, and only those", async () => {
-    const res = await request(app).get("/api/calls?limit=100");
+    const res = await api.get("/api/calls?limit=100");
 
     for (const item of res.body.items) {
       expect(item.fitLabel === null).toBe(item.score === null);
@@ -141,8 +138,8 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
   });
 
   it("paginates with offset", async () => {
-    const page = await request(app).get("/api/calls?limit=2");
-    const next = await request(app).get("/api/calls?limit=2&offset=2");
+    const page = await api.get("/api/calls?limit=2");
+    const next = await api.get("/api/calls?limit=2&offset=2");
 
     expect(next.body.total).toBe(page.body.total);
     expect(next.body.items.map((i: { id: number }) => i.id)).not.toEqual(
@@ -151,35 +148,35 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls", () => {
   });
 
   it("searches title, summary, body and description", async () => {
-    const res = await request(app).get("/api/calls?q=musik");
+    const res = await api.get("/api/calls?q=musik");
 
     expect(res.status).toBe(200);
     expect(res.body.total).toBeGreaterThan(0);
     expect(res.body.total).toBeLessThan(
-      (await request(app).get("/api/calls")).body.total,
+      (await api.get("/api/calls")).body.total,
     );
   });
 
   it("only returns closed calls when asked for them", async () => {
-    const res = await request(app).get("/api/calls?status=closed");
+    const res = await api.get("/api/calls?status=closed");
 
     expect(res.status).toBe(200);
     for (const item of res.body.items) expect(item.status).toBe("closed");
 
-    const listed = await request(app).get("/api/calls?limit=100");
+    const listed = await api.get("/api/calls?limit=100");
     for (const item of listed.body.items)
       expect(item.status).not.toBe("closed");
   });
 
   it("filters by level", async () => {
-    const res = await request(app).get("/api/calls?level=municipal");
+    const res = await api.get("/api/calls?level=municipal");
 
     expect(res.status).toBe(200);
     for (const item of res.body.items) expect(item.level).toBe("municipal");
   });
 
   it("names the source each call came from", async () => {
-    const res = await request(app).get("/api/calls?limit=5");
+    const res = await api.get("/api/calls?limit=5");
 
     expect(res.status).toBe(200);
     for (const item of res.body.items) expect(item.source).toBeTruthy();
@@ -193,7 +190,7 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
       .select("call_id")
       .executeTakeFirstOrThrow();
 
-    const res = await request(app).get(`/api/calls/${withRounds.call_id}`);
+    const res = await api.get(`/api/calls/${withRounds.call_id}`);
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(withRounds.call_id);
@@ -219,7 +216,7 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
       .executeTakeFirst();
     if (!reason) return;
 
-    const res = await request(app).get(`/api/calls/${reason.call_id}`);
+    const res = await api.get(`/api/calls/${reason.call_id}`);
 
     expect(res.status).toBe(200);
     expect(res.body.confidence).toBe(reason.confidence);
@@ -233,7 +230,7 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
   });
 
   it("returns a 404 for an id that does not exist", async () => {
-    const res = await request(app).get("/api/calls/999999999");
+    const res = await api.get("/api/calls/999999999");
 
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");
@@ -258,9 +255,9 @@ describe.skipIf(!process.env.DATABASE_URL)("DELETE /api/calls/:id", () => {
       .returning("id")
       .executeTakeFirstOrThrow();
 
-    const deleted = await request(app).delete(`/api/calls/${id}`);
-    const fetched = await request(app).get(`/api/calls/${id}`);
-    const again = await request(app).delete(`/api/calls/${id}`);
+    const deleted = await api.delete(`/api/calls/${id}`);
+    const fetched = await api.get(`/api/calls/${id}`);
+    const again = await api.delete(`/api/calls/${id}`);
 
     await db
       .insertInto("funding_call")
@@ -275,7 +272,7 @@ describe.skipIf(!process.env.DATABASE_URL)("DELETE /api/calls/:id", () => {
           .doUpdateSet((eb) => ({ title: eb.ref("excluded.title") })),
       )
       .execute();
-    const rescraped = await request(app).get(`/api/calls/${id}`);
+    const rescraped = await api.get(`/api/calls/${id}`);
 
     await db.deleteFrom("funding_call").where("id", "=", id).execute();
 
@@ -286,7 +283,7 @@ describe.skipIf(!process.env.DATABASE_URL)("DELETE /api/calls/:id", () => {
   });
 
   it("returns a 404 for an id that does not exist", async () => {
-    const res = await request(app).delete("/api/calls/999999999");
+    const res = await api.delete("/api/calls/999999999");
 
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");
@@ -322,26 +319,24 @@ describe.skipIf(!process.env.DATABASE_URL)("PATCH /api/calls/:id", () => {
       await db.deleteFrom("funding_call").where("id", "=", id).execute();
     });
 
-    const edited = await request(app)
-      .patch(`/api/calls/${id}`)
-      .send({
-        title: "Edited call",
-        fundingBody: "Horsens Kommune",
-        level: "municipal",
-        funderType: "public_pool",
-        budgetMin: 1000,
-        budgetMax: 50000,
-        ngoEligible: true,
-        recurring: true,
-        eligibility: "Associations can apply.",
-        themes: [theme.label],
-        targetGroups: [group.label],
-        rounds: [
-          { openDate: "2026-01-01", deadlineDate: "2026-02-01" },
-          { deadlineDate: "2099-02-01", expectedNextOpenDate: "2100-01-01" },
-        ],
-      });
-    const partial = await request(app)
+    const edited = await api.patch(`/api/calls/${id}`).send({
+      title: "Edited call",
+      fundingBody: "Horsens Kommune",
+      level: "municipal",
+      funderType: "public_pool",
+      budgetMin: 1000,
+      budgetMax: 50000,
+      ngoEligible: true,
+      recurring: true,
+      eligibility: "Associations can apply.",
+      themes: [theme.label],
+      targetGroups: [group.label],
+      rounds: [
+        { openDate: "2026-01-01", deadlineDate: "2026-02-01" },
+        { deadlineDate: "2099-02-01", expectedNextOpenDate: "2100-01-01" },
+      ],
+    });
+    const partial = await api
       .patch(`/api/calls/${id}`)
       .send({ eligibility: "", targetGroups: [] });
     const stored = await db
@@ -393,7 +388,7 @@ describe.skipIf(!process.env.DATABASE_URL)("PATCH /api/calls/:id", () => {
   });
 
   it("returns a 404 for an id that does not exist", async () => {
-    const res = await request(app)
+    const res = await api
       .patch("/api/calls/999999999")
       .send({ recurring: true });
 
@@ -406,7 +401,7 @@ describe.skipIf(!process.env.DATABASE_URL)("POST /api/calls/:id/score", () => {
   it.skipIf(!process.env.GEMINI_API_KEY)(
     "returns a 404 for an id that does not exist",
     async () => {
-      const res = await request(app).post("/api/calls/999999999/score");
+      const res = await api.post("/api/calls/999999999/score");
 
       expect(res.status).toBe(404);
       expect(res.body.error.code).toBe("NOT_FOUND");

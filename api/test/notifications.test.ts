@@ -1,10 +1,9 @@
 import { afterAll, describe, expect, it } from "vitest";
-import request from "supertest";
-import { createApp } from "../src/app.ts";
+import { adminApi } from "./auth.ts";
 import { db } from "../src/lib/db.ts";
 import { notificationListResponse } from "../src/modules/notifications/notifications.schema.ts";
 
-const app = createApp();
+const api = adminApi();
 
 afterAll(async () => {
   await db.destroy();
@@ -12,7 +11,7 @@ afterAll(async () => {
 
 describe("GET /api/notifications", () => {
   it("404s on an unknown sub-path", async () => {
-    const res = await request(app).get("/api/notifications/1");
+    const res = await api.get("/api/notifications/1");
 
     expect(res.status).toBe(404);
     expect(res.body.error.code).toBe("NOT_FOUND");
@@ -23,7 +22,7 @@ describe.skipIf(!process.env.DATABASE_URL)(
   "GET /api/notifications (database)",
   () => {
     it("returns the documented shape, newest first", async () => {
-      const res = await request(app).get("/api/notifications");
+      const res = await api.get("/api/notifications");
 
       expect(res.status).toBe(200);
       expect(notificationListResponse.parse(res.body)).toBeTruthy();
@@ -50,7 +49,7 @@ describe.skipIf(!process.env.DATABASE_URL)(
         .executeTakeFirstOrThrow();
 
       try {
-        const listed = await request(app).get("/api/notifications");
+        const listed = await api.get("/api/notifications");
         const mine = listed.body.items.find(
           (item: { id: number }) => item.id === written.id,
         );
@@ -60,7 +59,7 @@ describe.skipIf(!process.env.DATABASE_URL)(
           .set({ review_status: "dismissed" })
           .where("id", "=", match.id)
           .execute();
-        const afterDismiss = await request(app).get("/api/notifications");
+        const afterDismiss = await api.get("/api/notifications");
 
         await db
           .updateTable("match_result")
