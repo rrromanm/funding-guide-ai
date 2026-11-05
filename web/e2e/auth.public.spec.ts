@@ -31,13 +31,24 @@ test.describe("login page", () => {
     await expect(page.getByLabel("Password")).toHaveAttribute("required", "");
   });
 
-  // Known bug: the nowrap "Pangaea Youth Network" heading makes /login 26px wider than a 375px phone.
-  // Remove fixme once login/page.tsx wraps that heading below md.
-  test.fixme("has no horizontal overflow on a phone", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 800 });
-    await page.goto("/login");
+  for (const width of [320, 375, 414, 767, 768, 1023, 1024, 1440]) {
+    test(`fits without horizontal overflow at ${width}px wide`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("/login");
 
-    await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
-    await expectNoHorizontalOverflow(page);
-  });
+      await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+      await expectNoHorizontalOverflow(page);
+      for (const selector of ["#email", "#password", 'button[type="submit"]']) {
+        const bounds = await page.locator(selector).evaluate((element) => {
+          const { left, right, width: elementWidth } = element.getBoundingClientRect();
+          return { left, right, width: elementWidth };
+        });
+        expect(bounds.left).toBeGreaterThanOrEqual(0);
+        expect(bounds.right).toBeLessThanOrEqual(width);
+        if (width >= 768) {
+          expect(bounds.width).toBeGreaterThanOrEqual(240);
+        }
+      }
+    });
+  }
 });

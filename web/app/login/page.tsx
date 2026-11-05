@@ -7,7 +7,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
 
   return (
     <div className="flex flex-1 flex-col md:flex-row">
-      <aside className="flex flex-col justify-between gap-12 bg-brand p-8 text-white md:basis-3/5 md:p-14">
+      <aside className="flex flex-col justify-between gap-12 bg-brand p-8 text-white md:basis-1/2 md:p-14 lg:basis-3/5">
         <Image
           src="/logo-pyn.png"
           alt="Pangaea Youth Network"
@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             Bachelor project · 2026
           </p>
           <h2 className="max-w-115 font-display text-[28px] font-bold leading-[1.1] tracking-[-.02em] md:text-[40px]">
-            <span className="block whitespace-nowrap">
+            <span className="block lg:whitespace-nowrap">
               Pangaea Youth Network
             </span>
             <hr className="my-4 border-white/25" />
@@ -39,7 +39,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         </p>
       </aside>
 
-      <div className="flex flex-1 items-center justify-center p-8 md:basis-2/5">
+      <div className="flex flex-1 items-center justify-center p-8 md:basis-1/2 lg:basis-2/5">
         <div className="card-panel flex w-full max-w-105 flex-col gap-7">
           <div className="flex flex-col gap-2">
             <h1 className="font-display text-[28px] font-bold leading-tight tracking-[-.02em]">
