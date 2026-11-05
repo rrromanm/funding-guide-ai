@@ -11,6 +11,8 @@ Playwright browser tests for the stable, read-only flows. Nothing here creates, 
 
 `admin` is only registered when `E2E_EMAIL` and `E2E_PASSWORD` (or `E2E_STORAGE_STATE`) are set.
 
+`auth-errors.admin.spec.ts` mocks the API responses (401, 403, 500, network failure) with `page.route`, so it does not need the API running, but it still needs a real admin session: the web server validates the Supabase session before the page renders. Server-rendered detail/edit pages call the API from the server, which Playwright cannot intercept, so their 401/403 handling is not covered by this spec.
+
 ## Run
 
 ```bash
