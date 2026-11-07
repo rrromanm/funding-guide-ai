@@ -50,11 +50,28 @@ test.describe("phone layout", () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test("navigation still works through the icon rail", async ({ page }) => {
+  test("mobile navigation shows labeled icons and opens each page", async ({ page }) => {
     await page.goto("/");
 
-    await page.getByRole("navigation").locator('a[href="/profile"]').click();
+    const navigation = page.getByRole("navigation", { name: "Main navigation" });
+    for (const { path, ready } of [pages[2], pages[1], pages[3], pages[0]]) {
+      const link = navigation.getByRole("link", { name: ready });
+      await expect(link).toBeVisible();
+      await expect(link.locator("svg")).toBeVisible();
+      await expect(link.locator("span").last()).toBeVisible();
+      const box = await link.boundingBox();
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      await link.click();
+      await expect(page).toHaveURL(new RegExp(`${path === "/" ? "/$" : path}$`));
+      await expect(link).toHaveAttribute("aria-current", "page");
+      await expect(page.getByRole("heading", { level: 1, name: ready })).toBeVisible();
+      await expectNoHorizontalOverflow(page);
+    }
 
-    await expect(page).toHaveURL(/\/profile$/);
+    const logout = page.getByRole("button", { name: "Log out" });
+    await expect(logout).toBeVisible();
+    await expect(logout.locator("svg")).toBeVisible();
+    await expect(logout.getByText("Log out")).toBeVisible();
   });
 });
