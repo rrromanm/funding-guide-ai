@@ -1,9 +1,9 @@
 import { env } from "../../config/env.ts";
 import { HttpError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
+import { RELEVANT_FIT } from "../matches/matches.schema.ts";
 import type { SourceListResponse } from "./sources.schema.ts";
 
-const RELEVANT_FIT = ["strong_fit", "possible_fit"];
 const PIPELINE_DISPATCH_URL =
   "https://api.github.com/repos/rrromanm/funding-guide-ai/actions/workflows/pipeline.yml/dispatches";
 

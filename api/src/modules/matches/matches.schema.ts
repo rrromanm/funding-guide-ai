@@ -6,6 +6,7 @@ export const FIT_LABELS = [
   "weak_fit",
   "not_recommended",
 ] as const;
+export const RELEVANT_FIT: string[] = ["strong_fit", "possible_fit"];
 export const CONFIDENCES = ["high", "medium", "low"] as const;
 export const PYN_MEETS = ["yes", "no", "unclear"] as const;
 export const KEY_POINT_KINDS = [
@@ -14,7 +15,6 @@ export const KEY_POINT_KINDS = [
   "strength",
   "info",
 ] as const;
-
 
 const criterion = z.object({
   rating: z.number().int().min(0).max(4),

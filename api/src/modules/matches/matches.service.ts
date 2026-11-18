@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { sql } from "kysely";
 import { z } from "zod";
 import { NotFoundError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
@@ -187,7 +188,7 @@ export async function saveResult(
   model: string,
   raw: unknown,
   result: ScoredResult,
-) {
+): Promise<boolean> {
   const row = {
     org_profile_id: PROFILE_ID,
     score: result.score,
@@ -201,15 +202,15 @@ export async function saveResult(
     scored_at: new Date(),
   };
 
-  await db.transaction().execute(async (trx) => {
-    const { id } = await trx
+  return db.transaction().execute(async (trx) => {
+    const { id, first_score } = await trx
       .insertInto("match_result")
       .values({ call_id: call.id, ...row })
       .onConflict((oc) => oc.column("call_id").doUpdateSet(row))
-      .returning("id")
+      .returning(["id", sql<boolean>`xmax = 0`.as("first_score")])
       .executeTakeFirstOrThrow();
     await trx.deleteFrom("match_reason").where("match_id", "=", id).execute();
-    if (result.keyPoints.length === 0) return;
+    if (result.keyPoints.length === 0) return first_score;
     await trx
       .insertInto("match_reason")
       .values(
@@ -221,5 +222,6 @@ export async function saveResult(
         })),
       )
       .execute();
+    return first_score;
   });
 }
