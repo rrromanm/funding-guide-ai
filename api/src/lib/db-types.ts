@@ -109,7 +109,6 @@ export interface MatchResult {
 export interface Notification {
   created_at: Generated<Timestamp>;
   id: Generated<number>;
-  match_id: number;
   message: string;
   read: Generated<boolean>;
 }

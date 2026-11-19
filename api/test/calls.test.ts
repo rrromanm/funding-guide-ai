@@ -208,11 +208,13 @@ describe.skipIf(!process.env.DATABASE_URL)("GET /api/calls/:id", () => {
     const reason = await db
       .selectFrom("match_reason")
       .innerJoin("match_result", "match_result.id", "match_reason.match_id")
+      .innerJoin("funding_call", "funding_call.id", "match_result.call_id")
       .select([
         "match_result.call_id",
         "match_result.confidence",
         "match_result.blocking_reason",
       ])
+      .where("funding_call.deleted_at", "is", null)
       .executeTakeFirst();
     if (!reason) return;
 

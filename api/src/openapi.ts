@@ -6,7 +6,11 @@ import {
   listCallsQuery,
   updateCallBody,
 } from "./modules/calls/calls.schema.ts";
-import { notificationListResponse } from "./modules/notifications/notifications.schema.ts";
+import {
+  notificationItem,
+  notificationListResponse,
+  updateNotificationBody,
+} from "./modules/notifications/notifications.schema.ts";
 import {
   profileResponse,
   updateProfileBody,
@@ -73,7 +77,7 @@ export const openapi = {
         type: "http",
         scheme: "bearer",
         bearerFormat: "JWT",
-        },
+      },
     },
   },
   security: [{ bearerAuth: [] }],
@@ -131,10 +135,37 @@ export const openapi = {
     },
     "/api/notifications": {
       get: {
-        summary: "List notifications about relevant funding calls",
+        summary: "List notifications about new calls each pipeline run found",
         tags: ["notifications"],
         responses: {
           "200": jsonResponse("Every notification", notificationListResponse),
+        },
+      },
+    },
+    "/api/notifications/{id}": {
+      patch: {
+        summary: "Mark a notification read or unread",
+        tags: ["notifications"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(updateNotificationBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "200": jsonResponse("The updated notification", notificationItem),
+          "400": errorResponse,
+          "404": errorResponse,
         },
       },
     },

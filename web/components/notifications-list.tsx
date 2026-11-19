@@ -42,7 +42,7 @@ export default function NotificationsList() {
       {notifications.length === 0 ? (
         <EmptyState
           title="No notifications yet."
-          description="New relevant funding opportunities will appear here."
+          description="New funding opportunities will appear here."
         />
       ) : (
         <div className="space-y-4">

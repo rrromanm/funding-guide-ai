@@ -10,6 +10,8 @@ import {
   loadProfileText,
   saveResult,
 } from "../modules/matches/matches.service.ts";
+import { RELEVANT_FIT } from "../modules/matches/matches.schema.ts";
+import { notifyNewCalls } from "../modules/notifications/notifications.service.ts";
 
 const { values } = parseArgs({
   options: { call: { type: "string" }, limit: { type: "string" } },
@@ -35,12 +37,17 @@ console.log(
 );
 let scored = 0;
 let failed = 0;
+let found = 0;
+let relevant = 0;
 
 for (const [i, call] of calls.entries()) {
   if (i > 0) await delay(intervalMs);
   try {
     const { raw, result } = await judgeCall(call, profileText, provider);
-    await saveResult(call, provider.model, raw, result);
+    if (await saveResult(call, provider.model, raw, result)) {
+      found++;
+      if (RELEVANT_FIT.includes(result.fitLabel)) relevant++;
+    }
     scored++;
     console.log(
       `#${call.id} ${call.title}: ${result.score} ${result.fitLabel} (${result.confidence})` +
@@ -64,5 +71,6 @@ for (const [i, call] of calls.entries()) {
 console.log(
   `done: ${scored} scored, ${failed} failed, ${calls.length - scored - failed} left`,
 );
+await notifyNewCalls(found, relevant);
 await db.destroy();
 process.exitCode = failed > 0 ? 1 : 0;
