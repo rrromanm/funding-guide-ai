@@ -48,8 +48,9 @@ def describe(html: str) -> tuple[str, str]:
     soup = BeautifulSoup(html, "html.parser")
     for notice in soup.select(".cookieconsent-optout-marketing"):  # "Tillad venligst alle cookies ..."
         notice.decompose()
-    article = soup.select_one(".area-content__text")
-    blocks = [t for t in map(_text, article.find_all(recursive=False)) if t] if article else []
+    blocks = [t for t in map(_text, soup.select(
+        ".area-content__text > *, "
+        ".area-additional-content :is(.accordion-item__title, .content-rte)")) if t]
     if not blocks:
-        raise ValueError("detail page has no text in .area-content__text")
+        raise ValueError("detail page has no body text")
     return blocks[0], "\n\n".join([_text(soup.find("h1"))] + blocks)

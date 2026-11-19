@@ -48,8 +48,9 @@ def fetch(url: str) -> str | None:
     return response.text
 
 
-def collect(source) -> list[dict]:
+def collect(source) -> tuple[list[dict], bool]:
     name = source.__name__.rsplit(".", 1)[-1]
+    complete = True
 
     if hasattr(source, "collect"):
         records = source.collect(fetch)
@@ -58,18 +59,20 @@ def collect(source) -> list[dict]:
         for url in source.discover():
             html = fetch(url)
             if html is None:
+                complete = False
                 continue
             try:
                 records.extend(r for r in source.parse(url, html)
                                if not source.NOT_A_GRANT.search(r["title"]))
             except Exception as exc:
+                complete = False
                 print(f"    ! parse failed: {url} ({exc.__class__.__name__}: {exc})")
 
     stamp = datetime.now(timezone.utc).isoformat()
     for record in records:
         record.update({**source.DEFAULTS, **record}, source=name, last_checked=stamp,
                       source_url=_canonical(record["source_url"]))
-    return records
+    return records, complete
 
 
 def _canonical(url: str) -> str:
@@ -108,10 +111,10 @@ def run() -> tuple[list[dict], list[dict]]:
         print(f"- {name}")
         stamp = datetime.now(timezone.utc).isoformat()
         try:
-            got = collect(source)
+            got, complete = collect(source)
         except Exception as exc:
             print(f"    ! {name} aborted ({exc.__class__.__name__}: {exc})")
-            got = []
+            got, complete = [], False
         else:
             print(f"    {len(got)} raw records")
         records.extend(got)
@@ -119,7 +122,8 @@ def run() -> tuple[list[dict], list[dict]]:
                        "name": getattr(source, "NAME", source.DEFAULTS.get("funding_body", name)),
                        "source_type": source.DEFAULTS.get("level"),
                        "base_url": getattr(source, "BASE_URL", None),
-                       "last_checked": stamp if got else None})
+                       "last_checked": stamp if got else None,
+                       "complete": complete})
 
     return normalise(enrich(dedupe(records))), health
 
