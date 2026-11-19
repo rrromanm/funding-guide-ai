@@ -64,6 +64,33 @@ describe("GET /api/calls (validation)", () => {
     expect(res.body.error.details[0].path).toBe("rounds.0.deadlineDate");
   });
 
+  it("rejects an override without a score", async () => {
+    const res = await api
+      .patch("/api/calls/1/match")
+      .send({ reviewStatus: "overridden" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details[0].path).toBe("manualScore");
+  });
+
+  it("rejects a score on a dismissal", async () => {
+    const res = await api
+      .patch("/api/calls/1/match")
+      .send({ reviewStatus: "dismissed", manualScore: 10 });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details[0].path).toBe("manualScore");
+  });
+
+  it("rejects an unknown review status", async () => {
+    const res = await api
+      .patch("/api/calls/1/match")
+      .send({ reviewStatus: "approved" });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error.details[0].path).toBe("reviewStatus");
+  });
+
   it("rejects an edited description too short to score", async () => {
     const res = await api
       .patch("/api/calls/1")
@@ -409,4 +436,78 @@ describe.skipIf(!process.env.DATABASE_URL)("POST /api/calls/:id/score", () => {
       expect(res.body.error.code).toBe("NOT_FOUND");
     },
   );
+});
+
+describe.skipIf(!process.env.DATABASE_URL)("PATCH /api/calls/:id/match", () => {
+  it("overrides, dismisses and restores the recommendation", async () => {
+    const match = await db
+      .selectFrom("match_result")
+      .innerJoin("funding_call", "funding_call.id", "match_result.call_id")
+      .select([
+        "match_result.call_id",
+        "match_result.score",
+        "funding_call.status",
+      ])
+      .where("match_result.review_status", "=", "generated")
+      .where("match_result.manual_score", "is", null)
+      .where("match_result.score", ">", 0)
+      .where("funding_call.deleted_at", "is", null)
+      .executeTakeFirst();
+    if (!match) return;
+    const id = match.call_id;
+    const listed = async () =>
+      (await api.get(`/api/calls?limit=1&status=${match.status}`)).body.total;
+
+    const before = await listed();
+    const overridden = await api
+      .patch(`/api/calls/${id}/match`)
+      .send({
+        reviewStatus: "overridden",
+        manualScore: 10,
+        adminNote: "Wrong",
+      });
+    const dismissed = await api
+      .patch(`/api/calls/${id}/match`)
+      .send({ reviewStatus: "dismissed" });
+    const hidden = await listed();
+    const restored = await api
+      .patch(`/api/calls/${id}/match`)
+      .send({ reviewStatus: "generated" });
+    const after = await listed();
+
+    await db
+      .updateTable("match_result")
+      .set({ review_status: "generated", manual_score: null, admin_note: null })
+      .where("call_id", "=", id)
+      .execute();
+
+    expect(overridden.status).toBe(200);
+    expect(overridden.body).toMatchObject({
+      reviewStatus: "overridden",
+      score: 10,
+      fitLabel: "not_recommended",
+      aiScore: match.score,
+      adminNote: "Wrong",
+    });
+    expect(dismissed.body).toMatchObject({
+      reviewStatus: "dismissed",
+      adminNote: "Wrong",
+    });
+    expect(hidden).toBe(before - 1);
+    expect(restored.body).toMatchObject({
+      reviewStatus: "generated",
+      score: match.score,
+      adminNote: null,
+    });
+    expect(after).toBe(before);
+  });
+
+  it("returns a 404 for an id that does not exist", async () => {
+    const res = await api
+      .patch("/api/calls/999999999/match")
+      .send({ reviewStatus: "dismissed" });
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe("NOT_FOUND");
+  });
 });

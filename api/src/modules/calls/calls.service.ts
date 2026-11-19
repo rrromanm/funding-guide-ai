@@ -16,6 +16,7 @@ import {
   type CallListResponse,
   type CreateCallBody,
   type ListCallsQuery,
+  type ReviewMatchBody,
   type UpdateCallBody,
 } from "./calls.schema.ts";
 
@@ -84,8 +85,11 @@ function filters(
           .selectFrom("match_result")
           .select("match_result.id")
           .whereRef("match_result.call_id", "=", "funding_call.id")
-          .where(
-            sql<boolean>`coalesce(match_result.manual_score, match_result.score) = 0`,
+          .where((eb) =>
+            eb.or([
+              sql<boolean>`coalesce(match_result.manual_score, match_result.score) = 0`,
+              eb("match_result.review_status", "=", "dismissed"),
+            ]),
           ),
       ),
     ),
@@ -185,7 +189,13 @@ export async function findCallById(id: number): Promise<CallDetail> {
       .execute(),
     db
       .selectFrom("match_result")
-      .select(["confidence", "blocking_reason"])
+      .select([
+        "confidence",
+        "blocking_reason",
+        "review_status",
+        "score",
+        "admin_note",
+      ])
       .where("call_id", "=", id)
       .executeTakeFirst(),
     db
@@ -224,6 +234,9 @@ export async function findCallById(id: number): Promise<CallDetail> {
     })),
     confidence: oneOf(CONFIDENCES, match?.confidence ?? null),
     blockingReason: match?.blocking_reason ?? null,
+    reviewStatus: match?.review_status ?? null,
+    aiScore: match?.score ?? null,
+    adminNote: match?.admin_note ?? null,
     reasons: reasons.map((reason) => ({
       kind: reason.kind as (typeof KEY_POINT_KINDS)[number], // match_reason_kind_check
       about: reason.label,
@@ -345,6 +358,33 @@ export async function rescoreCall(id: number): Promise<CallDetail> {
     );
 
   await scoreCall(id, geminiProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL));
+  return findCallById(id);
+}
+
+export async function reviewMatch(
+  id: number,
+  body: ReviewMatchBody,
+): Promise<CallDetail> {
+  const reset = body.reviewStatus === "generated";
+  const row = await db
+    .updateTable("match_result")
+    .set({
+      review_status: body.reviewStatus,
+      manual_score: reset ? null : body.manualScore,
+      admin_note: reset ? null : body.adminNote,
+    })
+    .where("call_id", "=", id)
+    .where("call_id", "in", (eb) =>
+      eb
+        .selectFrom("funding_call")
+        .select("id")
+        .where("deleted_at", "is", null),
+    )
+    .returning("id")
+    .executeTakeFirst();
+
+  if (!row) throw new NotFoundError("Call not found or not scored yet");
+
   return findCallById(id);
 }
 

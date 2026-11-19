@@ -94,9 +94,43 @@ export const createCallBody = z.strictObject({
 
 export const updateCallBody = createCallBody.partial();
 
+export const REVIEW_STATUSES = [
+  "generated",
+  "overridden",
+  "dismissed",
+] as const;
+
+export const reviewMatchBody = z
+  .strictObject({
+    reviewStatus: z
+      .enum(REVIEW_STATUSES)
+      .describe(
+        "`overridden` replaces the AI's score, `dismissed` hides the call from the list, `generated` undoes either.",
+      ),
+    manualScore: z
+      .number()
+      .int()
+      .min(0)
+      .max(100)
+      .optional()
+      .describe(
+        "Required to override, and only then. The fit label follows it.",
+      ),
+    adminNote: optionalText(2000).describe("Why the AI got it wrong."),
+  })
+  .refine(
+    (body) =>
+      (body.reviewStatus === "overridden") === (body.manualScore !== undefined),
+    {
+      path: ["manualScore"],
+      message: "Give a manualScore to override, and only then",
+    },
+  );
+
 export type ListCallsQuery = z.infer<typeof listCallsQuery>;
 export type CreateCallBody = z.infer<typeof createCallBody>;
 export type UpdateCallBody = z.infer<typeof updateCallBody>;
+export type ReviewMatchBody = z.infer<typeof reviewMatchBody>;
 
 // Responses
 
@@ -176,6 +210,15 @@ export const callDetail = callListItem.extend({
     .string()
     .nullable()
     .describe("The eligibility requirement that rules PYN out, if any."),
+  reviewStatus: z
+    .enum(REVIEW_STATUSES)
+    .nullable()
+    .describe("The admin's review of the recommendation. Null when unscored."),
+  aiScore: z
+    .number()
+    .nullable()
+    .describe("The AI's own score, kept when the admin overrides it."),
+  adminNote: z.string().nullable(),
   reasons: z
     .array(
       z.object({

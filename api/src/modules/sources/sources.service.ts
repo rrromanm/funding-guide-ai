@@ -1,7 +1,8 @@
+import { sql } from "kysely";
 import { env } from "../../config/env.ts";
 import { HttpError } from "../../errors.ts";
 import { db } from "../../lib/db.ts";
-import { RELEVANT_FIT } from "../matches/matches.schema.ts";
+import { LABEL_THRESHOLDS } from "../matches/matches.config.ts";
 import type { SourceListResponse } from "./sources.schema.ts";
 
 const PIPELINE_DISPATCH_URL =
@@ -33,7 +34,11 @@ export async function findSources(): Promise<SourceListResponse> {
         .as("closed"),
       fn
         .count<number>("funding_call.id")
-        .filterWhere("match_result.fit_label", "in", RELEVANT_FIT)
+        .filterWhere(
+          sql`coalesce(match_result.manual_score, match_result.score)`,
+          ">=",
+          LABEL_THRESHOLDS.possible_fit,
+        )
         .filterWhere("match_result.review_status", "!=", "dismissed")
         .as("relevant"),
     ])
