@@ -99,7 +99,9 @@ test.describe("Recommendation review", () => {
     await page.getByRole("button", { name: "Save override" }).click();
 
     await expect(page.getByTestId("review-status")).toHaveText("Manually overridden");
-    await expect(page.getByText("0 / 100 · Not recommended")).toBeVisible();
+    const scorePanel = page.getByText("Match score", { exact: true }).locator("..").locator("..");
+    await expect(scorePanel.getByText("0", { exact: true })).toBeVisible();
+    await expect(scorePanel.getByText("/ 100 · Not recommended", { exact: true })).toBeVisible();
     await expect(page.getByText("Original AI score:")).toBeVisible();
     await expect(page.getByRole("status")).toHaveText("Recommendation override saved.");
     expect(patch.getBody()).toEqual({
@@ -123,7 +125,7 @@ test.describe("Recommendation review", () => {
     await page.getByLabel("Manual score").fill("101");
     await page.getByRole("button", { name: "Save override" }).click();
 
-    await expect(page.getByRole("alert")).toHaveText("Enter a whole-number score from 0 to 100.");
+    await expect(page.locator("#review-validation-error")).toHaveText("Enter a whole-number score from 0 to 100.");
     expect(requestCount).toBe(0);
   });
 
@@ -173,7 +175,7 @@ test.describe("Recommendation review", () => {
     await page.getByLabel("Manual score").fill("70");
     await page.getByRole("button", { name: "Save override" }).click();
 
-    await expect(page.getByRole("alert")).toHaveText("Review could not be saved");
+    await expect(page.locator("#review-validation-error")).toHaveText("Review could not be saved");
     await expect(page.getByRole("status")).toHaveCount(0);
   });
 
