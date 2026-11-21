@@ -1,26 +1,23 @@
-import { afterAll, describe, expect, it } from "vitest";
+import { expect, it } from "vitest";
 import { sql } from "kysely";
 import { db } from "../src/lib/db.ts";
+import { describeDb } from "./helpers.ts";
 
-describe.skipIf(!process.env.DATABASE_URL)("db", () => {
-  afterAll(async () => {
-    await db.destroy();
-  });
-
+describeDb("db", () => {
   it("connects", async () => {
     const result = await sql<{ one: number }>`select 1 as one`.execute(db);
     expect(result.rows[0]?.one).toBe(1);
   });
 
-  it("reads funding_call with numeric ids and budgets", async () => {
-    const row = await db
-      .selectFrom("funding_call")
-      .select(["id", "budget_max"])
-      .where("budget_max", "is not", null)
-      .limit(1)
-      .executeTakeFirstOrThrow();
+  it("reads int8 and numeric as numbers, and dates as plain strings", async () => {
+    const { rows } = await sql<{ big: unknown; amount: unknown; day: unknown }>`
+      select 9007199254740991::int8 as big, 12.5::numeric as amount, '2026-03-01'::date as day
+    `.execute(db);
 
-    expect(typeof row.id).toBe("number");
-    expect(typeof row.budget_max).toBe("number");
+    expect(rows[0]).toEqual({
+      big: 9007199254740991,
+      amount: 12.5,
+      day: "2026-03-01",
+    });
   });
 });
