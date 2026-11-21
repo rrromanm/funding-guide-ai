@@ -1,13 +1,9 @@
-import { afterAll, describe, expect, it } from "vitest";
-import { adminApi } from "./auth.ts";
+import { describe, expect, it } from "vitest";
 import { db } from "../src/lib/db.ts";
 import { profileResponse } from "../src/modules/profile/profile.schema.ts";
+import { adminApi, describeDb } from "./helpers.ts";
 
 const api = adminApi();
-
-afterAll(async () => {
-  await db.destroy();
-});
 
 describe("GET /api/profile", () => {
   it("404s on a sub-path, because the profile is a singleton", async () => {
@@ -24,7 +20,10 @@ describe("PATCH /api/profile", () => {
     ["the founded year", { foundedYear: 2000 }],
     ["an unknown field", { staff: 3 }],
     ["a negative staff count", { staffCount: -1 }],
+    ["a fractional staff count", { staffCount: 1.5 }],
+    ["an admin capacity that is too long", { adminCapacity: "x".repeat(2001) }],
     ["an empty tag", { themes: [" "] }],
+    ["too many tags", { targetGroups: Array(51).fill("youth") }],
   ])("400s on %s", async (_case, body) => {
     const res = await api.patch("/api/profile").send(body);
 
@@ -33,69 +32,70 @@ describe("PATCH /api/profile", () => {
   });
 });
 
-describe.skipIf(!process.env.DATABASE_URL)(
-  "PATCH /api/profile (database)",
-  () => {
-    it("updates the given fields, replaces tags and leaves the rest alone", async () => {
-      const { body: original } = await api.get("/api/profile");
-      const { name, legalStatus, city, country, foundedYear, id, ...editable } =
-        original;
+describeDb("GET /api/profile (database)", () => {
+  it("returns the one profile in the documented shape", async () => {
+    const res = await api.get("/api/profile");
 
-      const res = await api.patch("/api/profile").send({
-        staffCount: original.staffCount + 1,
-        adminCapacity: "  ",
-        themes: original.themes.slice(0, 1),
-      });
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(1);
+    expect(profileResponse.parse(res.body)).toBeTruthy();
+  });
 
-      const restored = await api.patch("/api/profile").send(editable);
+  it("reads themes and target groups off the profile's tags", async () => {
+    const [res, tags] = await Promise.all([
+      api.get("/api/profile"),
+      db
+        .selectFrom("org_profile_tag")
+        .innerJoin("tag", "tag.id", "org_profile_tag.tag_id")
+        .select(["tag.label", "tag.type"])
+        .where("org_profile_tag.org_profile_id", "=", 1)
+        .execute(),
+    ]);
 
-      expect(res.status).toBe(200);
-      expect(res.body).toMatchObject({
-        name,
-        city,
-        staffCount: original.staffCount + 1,
-        adminCapacity: null,
-        themes: original.themes.slice(0, 1),
-        targetGroups: original.targetGroups,
-        foundedYear,
-      });
-      expect(restored.body).toEqual(original);
+    const expected = (type: string) =>
+      tags
+        .filter((tag) => tag.type === type)
+        .map((tag) => tag.label)
+        .sort();
+
+    expect([...res.body.themes].sort()).toEqual(expected("theme"));
+    expect([...res.body.targetGroups].sort()).toEqual(expected("target_group"));
+  });
+});
+
+describeDb("PATCH /api/profile (database)", () => {
+  it("updates the given fields, replaces tags and leaves the rest alone", async () => {
+    const { body: original } = await api.get("/api/profile");
+    const { name, legalStatus, city, country, foundedYear, id, ...editable } =
+      original;
+
+    const res = await api.patch("/api/profile").send({
+      staffCount: original.staffCount + 1,
+      adminCapacity: "  ",
+      themes: original.themes.slice(0, 1),
     });
-  },
-);
 
-describe.skipIf(!process.env.DATABASE_URL)(
-  "GET /api/profile (database)",
-  () => {
-    it("returns the one profile in the documented shape", async () => {
-      const res = await api.get("/api/profile");
+    const restored = await api.patch("/api/profile").send(editable);
 
-      expect(res.status).toBe(200);
-      expect(res.body.id).toBe(1);
-      expect(profileResponse.parse(res.body)).toBeTruthy();
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      name,
+      city,
+      staffCount: original.staffCount + 1,
+      adminCapacity: null,
+      themes: original.themes.slice(0, 1),
+      targetGroups: original.targetGroups,
+      foundedYear,
     });
+    expect(restored.body).toEqual(original);
+  });
 
-    it("reads themes and target groups off the profile's tags", async () => {
-      const [res, tags] = await Promise.all([
-        api.get("/api/profile"),
-        db
-          .selectFrom("org_profile_tag")
-          .innerJoin("tag", "tag.id", "org_profile_tag.tag_id")
-          .select(["tag.label", "tag.type"])
-          .where("org_profile_tag.org_profile_id", "=", 1)
-          .execute(),
-      ]);
+  it("changes nothing on an empty body", async () => {
+    const { body: original } = await api.get("/api/profile");
 
-      const expected = (type: string) =>
-        tags
-          .filter((tag) => tag.type === type)
-          .map((tag) => tag.label)
-          .sort();
+    const res = await api.patch("/api/profile").send({});
 
-      expect([...res.body.themes].sort()).toEqual(expected("theme"));
-      expect([...res.body.targetGroups].sort()).toEqual(
-        expected("target_group"),
-      );
-    });
-  },
-);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(original);
+  });
+});

@@ -169,8 +169,9 @@ Each issue is also described in plain language in the result's `warnings` (not s
 
 The model finds the restriction *"Professionelle musikgrupper – herunder orkestre, bands, kor og ensembler"* with
 `pyn_meets: "no"`. The quote is in the text, so the override applies: **score 0, `not_recommended`**, with that
-requirement as the reason. This holds even if the criteria ratings would have summed to 60 or more. The test
-`musician fixture` in `api/test/matches.test.ts` runs this case against the real call text with a mocked model.
+requirement as the reason. This holds even if the criteria ratings would have summed to 60 or more. The
+`Musikerpuljen fixture` tests in `api/test/matches.test.ts` run this case against the real call text and the
+model's stored answer.
 
 ## Storage: `match_result` and `match_reason`
 
@@ -271,7 +272,9 @@ inputs here are public call texts and PYN's public profile.
 
 ## Tests
 
-`api/test/matches.test.ts` never calls the real API. It covers weights summing to 100, the points formula,
+No test calls the real API. `api/test/matches.test.ts` covers weights summing to 100, the points formula,
 the eligibility override, `unclear` handling, label thresholds, confidence, the grounding check (normalisation,
-dropped criteria, `null` evidence, demoting an invented `no`), the Musikerpuljen fixture, schema rejection,
-retry/back-off, stopping on the daily quota, and Gemini response parsing, plus the breakdown endpoint.
+dropped criteria, `null` evidence, demoting an invented `no`), key-point filtering, the Musikerpuljen fixture
+(`api/test/fixtures/musikerpuljen.json`), schema rejection, and the service against the database with a fake
+model. `api/test/llm.test.ts` covers retry/back-off, stopping on the daily quota and Gemini response parsing;
+`api/test/score-calls.test.ts` runs `npm run score:llm` itself (new-call notifications, the quota stop, exit codes).
