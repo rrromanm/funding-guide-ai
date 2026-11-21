@@ -535,4 +535,3 @@ export async function reviewFundingCall(
 
   return mapFundingCallDetails(payload);
 }
-
