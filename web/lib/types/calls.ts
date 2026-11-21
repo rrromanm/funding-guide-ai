@@ -6,6 +6,7 @@ export type CallStatus = "UPCOMING" | "OPEN" | "CLOSED" | "UNKNOWN";
 export type ApiCallStatus = "upcoming" | "open" | "closed" | "unknown";
 export type ApiFitLabel = "strong_fit" | "possible_fit" | "weak_fit" | "not_recommended";
 export type ApiConfidence = "high" | "medium" | "low";
+export type ApiReviewStatus = "generated" | "overridden" | "dismissed";
 
 export interface MatchReasonDto {
   kind: "blocker" | "barrier" | "strength" | "info";
@@ -60,7 +61,16 @@ export interface FundingCallDetailDto extends FundingCallListItemDto {
   rounds: FundingRoundDto[];
   confidence: ApiConfidence | null;
   blockingReason: string | null;
+  reviewStatus: ApiReviewStatus | null;
+  aiScore: number | null;
+  adminNote: string | null;
   reasons: MatchReasonDto[];
+}
+
+export interface FundingCallReviewBody {
+  reviewStatus: ApiReviewStatus;
+  manualScore?: number;
+  adminNote?: string | null;
 }
 
 export interface FundingCallBodyDto {
@@ -125,6 +135,9 @@ export interface FundingCallDetails {
   fitLabel?: ApiFitLabel;
   confidence?: ApiConfidence;
   blockingReason?: string;
+  reviewStatus?: ApiReviewStatus | null;
+  aiScore?: number | null;
+  adminNote?: string | null;
   reasons: MatchReasonDto[];
 }
 
