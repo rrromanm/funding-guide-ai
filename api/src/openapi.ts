@@ -4,6 +4,7 @@ import {
   callListResponse,
   createCallBody,
   listCallsQuery,
+  reviewMatchBody,
   updateCallBody,
 } from "./modules/calls/calls.schema.ts";
 import {
@@ -295,6 +296,33 @@ export const openapi = {
           "400": errorResponse,
           "404": errorResponse,
           "503": errorResponse,
+        },
+      },
+    },
+    "/api/calls/{id}/match": {
+      patch: {
+        summary: "Override, dismiss or restore the AI recommendation",
+        tags: ["calls"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: jsonSchema(reviewMatchBody, "input"),
+            },
+          },
+        },
+        responses: {
+          "200": jsonResponse("The call with its reviewed match", callDetail),
+          "400": errorResponse,
+          "404": errorResponse,
         },
       },
     },

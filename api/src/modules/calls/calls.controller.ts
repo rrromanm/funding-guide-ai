@@ -3,6 +3,7 @@ import {
   callIdParams,
   createCallBody,
   listCallsQuery,
+  reviewMatchBody,
   updateCallBody,
 } from "./calls.schema.ts";
 import {
@@ -11,6 +12,7 @@ import {
   findCallById,
   findCalls,
   rescoreCall,
+  reviewMatch,
   updateCall,
 } from "./calls.service.ts";
 
@@ -43,6 +45,13 @@ export const rescoreCallById: RequestHandler = async (req, res) => {
   const { id } = callIdParams.parse(req.params);
 
   res.json(await rescoreCall(id));
+};
+
+export const reviewCallMatch: RequestHandler = async (req, res) => {
+  const { id } = callIdParams.parse(req.params);
+  const body = reviewMatchBody.parse(req.body);
+
+  res.json(await reviewMatch(id, body));
 };
 
 export const deleteCallById: RequestHandler = async (req, res) => {
