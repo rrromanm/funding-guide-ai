@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from scrapers.pipeline import run
 from scrapers.pipeline.normalise import normalise
 from scrapers.pipeline.run import dedupe
-from scrapers.pipeline.store import CALL_COLS, CALL_SQL, ROUND_COLS, to_call, to_rounds
+from scrapers.pipeline.store import CALL_COLS, CALL_SQL, CLOSE_SQL, ROUND_COLS, _summary, to_call, to_rounds
 from tests.schema import columns
 
 BODY = "Du kan søge op til 150.000 kr. " + "x" * 500
@@ -73,6 +73,16 @@ def test_the_upsert_leaves_an_edited_call_alone():
     assert CALL_SQL.endswith(" where funding_call.edited_at is null")
 
 
+def test_closing_missing_calls_leaves_edited_and_deleted_calls_alone():
+    assert "edited_at is null" in CLOSE_SQL and "deleted_at is null" in CLOSE_SQL
+
+
+def test_summary_counts_closed_and_reopened_calls():
+    assert _summary(3, 1) == "3 calls removed from their source and closed, 1 call reopened."
+    assert _summary(1, 0) == "1 call removed from their source and closed."
+    assert _summary(0, 2) == "2 calls reopened."
+
+
 def test_same_pool_on_two_pages_is_one_record():
     pages = [{**SEEN, "title": t, "source_url": u, "description": BODY + d}
              for t, u, d in [("Tilgængelighedspuljen", "https://horsens.dk/x#a", " v1"),
@@ -97,5 +107,17 @@ def test_a_trailing_slash_is_the_same_page(monkeypatch):
     source = SimpleNamespace(__name__="scrapers.sources.test", DEFAULTS={}, NOT_A_GRANT=re.compile("^$"),
                              discover=lambda: ["page"], parse=lambda url, html: [dict(p) for p in pages])
     monkeypatch.setattr(run, "fetch", lambda url: "<html>")
-    assert [r["source_url"] for r in run.collect(source)] == [
+    assert [r["source_url"] for r in run.collect(source)[0]] == [
         "https://slks.dk/tilskud/a", "https://horsens.dk/b#pulje", "https://horsens.dk/"]
+
+
+def test_a_page_that_fails_to_load_leaves_the_source_incomplete(monkeypatch):
+    source = SimpleNamespace(__name__="scrapers.sources.test", DEFAULTS={}, NOT_A_GRANT=re.compile("^$"),
+                             discover=lambda: ["https://x.dk/a", "https://x.dk/b"],
+                             parse=lambda url, html: [{"title": url, "source_url": url}])
+    monkeypatch.setattr(run, "fetch", lambda url: "<html>")
+    assert run.collect(source)[1] is True
+
+    monkeypatch.setattr(run, "fetch", lambda url: None if url.endswith("b") else "<html>")
+    records, complete = run.collect(source)
+    assert [r["source_url"] for r in records] == ["https://x.dk/a"] and complete is False

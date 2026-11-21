@@ -55,6 +55,14 @@ select c.source_url, c.description, c.status, c.eligibility, c.ngo_eligible,
                                       'opens', r.open_date)
              from funding_round r where r.call_id = c.id order by r.round_no)
 from funding_call c where c.source_url = any(%s)
+  and (c.status <> 'closed' or c.edited_at is not null
+       or exists (select from funding_round r where r.call_id = c.id))
+"""
+
+CLOSE_SQL = """
+update funding_call set status = 'closed'
+where funding_source_id = any(%s) and source_url <> all(%s)
+  and status <> 'closed' and edited_at is null and deleted_at is null
 """
 
 
@@ -113,6 +121,14 @@ def to_rounds(rec: dict, call_id: int) -> list[dict]:
             for n, row in enumerate(rec.get("deadline_table") or [], 1)]
 
 
+def _summary(removed: int, reopened: int) -> str:
+    def calls(n: int) -> str:
+        return f"{n} call{'' if n == 1 else 's'}"
+
+    return ", ".join(filter(None, [removed and f"{calls(removed)} removed from their source and closed",
+                                   reopened and f"{calls(reopened)} reopened"])) + "."
+
+
 def store(records: list[dict], sources: list[dict] = ()) -> tuple[int, int]:
     records = [r for r in records if r.get("record_kind") != "info_page"]
     source_rows = list(sources) or [to_source(r) for r in {r["source"]: r for r in records}.values()]
@@ -130,9 +146,24 @@ def store(records: list[dict], sources: list[dict] = ()) -> tuple[int, int]:
             return 0, 0
 
         calls = [to_call(r, source_ids[r["source"]]) for r in records]
+        keys = {(c["funding_source_id"], c["source_url"]) for c in calls}
+        urls = sorted(u for _, u in keys)
+
+        cur.execute("select funding_source_id, source_url from funding_call where status = 'closed' "
+                    "and edited_at is null and deleted_at is null and source_url = any(%s)", [urls])
+        was_closed = set(cur.fetchall())
+
         cur.executemany(CALL_SQL, [[c[k] for k in CALL_COLS] for c in calls])
 
-        keys = {(source_ids[r["source"]], r["source_url"]) for r in records}
+        reopened = sum(c["status"] != "closed" for c in calls
+                       if (c["funding_source_id"], c["source_url"]) in was_closed)
+        swept = sorted({source_ids[s["key"]] for s in source_rows if s.get("complete")} & {s for s, _ in keys})
+        cur.execute(CLOSE_SQL, [swept, urls])
+        removed = cur.rowcount
+        print(f"closed {removed} calls no longer on their source, reopened {reopened}")
+        if removed or reopened:
+            cur.execute("insert into notification (message) values (%s)", [_summary(removed, reopened)])
+
         cur.execute("select id, funding_source_id, source_url from funding_call "
                     "where funding_source_id = any(%s) and edited_at is null",
                     [sorted({s for s, _ in keys})])
