@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmationModal } from "@/components/common/confirmation-modal";
 import { PageHeader } from "@/components/common/page-header";
+import { RecommendationReviewDialog, type RecommendationReviewMode } from "@/components/common/recommendation-review-dialog";
 import { StatusBadge } from "@/components/common/status-badge";
-import { deleteFundingCall } from "@/lib/services";
+import { deleteFundingCall, reviewFundingCall } from "@/lib/services";
 import { FIT_LABELS } from "@/lib/fit-label";
-import type { ApiConfidence, FundingCallDetails, MatchReasonDto } from "@/lib/types";
+import type { ApiConfidence, FundingCallDetails, FundingCallReviewBody, MatchReasonDto } from "@/lib/types";
 
 const DESCRIPTION_PREVIEW_LENGTH = 900;
 const CONFIDENCE_LABELS: Record<ApiConfidence, string> = { high: "High", medium: "Medium", low: "Low" };
@@ -52,10 +53,14 @@ const formatAmount = (value: number | undefined, currency: string) => {
 };
 
 export default function FundingOpportunityDetail({ initialCall }: { initialCall: FundingCallDetails }) {
-  const call = initialCall;
+  const [call, setCall] = useState(initialCall);
   const router = useRouter();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
+  const [reviewDialog, setReviewDialog] = useState<RecommendationReviewMode | null>(null);
+  const [reviewBusy, setReviewBusy] = useState(false);
+  const [reviewError, setReviewError] = useState<string>();
+  const [reviewSuccess, setReviewSuccess] = useState<string>();
   const rounds = call.fundingRounds;
   const [roundIndex, setRoundIndex] = useState(0);
   const round = rounds[roundIndex];
@@ -83,6 +88,35 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
       setDeleteError(err instanceof Error ? err.message : "Deleting failed.");
       setDeleteOpen(false);
     }
+  };
+
+  const handleReview = async (body: FundingCallReviewBody) => {
+    setReviewBusy(true);
+    setReviewError(undefined);
+    setReviewSuccess(undefined);
+    try {
+      const updatedCall = await reviewFundingCall(String(call.id), body);
+      setCall(updatedCall);
+      setReviewDialog(null);
+      setReviewSuccess(
+        body.reviewStatus === "overridden"
+          ? "Recommendation override saved."
+          : body.reviewStatus === "dismissed"
+            ? "Recommendation dismissed."
+            : "AI recommendation restored.",
+      );
+      router.refresh();
+    } catch (err) {
+      setReviewError(err instanceof Error ? err.message : "Recommendation could not be updated.");
+    } finally {
+      setReviewBusy(false);
+    }
+  };
+
+  const openReviewDialog = (mode: RecommendationReviewMode) => {
+    setReviewError(undefined);
+    setReviewSuccess(undefined);
+    setReviewDialog(mode);
   };
 
   return (
@@ -116,6 +150,16 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         {deleteError && (
           <p role="alert" className="mb-6 rounded-[20px] border border-red-200 bg-red-50 px-4.5 py-3 text-[14px] font-bold text-red-600">
             {deleteError}
+          </p>
+        )}
+        {reviewSuccess && (
+          <p role="status" className="mb-6 rounded-[20px] border border-green-200 bg-green-50 px-4.5 py-3 text-[14px] font-bold text-green-800">
+            {reviewSuccess}
+          </p>
+        )}
+        {reviewError && !reviewDialog && (
+          <p role="alert" className="mb-6 rounded-[20px] border border-red-200 bg-red-50 px-4.5 py-3 text-[14px] font-bold text-red-600">
+            {reviewError}
           </p>
         )}
       </div>
@@ -246,11 +290,29 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
             )}
           </div>
 
-          {(call.confidence || call.blockingReason || call.reasons.length > 0) && (
+          {(call.score !== undefined || call.confidence || call.blockingReason || call.reasons.length > 0) && (
             <div className="card">
-              <p className="eyebrow mb-3">AI recommendation</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="eyebrow">AI recommendation</p>
+                <span className="chip chip-possible" data-testid="review-status">
+                  {call.reviewStatus === "overridden"
+                    ? "Manually overridden"
+                    : call.reviewStatus === "dismissed"
+                      ? "Dismissed"
+                      : "AI-generated"}
+                </span>
+              </div>
+              {call.reviewStatus === "dismissed" && (
+                <p className="mt-3 text-[14px] text-ink-600">This opportunity is hidden from the opportunities list.</p>
+              )}
+              {call.reviewStatus === "overridden" && call.aiScore !== null && call.aiScore !== undefined && (
+                <p className="mt-3 text-[14px] text-ink-600">Original AI score: <span className="font-bold">{call.aiScore}/100</span></p>
+              )}
+              {call.adminNote && (
+                <p className="mt-3 break-words text-[14px] text-ink-600"><span className="font-bold text-ink-900">Administrator note:</span> {call.adminNote}</p>
+              )}
               {call.confidence && (
-                <p className="text-[15px] text-ink-600">
+                <p className="mt-3 text-[15px] text-ink-600">
                   <span className="font-bold text-ink-900">Confidence:</span> {CONFIDENCE_LABELS[call.confidence]}
                 </p>
               )}
@@ -276,6 +338,39 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
                       </li>
                     ))}
                 </ul>
+              )}
+              {call.score !== undefined && (
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-hairline pt-4">
+                  {call.reviewStatus === "dismissed" ? (
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      disabled={reviewBusy}
+                      onClick={() => void handleReview({ reviewStatus: "generated" })}
+                    >
+                      {reviewBusy ? "Restoring…" : "Restore AI recommendation"}
+                    </button>
+                  ) : (
+                    <>
+                      <button type="button" className="btn btn-secondary" disabled={reviewBusy} onClick={() => openReviewDialog("override")}>
+                        Override recommendation
+                      </button>
+                      <button type="button" className="btn btn-danger-outline" disabled={reviewBusy} onClick={() => openReviewDialog("dismiss")}>
+                        Dismiss recommendation
+                      </button>
+                      {call.reviewStatus === "overridden" && (
+                        <button
+                          type="button"
+                          className="btn btn-tertiary"
+                          disabled={reviewBusy}
+                          onClick={() => void handleReview({ reviewStatus: "generated" })}
+                        >
+                          {reviewBusy ? "Restoring…" : "Restore AI recommendation"}
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -335,6 +430,18 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
         onCancel={() => setDeleteOpen(false)}
         onConfirm={handleDelete}
       />
+      {reviewDialog && (
+        <RecommendationReviewDialog
+          mode={reviewDialog}
+          busy={reviewBusy}
+          error={reviewError}
+          onCancel={() => {
+            setReviewDialog(null);
+            setReviewError(undefined);
+          }}
+          onSubmit={(body) => void handleReview(body)}
+        />
+      )}
     </div>
   );
 }

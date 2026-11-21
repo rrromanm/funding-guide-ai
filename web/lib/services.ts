@@ -1,18 +1,17 @@
-import { fundingCalls as initialFundingCalls, notifications as initialNotifications } from "./mock-data";
+import { notifications as initialNotifications } from "./mock-data";
 import { API_FIT_LABELS } from "./fit-label";
 import { createClient as createBrowserSupabase } from "./supabase/client";
 import type {
   ApiCallStatus,
   ApiFitLabel,
   CallStatus,
-  FitLabel,
-  FundingCall,
   FundingCallBodyDto,
   FundingCallDetailDto,
   FundingCallDetails,
   FundingCallListItem,
   FundingCallListItemDto,
   FundingCallListResponseDto,
+  FundingCallReviewBody,
   Notification,
   OrgProfile,
   OrgProfileDto,
@@ -321,6 +320,9 @@ function isFundingCallDetail(value: unknown): value is FundingCallDetailDto {
     (call.fitLabel === null || typeof call.fitLabel === "string") &&
     (call.confidence === null || ["high", "medium", "low"].includes(call.confidence as string)) &&
     (call.blockingReason === null || typeof call.blockingReason === "string") &&
+    (call.reviewStatus === null || ["generated", "overridden", "dismissed"].includes(call.reviewStatus as string)) &&
+    (call.aiScore === null || typeof call.aiScore === "number") &&
+    (call.adminNote === null || typeof call.adminNote === "string") &&
     Array.isArray(call.reasons) &&
     call.reasons.every((reason) => typeof reason?.message === "string" && ["blocker", "barrier", "strength", "info"].includes(reason?.kind)) &&
     typeof call.createdAt === "string" &&
@@ -375,6 +377,9 @@ function mapFundingCallDetails(call: FundingCallDetailDto): FundingCallDetails {
     fitLabel: call.fitLabel ?? undefined,
     confidence: call.confidence ?? undefined,
     blockingReason: toOptionalText(call.blockingReason),
+    reviewStatus: call.reviewStatus,
+    aiScore: call.aiScore,
+    adminNote: call.adminNote,
     reasons: call.reasons,
     eligibility: toOptionalText(call.eligibility) ?? "—",
     ngoEligible: call.ngoEligible,
@@ -479,31 +484,54 @@ export function markNotificationRead(id: string): Notification | undefined {
   return structuredClone(item);
 }
 
-export function overrideRecommendation(
+export async function reviewFundingCall(
   id: string,
-  fitLabel: FitLabel,
-  manualScore?: number,
-  reason?: string,
-): FundingCall | undefined {
-  const call = initialFundingCalls.find((item) => item.id === id);
-  if (!call) {
-    return undefined;
+  body: FundingCallReviewBody,
+): Promise<FundingCallDetails> {
+  if (
+    (body.reviewStatus === "overridden") !== (body.manualScore !== undefined) ||
+    (body.manualScore !== undefined &&
+      (!Number.isInteger(body.manualScore) || body.manualScore < 0 || body.manualScore > 100)) ||
+    (body.adminNote != null && body.adminNote.trim().length > 2000)
+  ) {
+    throw new ApiRequestError("Check the recommendation review details and try again.", 400);
   }
 
-  call.matchResult.fitLabel = fitLabel;
-  call.matchResult.manualScore = manualScore;
-  call.matchResult.overallScore = manualScore ?? call.matchResult.overallScore;
-  call.matchResult.reviewStatus = "OVERRIDDEN";
-  call.matchResult.explanation = reason ?? call.matchResult.explanation;
-  return structuredClone(call);
-}
+  const response = await apiFetch(`/api/calls/${id}/match`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...body,
+      ...(body.adminNote !== undefined
+        ? { adminNote: body.adminNote?.trim() || null }
+        : {}),
+    }),
+  });
+  const payload: unknown = await response.json().catch(() => null);
 
-export function dismissRecommendation(id: string): FundingCall | undefined {
-  const call = initialFundingCalls.find((item) => item.id === id);
-  if (!call) {
-    return undefined;
+  if (!response.ok) {
+    const errorValue =
+      payload && typeof payload === "object" && "error" in payload
+        ? (payload as { error?: unknown }).error
+        : undefined;
+    const errorRecord =
+      errorValue && typeof errorValue === "object"
+        ? (errorValue as { details?: unknown; message?: unknown })
+        : undefined;
+    const details = Array.isArray(errorRecord?.details)
+      ? (errorRecord.details as { path: string; message: string }[])
+      : [];
+    const message = details.length
+      ? details.map((detail) => `${detail.path}: ${detail.message}`).join("; ")
+      : typeof errorRecord?.message === "string"
+        ? errorRecord.message
+        : `Recommendation could not be updated (${response.status})`;
+    throw new ApiRequestError(message, response.status);
   }
 
-  call.matchResult.reviewStatus = "DISMISSED";
-  return structuredClone(call);
+  if (!isFundingCallDetail(payload)) {
+    throw new ApiRequestError("Recommendation review returned an unexpected response", 502);
+  }
+
+  return mapFundingCallDetails(payload);
 }
