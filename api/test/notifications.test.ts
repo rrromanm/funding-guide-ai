@@ -1,47 +1,38 @@
-import { describe, expect, it, onTestFinished } from "vitest";
+import { describe, expect, it } from "vitest";
 import { db } from "../src/lib/db.ts";
-import { notificationListResponse } from "../src/modules/notifications/notifications.schema.ts";
-import { notifyNewCalls } from "../src/modules/notifications/notifications.service.ts";
-import { adminApi, describeDb } from "./helpers.ts";
+import {
+  notificationDetail,
+  notificationListResponse,
+} from "../src/modules/notifications/notifications.schema.ts";
+import { notifyRelevantCalls } from "../src/modules/notifications/notifications.service.ts";
+import {
+  adminApi,
+  describeDb,
+  insertCall,
+  notificationsFor,
+  saveScore,
+} from "./helpers.ts";
 
 const api = adminApi();
 
-async function insertNotification(message = "Test notification") {
-  const { id } = await db
-    .insertInto("notification")
-    .values({ message })
-    .returning("id")
-    .executeTakeFirstOrThrow();
-  onTestFinished(async () => {
-    await db.deleteFrom("notification").where("id", "=", id).execute();
-  });
-  return id;
+async function insertNotification(scores = [80]) {
+  const callIds: number[] = [];
+  for (const score of scores) {
+    const callId = await insertCall({ title: `zztest notified ${score}` });
+    await saveScore(callId, score);
+    callIds.push(callId);
+  }
+  await notifyRelevantCalls(callIds);
+  const [{ id }] = await notificationsFor(callIds[0]);
+  return { id, callIds };
 }
 
-async function lastId() {
-  const { id } = await db
-    .selectFrom("notification")
-    .select((eb) => eb.fn.max("id").as("id"))
-    .executeTakeFirstOrThrow();
-  return id ?? 0;
-}
+describe("GET /api/notifications/:id", () => {
+  it("400s on a non-numeric id", async () => {
+    const res = await api.get("/api/notifications/abc");
 
-async function takeNotifications(since: number, messages: string[]) {
-  const rows = await db
-    .deleteFrom("notification")
-    .where("id", ">", since)
-    .where("message", "in", messages)
-    .returning("message")
-    .execute();
-  return rows.map((row) => row.message).sort();
-}
-
-describe("GET /api/notifications", () => {
-  it("404s on an unknown sub-path", async () => {
-    const res = await api.get("/api/notifications/1");
-
-    expect(res.status).toBe(404);
-    expect(res.body.error.code).toBe("NOT_FOUND");
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
   });
 });
 
@@ -65,7 +56,7 @@ describe("PATCH /api/notifications/:id", () => {
 
 describeDb("GET /api/notifications (database)", () => {
   it("returns the documented shape, newest first", async () => {
-    const id = await insertNotification();
+    const { id } = await insertNotification([80, 60]);
 
     const res = await api.get("/api/notifications");
 
@@ -73,12 +64,60 @@ describeDb("GET /api/notifications (database)", () => {
     expect(notificationListResponse.parse(res.body)).toBeTruthy();
     expect(
       res.body.items.find((item: { id: number }) => item.id === id),
-    ).toMatchObject({ message: "Test notification", read: false });
+    ).toMatchObject({ message: "Found 2 new relevant calls.", read: false });
 
     const dates = res.body.items.map(
       (item: { createdAt: string }) => item.createdAt,
     );
     expect([...dates].sort().reverse()).toEqual(dates);
+  });
+});
+
+describeDb("GET /api/notifications/:id (database)", () => {
+  it("returns the notification with its calls, best score first", async () => {
+    const {
+      id,
+      callIds: [best, other],
+    } = await insertNotification([80, 60]);
+
+    const res = await api.get(`/api/notifications/${id}`);
+
+    expect(res.status).toBe(200);
+    expect(notificationDetail.parse(res.body)).toBeTruthy();
+    expect(res.body).toMatchObject({
+      id,
+      message: "Found 2 new relevant calls.",
+      read: false,
+    });
+    expect(res.body.fundingOpportunities).toMatchObject([
+      { id: best, title: "zztest notified 80", score: 80 },
+      { id: other, title: "zztest notified 60", score: 60 },
+    ]);
+  });
+
+  it("leaves out deleted calls", async () => {
+    const {
+      id,
+      callIds: [deleted, kept],
+    } = await insertNotification([80, 60]);
+    await db
+      .updateTable("funding_call")
+      .set({ deleted_at: new Date() })
+      .where("id", "=", deleted)
+      .execute();
+
+    const res = await api.get(`/api/notifications/${id}`);
+
+    expect(
+      res.body.fundingOpportunities.map((call: { id: number }) => call.id),
+    ).toEqual([kept]);
+  });
+
+  it("404s on an unknown notification", async () => {
+    const res = await api.get("/api/notifications/999999999");
+
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe("NOT_FOUND");
   });
 });
 
@@ -96,7 +135,7 @@ describeDb("PATCH /api/notifications/:id (database)", () => {
   });
 
   it("marks a notification read, and back to unread", async () => {
-    const id = await insertNotification();
+    const { id } = await insertNotification();
 
     const read = await api
       .patch(`/api/notifications/${id}`)
@@ -117,31 +156,36 @@ describeDb("PATCH /api/notifications/:id (database)", () => {
   });
 });
 
-describeDb("notifyNewCalls (database)", () => {
-  it("stores how many new calls a run found and how many are relevant", async () => {
-    const since = await lastId();
+describeDb("POST /api/notifications/read-all (database)", () => {
+  it("marks every unread notification read", async () => {
+    const { id } = await insertNotification();
+    const othersUnread = await db
+      .selectFrom("notification")
+      .select("id")
+      .where("read", "=", false)
+      .where("id", "!=", id)
+      .execute();
 
-    await notifyNewCalls(3, 1);
-    await notifyNewCalls(1, 0);
+    const res = await api.post("/api/notifications/read-all");
+    const stored = await db
+      .selectFrom("notification")
+      .select("read")
+      .where("id", "=", id)
+      .executeTakeFirstOrThrow();
+    if (othersUnread.length > 0) {
+      await db
+        .updateTable("notification")
+        .set({ read: false })
+        .where(
+          "id",
+          "in",
+          othersUnread.map((row) => row.id),
+        )
+        .execute();
+    }
 
-    expect(
-      await takeNotifications(since, [
-        "Found 3 new calls, 1 relevant.",
-        "Found 1 new call, 0 relevant.",
-      ]),
-    ).toEqual([
-      "Found 1 new call, 0 relevant.",
-      "Found 3 new calls, 1 relevant.",
-    ]);
-  });
-
-  it("stores nothing when a run found no new calls", async () => {
-    const since = await lastId();
-
-    await notifyNewCalls(0, 0);
-
-    expect(
-      await takeNotifications(since, ["Found 0 new calls, 0 relevant."]),
-    ).toEqual([]);
+    expect(res.status).toBe(200);
+    expect(res.body.updated).toBeGreaterThanOrEqual(1);
+    expect(stored.read).toBe(true);
   });
 });

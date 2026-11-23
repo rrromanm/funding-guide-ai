@@ -98,6 +98,7 @@ export interface MatchResult {
   input_hash: string;
   manual_score: number | null;
   model: string;
+  notification_id: number | null;
   org_profile_id: Generated<number>;
   prompt_version: string;
   raw_response: Json;

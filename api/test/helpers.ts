@@ -107,3 +107,28 @@ export function modelOutput(
     ...overrides,
   };
 }
+
+export async function notificationsFor(callId: number) {
+  const rows = await db
+    .selectFrom("notification")
+    .innerJoin(
+      "match_result",
+      "match_result.notification_id",
+      "notification.id",
+    )
+    .select(["notification.id", "notification.message"])
+    .where("match_result.call_id", "=", callId)
+    .execute();
+  onTestFinished(async () => {
+    if (rows.length === 0) return;
+    await db
+      .deleteFrom("notification")
+      .where(
+        "id",
+        "in",
+        rows.map((row) => row.id),
+      )
+      .execute();
+  });
+  return rows;
+}

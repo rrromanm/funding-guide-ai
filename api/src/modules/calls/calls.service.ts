@@ -20,7 +20,7 @@ import {
   type UpdateCallBody,
 } from "./calls.schema.ts";
 
-const LIST_COLUMNS = [
+export const LIST_COLUMNS = [
   "funding_call.id",
   "funding_call.title",
   "funding_call.summary",
@@ -49,7 +49,7 @@ const DETAIL_COLUMNS = [
 
 type Queried = "funding_call" | "funding_source";
 
-function nextDeadline(eb: ExpressionBuilder<DB, Queried>) {
+export function nextDeadline(eb: ExpressionBuilder<DB, Queried>) {
   return eb
     .selectFrom("funding_round")
     .select(({ fn }) => fn.min("funding_round.deadline_date").as("deadline"))
@@ -58,7 +58,7 @@ function nextDeadline(eb: ExpressionBuilder<DB, Queried>) {
     .as("deadline");
 }
 
-function matchScore(eb: ExpressionBuilder<DB, Queried>) {
+export function matchScore(eb: ExpressionBuilder<DB, Queried>) {
   return eb
     .selectFrom("match_result")
     .select(
@@ -470,7 +470,7 @@ type ListRow = {
   score: number | null;
 };
 
-function toListItem(row: ListRow): CallListItem {
+export function toListItem(row: ListRow): CallListItem {
   return {
     id: row.id,
     title: row.title,

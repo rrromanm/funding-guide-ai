@@ -8,6 +8,8 @@ import {
   updateCallBody,
 } from "./modules/calls/calls.schema.ts";
 import {
+  markAllReadResponse,
+  notificationDetail,
   notificationItem,
   notificationListResponse,
   updateNotificationBody,
@@ -136,14 +138,41 @@ export const openapi = {
     },
     "/api/notifications": {
       get: {
-        summary: "List notifications about new calls each pipeline run found",
+        summary:
+          "List notifications, one per pipeline run that found new relevant calls",
         tags: ["notifications"],
         responses: {
           "200": jsonResponse("Every notification", notificationListResponse),
         },
       },
     },
+    "/api/notifications/read-all": {
+      post: {
+        summary: "Mark every notification read",
+        tags: ["notifications"],
+        responses: {
+          "200": jsonResponse("How many it marked read", markAllReadResponse),
+        },
+      },
+    },
     "/api/notifications/{id}": {
+      get: {
+        summary: "Get one notification with the calls it is about",
+        tags: ["notifications"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          "200": jsonResponse("The notification", notificationDetail),
+          "400": errorResponse,
+          "404": errorResponse,
+        },
+      },
       patch: {
         summary: "Mark a notification read or unread",
         tags: ["notifications"],
