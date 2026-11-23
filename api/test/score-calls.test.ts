@@ -1,6 +1,12 @@
-import { afterEach, describe, expect, it, onTestFinished, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { db } from "../src/lib/db.ts";
-import { describeDb, insertCall, modelOutput, saveScore } from "./helpers.ts";
+import {
+  describeDb,
+  insertCall,
+  modelOutput,
+  notificationsFor,
+  saveScore,
+} from "./helpers.ts";
 
 const generateJson = vi.hoisted(() => vi.fn());
 vi.mock("../src/lib/llm.ts", async (importOriginal) => ({
@@ -27,25 +33,8 @@ async function run(args: string[] = [], geminiKey = "test-key") {
   await import("../src/scripts/score-calls.ts");
 }
 
-async function notificationsDuring(fn: () => Promise<void>) {
-  const { last } = await db
-    .selectFrom("notification")
-    .select((eb) => eb.fn.max("id").as("last"))
-    .executeTakeFirstOrThrow();
-  onTestFinished(async () => {
-    await db
-      .deleteFrom("notification")
-      .where("id", ">", last ?? 0)
-      .where("message", "=", "Found 1 new call, 1 relevant.")
-      .execute();
-  });
-  await fn();
-  const rows = await db
-    .selectFrom("notification")
-    .select("message")
-    .where("id", ">", last ?? 0)
-    .where("message", "like", "Found 1 new call, _ relevant.")
-    .execute();
+async function notifications(callId: number) {
+  const rows = await notificationsFor(callId);
   return rows.map((row) => row.message);
 }
 
@@ -75,12 +64,10 @@ describeDb("npm run score:llm (database)", () => {
     const id = await insertCall();
     generateJson.mockResolvedValue(modelOutput(3));
 
-    const messages = await notificationsDuring(() =>
-      run(["--call", String(id)]),
-    );
+    await run(["--call", String(id)]);
 
     expect(await storedScore(id)).toEqual({ score: 75 });
-    expect(messages).toEqual(["Found 1 new call, 1 relevant."]);
+    expect(await notifications(id)).toEqual(["Found 1 new relevant call."]);
     expect(console.log).toHaveBeenCalledWith(
       `#${id} Test call: 75 strong_fit (low)`,
     );
@@ -92,12 +79,20 @@ describeDb("npm run score:llm (database)", () => {
     await saveScore(id, 40);
     generateJson.mockResolvedValue(modelOutput(3));
 
-    const messages = await notificationsDuring(() =>
-      run(["--call", String(id)]),
-    );
+    await run(["--call", String(id)]);
 
     expect(await storedScore(id)).toEqual({ score: 75 });
-    expect(messages).toEqual([]);
+    expect(await notifications(id)).toEqual([]);
+  });
+
+  it("does not notify about a new call that is not relevant", async () => {
+    const id = await insertCall();
+    generateJson.mockResolvedValue(modelOutput(0));
+
+    await run(["--call", String(id)]);
+
+    expect(await storedScore(id)).not.toBeUndefined();
+    expect(await notifications(id)).toEqual([]);
   });
 
   it("scores no more than --limit calls", async () => {
