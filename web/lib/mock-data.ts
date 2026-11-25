@@ -1,4 +1,4 @@
-import type { FundingCall, Notification, OrgProfile, Tag } from "./types";
+import type { FundingCall, OrgProfile, Tag } from "./types";
 
 const buildTag = (id: string, value: string, type: Tag["type"]): Tag => ({
   id,
@@ -272,24 +272,5 @@ export const fundingCalls: FundingCall[] = [
         },
       ],
     },
-  },
-];
-
-export const notifications: Notification[] = [
-  {
-    id: "n-1",
-    fundingCallId: "erasmus-youth-exchanges",
-    title: "New relevant funding opportunity found",
-    message: "Erasmus+ Youth Exchanges has a strong match with the PYN profile.",
-    createdAt: "2026-09-27T09:40:00.000Z",
-    read: false,
-  },
-  {
-    id: "n-2",
-    fundingCallId: "european-solidarity-corps",
-    title: "New relevant funding opportunity found",
-    message: "European Solidarity Corps – Youth Initiatives matches PYN's youth engagement mission.",
-    createdAt: "2026-09-26T16:20:00.000Z",
-    read: true,
   },
 ];
