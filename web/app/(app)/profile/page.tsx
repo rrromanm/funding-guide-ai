@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { PageHeader } from "@/components/common/page-header";
-import ProfileForm from "@/components/profile-form";
-import { getOrgProfile, updateOrgProfile } from "@/lib/services";
+import { PageHeader } from "@/components/shared/page-header";
+import ProfileForm from "@/features/organization-profile/components/profile-form";
+import { getOrgProfile, updateOrgProfile } from "@/features/organization-profile/api";
 import type { OrgProfile } from "@/lib/types";
 
 export default function OrganizationProfilePage() {

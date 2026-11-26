@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ConfirmationModal } from "@/components/common/confirmation-modal";
-import { PageHeader } from "@/components/common/page-header";
-import { ScoringModal } from "@/components/common/scoring-modal";
+import { ConfirmationModal } from "@/components/shared/confirmation-modal";
+import { PageHeader } from "@/components/shared/page-header";
+import { ScoringModal } from "@/features/opportunities/components/scoring-modal";
 import {
   FundingOpportunityForm,
   toFundingCallBody,
   type FundingOpportunityFormValues,
-} from "@/components/funding-opportunity-form";
-import { rescoreFundingCall, updateFundingCall } from "@/lib/services";
+} from "@/features/opportunities/components/funding-opportunity-form";
+import { rescoreFundingCall, updateFundingCall } from "@/features/opportunities/api";
 import type { CallStatus, FundingCallDetailDto } from "@/lib/types";
 
 export default function OpportunityEditClient({ call }: { call: FundingCallDetailDto }) {

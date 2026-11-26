@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { PageHeader } from "@/components/common/page-header";
-import { ScoringModal } from "@/components/common/scoring-modal";
-import { FundingOpportunityForm, toFundingCallBody, type FundingOpportunityFormValues } from "@/components/funding-opportunity-form";
-import { createFundingCall } from "@/lib/services";
+import { PageHeader } from "@/components/shared/page-header";
+import { ScoringModal } from "@/features/opportunities/components/scoring-modal";
+import { FundingOpportunityForm, toFundingCallBody, type FundingOpportunityFormValues } from "@/features/opportunities/components/funding-opportunity-form";
+import { createFundingCall } from "@/features/opportunities/api";
 
 const defaultValues: FundingOpportunityFormValues = {
   title: "",

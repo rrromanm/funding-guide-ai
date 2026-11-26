@@ -2,33 +2,17 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getFundingCalls } from "@/lib/services";
-import { EmptyState } from "@/components/common/empty-state";
-import { PageHeader } from "@/components/common/page-header";
-import { StatusBadge } from "@/components/common/status-badge";
-import { getDisplayedDeadline } from "@/lib/funding-deadlines";
-import { API_FIT_LABELS, FIT_LABEL_CHIPS, FIT_LABELS } from "@/lib/fit-label";
+import { getFundingCalls } from "@/features/opportunities/api";
+import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
+import { StatusBadge } from "@/features/opportunities/components/status-badge";
+import { getDisplayedDeadline } from "@/features/opportunities/lib/funding-deadlines";
+import { formatOpportunityDate } from "@/features/opportunities/lib/date-format";
+import { API_FIT_LABELS, FIT_LABEL_CHIPS, FIT_LABELS } from "@/features/opportunities/lib/fit-label";
 import type { FundingCall, FundingCallListItem } from "@/lib/types";
 
 const SEARCH_DEBOUNCE_MS = 300;
 const ALL_FITS = "All fits";
-
-const formatDate = (value?: string) => {
-  if (!value) {
-    return "—";
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-
-  return parsed.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-};
 
 export default function FundingOpportunitiesDashboard() {
   const [calls, setCalls] = useState<FundingCallListItem[]>([]);
@@ -248,7 +232,7 @@ export default function FundingOpportunitiesDashboard() {
                         </div>
                       </td>
                       <td className="px-5 py-4 text-ink-600">{call.fundingBody || "—"}</td>
-                      <td className="px-5 py-4 text-ink-600">{formatDate(call.deadline)}</td>
+                      <td className="px-5 py-4 text-ink-600">{formatOpportunityDate(call.deadline)}</td>
                       <td className="px-5 py-4"><StatusBadge status={call.status} /></td>
                       <td className="px-5 py-4">
                         <div className="flex flex-wrap items-center gap-2">
@@ -313,5 +297,5 @@ export function formatList(tags: { value: string }[] = []) {
 
 export function formatOpportunityDates(call: FundingCall) {
   const deadline = getDisplayedDeadline(call.fundingRounds, call.status);
-  return deadline ? formatDate(deadline) : "—";
+  return deadline ? formatOpportunityDate(deadline) : "—";
 }

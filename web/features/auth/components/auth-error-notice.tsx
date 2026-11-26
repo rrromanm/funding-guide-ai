@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { signOut } from "@/app/login/actions";
-import { AUTH_ERROR_EVENT, authErrorMessage, type AuthErrorStatus } from "@/lib/services";
+import { AUTH_ERROR_EVENT, authErrorMessage, type AuthErrorStatus } from "@/lib/api/client";
 
 // Signing out clears the Supabase session first, so /login is reachable without proxy.ts bouncing back.
 export function AuthErrorNotice({ status }: { status: AuthErrorStatus }) {

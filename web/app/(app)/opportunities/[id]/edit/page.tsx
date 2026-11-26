@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import { AuthErrorNotice } from "@/components/auth-error-notice";
-import OpportunityEditClient from "@/components/opportunity-edit-client";
-import { ApiRequestError, getFundingCallDto, isAuthErrorStatus } from "@/lib/services";
+import { AuthErrorNotice } from "@/features/auth/components/auth-error-notice";
+import OpportunityEditClient from "@/features/opportunities/components/opportunity-edit-client";
+import { ApiRequestError, isAuthErrorStatus } from "@/lib/api/client";
+import { getFundingCallDto } from "@/features/opportunities/api";
 import { getAccessToken } from "@/lib/supabase/server";
 
 export default async function EditOpportunityPage({

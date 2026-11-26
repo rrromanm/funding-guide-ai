@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EmptyState } from "@/components/common/empty-state";
-import { checkAllSources, getFundingSources } from "@/lib/services";
+import { EmptyState } from "@/components/shared/empty-state";
+import { checkAllSources, getFundingSources } from "@/features/funding-sources/api";
 import type { SourceListItem } from "@/lib/types";
 
 const relative = new Intl.RelativeTimeFormat("en-GB", { numeric: "auto" });

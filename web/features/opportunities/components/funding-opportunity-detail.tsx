@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ConfirmationModal } from "@/components/common/confirmation-modal";
-import { PageHeader } from "@/components/common/page-header";
-import { RecommendationReviewDialog, type RecommendationReviewMode } from "@/components/common/recommendation-review-dialog";
-import { StatusBadge } from "@/components/common/status-badge";
-import { deleteFundingCall, reviewFundingCall } from "@/lib/services";
-import { FIT_LABELS } from "@/lib/fit-label";
+import { ConfirmationModal } from "@/components/shared/confirmation-modal";
+import { PageHeader } from "@/components/shared/page-header";
+import { RecommendationReviewDialog, type RecommendationReviewMode } from "@/features/recommendations/components/recommendation-review-dialog";
+import { StatusBadge } from "@/features/opportunities/components/status-badge";
+import { deleteFundingCall } from "@/features/opportunities/api";
+import { reviewFundingCall } from "@/features/recommendations/api";
+import { FIT_LABELS } from "@/features/opportunities/lib/fit-label";
+import { formatOpportunityDate } from "@/features/opportunities/lib/date-format";
 import type { ApiConfidence, FundingCallDetails, FundingCallReviewBody, MatchReasonDto } from "@/lib/types";
 
 const DESCRIPTION_PREVIEW_LENGTH = 900;
@@ -22,23 +24,6 @@ const REASON_KINDS: Record<MatchReasonDto["kind"], { label: string; chip: string
 const REASON_ORDER: MatchReasonDto["kind"][] = ["blocker", "barrier", "strength", "info"];
 const reasonTopic = (about: string | null) =>
   about ? about.replace(/_/g, " ").replace(/^./, (letter) => letter.toUpperCase()) : null;
-
-const formatDate = (value?: string) => {
-  if (!value) {
-    return "—";
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-
-  return parsed.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-};
 
 const formatAmount = (value: number | undefined, currency: string) => {
   if (value === undefined || value === null) {
@@ -239,7 +224,7 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
               </div>
               <div>
                 <h3 className="field-label">Expected reopening</h3>
-                <p className="text-[15px] text-ink-600">{call.expectedReopeningDate ? formatDate(call.expectedReopeningDate) : "—"}</p>
+                <p className="text-[15px] text-ink-600">{formatOpportunityDate(call.expectedReopeningDate)}</p>
               </div>
               <div>
                 <h3 className="field-label">Themes</h3>
@@ -408,10 +393,10 @@ export default function FundingOpportunityDetail({ initialCall }: { initialCall:
               {round ? (
                 <div className="rounded-[16px] border border-hairline bg-canvas p-3">
                   <div className="font-bold text-ink-900">{round.title}</div>
-                  <div className="mt-2">Open: {formatDate(round.openDate)}</div>
-                  <div>Deadline: {formatDate(round.deadline)}</div>
-                  <div>Decision: {formatDate(round.decisionDate)}</div>
-                  <div>Next open: {formatDate(round.expectedNextOpenDate)}</div>
+                  <div className="mt-2">Open: {formatOpportunityDate(round.openDate)}</div>
+                  <div>Deadline: {formatOpportunityDate(round.deadline)}</div>
+                  <div>Decision: {formatOpportunityDate(round.decisionDate)}</div>
+                  <div>Next open: {formatOpportunityDate(round.expectedNextOpenDate)}</div>
                 </div>
               ) : (
                 <p>—</p>
