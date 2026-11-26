@@ -1,4 +1,4 @@
-import type { CallStatus, FundingRound } from "./types";
+import type { CallStatus, FundingRound } from "@/lib/types";
 
 const toTime = (value?: string) => {
   if (!value) {

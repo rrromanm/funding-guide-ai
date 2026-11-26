@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { EditableTagGroup } from "@/components/profile-form";
+import { EditableTagGroup } from "@/components/shared/editable-tag-group";
 import type { ApiCallStatus, CallStatus, FundingCallBodyDto, FundingRound, Tag, TagType } from "@/lib/types";
 
 const MIN_DESCRIPTION_CHARS = 500;

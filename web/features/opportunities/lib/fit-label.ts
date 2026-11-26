@@ -1,4 +1,4 @@
-import type { ApiFitLabel } from "./types";
+import type { ApiFitLabel } from "@/lib/types";
 
 export const API_FIT_LABELS: ApiFitLabel[] = ["strong_fit", "possible_fit", "weak_fit", "not_recommended"];
 

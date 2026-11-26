@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import AuthErrorGate from "@/components/auth-error-notice";
-import Sidebar from "@/components/sidebar";
+import AuthErrorGate from "@/features/auth/components/auth-error-notice";
+import Sidebar from "@/components/layout/sidebar";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {

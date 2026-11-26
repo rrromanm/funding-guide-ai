@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
-import { EmptyState } from "@/components/common/empty-state";
-import { PageHeader } from "@/components/common/page-header";
-import { getNotifications, updateNotificationRead } from "@/lib/services";
+import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
+import { getNotifications, updateNotificationRead } from "@/features/notifications/api";
 import type { Notification } from "@/lib/types";
 
 const formatDate = (value: string) =>
