@@ -1,20 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { createRequire } from "node:module";
-import { resolve } from "node:path";
 import { expect, test } from "@playwright/test";
 import { API_URL } from "./helpers";
-
-type CleanupPool = {
-  query: (sql: string, values: number[]) => Promise<unknown>;
-  end: () => Promise<void>;
-};
-
-const requireApiDependency = createRequire(
-  resolve(__dirname, "../../api/package.json"),
-);
-const { Pool } = requireApiDependency("pg") as {
-  Pool: new (config: { connectionString: string }) => CleanupPool;
-};
+import { verifyIsolatedSession, withIsolatedDatabase } from "./isolation";
 
 const mutationTestsEnabled = process.env.E2E_MUTATION_TESTS === "1";
 const description =
@@ -28,26 +15,12 @@ const description =
   "Successful applicants receive a written decision and agree to submit a short " +
   "completion report describing the work and its impact.";
 
-async function hardDeleteCall(id: number) {
-  const connectionString = process.env.E2E_TEST_DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("E2E_TEST_DATABASE_URL is required to clean up mutation-test records.");
-  }
-  const databaseUrl = new URL(connectionString);
-  if (
-    !["127.0.0.1", "localhost"].includes(databaseUrl.hostname) ||
-    databaseUrl.port !== "55422" ||
-    databaseUrl.pathname !== "/postgres"
-  ) {
-    throw new Error("Refusing to clean up mutation-test records outside the isolated local database.");
-  }
-
-  const pool = new Pool({ connectionString });
-  try {
-    await pool.query("DELETE FROM funding_call WHERE id = $1", [id]);
-  } finally {
-    await pool.end();
-  }
+async function hardDeleteCall(initialTitle: string, updatedTitle: string) {
+  await withIsolatedDatabase(async (pool) => {
+    await pool.query("DELETE FROM funding_call WHERE title = $1 OR title = $2", [initialTitle, updatedTitle]);
+    const remaining = await pool.query("SELECT id FROM funding_call WHERE title = $1 OR title = $2", [initialTitle, updatedTitle]);
+    expect(remaining.rows).toHaveLength(0);
+  });
 }
 
 test.describe("Funding opportunity persistence (isolated database only)", () => {
@@ -72,6 +45,7 @@ test.describe("Funding opportunity persistence (isolated database only)", () => 
       await page.goto("/");
       authorization = (await callsRequest).headers().authorization;
       expect(authorization).toMatch(/^Bearer\s+\S+/);
+      await verifyIsolatedSession(page, authorization!);
 
       await page.goto("/opportunities/new");
       await page.getByLabel("Title").fill(initialTitle);
@@ -130,21 +104,41 @@ test.describe("Funding opportunity persistence (isolated database only)", () => 
       });
       expect(deletedRecord.status()).toBe(404);
     } finally {
-      if (callId) {
-        try {
-          if (authorization) {
-            const cleanup = await page.request.delete(`${API_URL}/api/calls/${callId}`, {
-              headers: { authorization },
-            });
-            expect(
-              cleanup.ok() || cleanup.status() === 404,
-              "cleanup must remove the isolated E2E record through the API",
-            ).toBeTruthy();
-          }
-        } finally {
-          await hardDeleteCall(callId);
+      try {
+        if (callId && authorization) {
+          const cleanup = await page.request.delete(`${API_URL}/api/calls/${callId}`, {
+            headers: { authorization },
+          });
+          expect(
+            cleanup.ok() || cleanup.status() === 404,
+            "cleanup must remove the isolated E2E record through the API",
+          ).toBeTruthy();
         }
+      } finally {
+        await hardDeleteCall(initialTitle, updatedTitle);
       }
+    }
+  });
+
+  test("removes a created opportunity when its response ID was not captured", async ({ page }) => {
+    const title = `E2E SCRUM-163 ${randomUUID()}`;
+    const request = page.waitForRequest((candidate) => candidate.url().startsWith(`${API_URL}/api/calls`));
+    await page.goto("/");
+    const authorization = (await request).headers().authorization;
+    await verifyIsolatedSession(page, authorization);
+    try {
+      const created = await page.request.post(`${API_URL}/api/calls`, {
+        headers: { authorization },
+        data: { title, description },
+      });
+      expect(created.status()).toBe(201);
+      // Intentionally do not read the response body or retain its ID.
+      await withIsolatedDatabase(async (pool) => {
+        const found = await pool.query("SELECT id FROM funding_call WHERE title = $1", [title]);
+        expect(found.rows).toHaveLength(1);
+      });
+    } finally {
+      await hardDeleteCall(title, `${title} updated`);
     }
   });
 });

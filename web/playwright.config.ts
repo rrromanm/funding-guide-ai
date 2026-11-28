@@ -19,9 +19,9 @@ function requireIsolatedMutationEnvironment() {
 
   const databaseUrl = process.env.E2E_TEST_DATABASE_URL;
   const supabaseUrl = process.env.E2E_TEST_SUPABASE_URL;
-  if (!databaseUrl || !supabaseUrl) {
+  if (!databaseUrl || !supabaseUrl || !process.env.E2E_TEST_PROJECT_ID || !process.env.E2E_ISOLATION_MARKER) {
     throw new Error(
-      "Mutation E2E requires E2E_TEST_DATABASE_URL and E2E_TEST_SUPABASE_URL for a dedicated local test stack.",
+      "Mutation E2E requires the dedicated database, Supabase URL, project ID, and database isolation marker.",
     );
   }
 
@@ -74,6 +74,7 @@ const mutationEnvironment = mutationTestsEnabled
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  workers: mutationTestsEnabled ? 1 : undefined,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
